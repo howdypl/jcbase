@@ -1,0 +1,173 @@
+Table: alert
+----------------+------------------+------+-----+---------+---------
+ Field          | Type             | Null | Key | Default | Remarks 
+----------------+------------------+------+-----+---------+---------
+ id             | INT UNSIGNED(10) | NO   | PRI |         |         
+ type_id        | INT UNSIGNED(10) | NO   |     |         |         
+ alert_obj_code | VARCHAR(200)     | NO   |     |         |         
+ desc           | VARCHAR(255)     | YES  |     |         |         
+ create_time    | DATETIME(19)     | YES  |     |         |         
+ status         | INT UNSIGNED(10) | NO   |     |         |         
+----------------+------------------+------+-----+---------+---------
+
+Table: alert_type
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ alert_type  | VARCHAR(100)     | NO   |     |         |         
+ alert_desc  | VARCHAR(255)     | YES  |     |         |         
+ create_time | DATETIME(19)     | YES  |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: building
+---------------+------------------+------+-----+---------+---------
+ Field         | Type             | Null | Key | Default | Remarks 
+---------------+------------------+------+-----+---------+---------
+ id            | INT UNSIGNED(10) | NO   | PRI |         |         
+ station_id    | INT UNSIGNED(10) | NO   |     |         |         
+ building_name | VARCHAR(200)     | YES  |     |         |         
+ create_time   | DATETIME(19)     | YES  |     |         |         
+---------------+------------------+------+-----+---------+---------
+
+Table: identification
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ auth        | VARCHAR(100)     | NO   |     |         |         
+ worker      | VARCHAR(50)      | NO   |     |         |         
+ approver_id | INT UNSIGNED(10) | NO   |     |         |         
+ create_time | DATETIME(19)     | NO   |     |         |         
+ end_time    | DATETIME(19)     | NO   |     |         |         
+ phone       | VARCHAR(100)     | YES  |     |         |         
+ task_name   | VARCHAR(200)     | YES  |     |         |         
+ room_id     | INT UNSIGNED(10) | YES  |     |         |         
+ ticket_num  | VARCHAR(100)     | NO   |     |         |         
+ station_id  | INT UNSIGNED(10) | NO   |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: layer
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ building_id | INT UNSIGNED(10) | NO   |     |         |         
+ layer_name  | VARCHAR(100)     | NO   |     |         |         
+ create_time | DATETIME(19)     | YES  |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: log
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ user_id     | INT UNSIGNED(10) | NO   |     |         |         
+ type_id     | INT UNSIGNED(10) | NO   |     |         |         
+ create_time | DATETIME(19)     | YES  |     |         |         
+ remark      | VARCHAR(200)     | YES  |     |         |         
+ operation   | JSON             | YES  |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: log_type
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ op_desc     | VARCHAR(100)     | NO   |     |         |         
+ create_time | DATETIME(19)     | YES  |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: operation_class
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ op_name     | VARCHAR(100)     | NO   |     |         |         
+ op_desc     | TEXT(65535)      | NO   |     |         |         
+ op_addr     | VARCHAR(255)     | YES  |     |         |         
+ op_manager  | INT UNSIGNED(10) | YES  |     |         |         
+ create_time | DATETIME(19)     | YES  |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: permised_door
+------------+---------------------+------+-----+---------+---------
+ Field      | Type                | Null | Key | Default | Remarks 
+------------+---------------------+------+-----+---------+---------
+ id         | INT UNSIGNED(10)    | NO   | PRI |         |         
+ iden_id    | INT UNSIGNED(10)    | NO   |     |         |         
+ permission | TINYINT UNSIGNED(3) | NO   |     |         |         
+ door_code  | VARCHAR(200)        | NO   |     |         |         
+------------+---------------------+------+-----+---------+---------
+
+Table: room
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ layer_id    | INT UNSIGNED(10) | NO   |     |         |         
+ room_name   | VARCHAR(100)     | NO   |     |         |         
+ create_time | DATETIME(19)     | YES  |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: sensor
+-------------+------------------+------+-----+------------+---------
+ Field       | Type             | Null | Key | Default    | Remarks 
+-------------+------------------+------+-----+------------+---------
+ sensor_code | VARCHAR(200)     | NO   | PRI |            |         
+ type_id     | INT UNSIGNED(10) | NO   |     |            |         
+ affiliation | INT UNSIGNED(10) | NO   |     |            |         
+ owner_id    | INT UNSIGNED(10) | NO   |     |            |         
+ create_time | DATETIME(19)     | YES  |     |            |         
+ status      | INT UNSIGNED(10) | NO   |     | 0000000000 |         
+-------------+------------------+------+-----+------------+---------
+
+Table: sensor_data
+----------------+------------------+------+-----+---------+---------
+ Field          | Type             | Null | Key | Default | Remarks 
+----------------+------------------+------+-----+---------+---------
+ id             | INT UNSIGNED(10) | NO   | PRI |         |         
+ device_code    | VARCHAR(200)     | NO   |     |         |         
+ sensor_type_id | INT UNSIGNED(10) | NO   |     |         |         
+ status_value   | INT(10)          | YES  |     |         |         
+ status_current | INT(10)          | YES  |     |         |         
+ create_time    | DATETIME(19)     | YES  |     |         |         
+----------------+------------------+------+-----+---------+---------
+
+Table: sensor_type
+-------------+------------------+------+-----+---------+---------
+ Field       | Type             | Null | Key | Default | Remarks 
+-------------+------------------+------+-----+---------+---------
+ id          | INT UNSIGNED(10) | NO   | PRI |         |         
+ type_name   | VARCHAR(100)     | NO   |     |         |         
+ create_time | DATETIME(19)     | YES  |     |         |         
+-------------+------------------+------+-----+---------+---------
+
+Table: station
+-----------------+------------------+------+-----+---------+---------
+ Field           | Type             | Null | Key | Default | Remarks 
+-----------------+------------------+------+-----+---------+---------
+ id              | INT UNSIGNED(10) | NO   | PRI |         |         
+ op_id           | INT UNSIGNED(10) | NO   |     |         |         
+ station_name    | VARCHAR(100)     | YES  |     |         |         
+ create_time     | DATETIME(19)     | YES  |     |         |         
+ station_desc    | TEXT(65535)      | YES  |     |         |         
+ station_addr    | VARCHAR(200)     | YES  |     |         |         
+ station_manager | INT UNSIGNED(10) | NO   |     |         |         
+-----------------+------------------+------+-----+---------+---------
+
+Table: user
+--------------------+------------------+------+-----+---------+---------
+ Field              | Type             | Null | Key | Default | Remarks 
+--------------------+------------------+------+-----+---------+---------
+ id                 | INT UNSIGNED(10) | NO   | PRI |         |         
+ user_name          | VARCHAR(100)     | NO   |     |         |         
+ password           | VARCHAR(100)     | NO   |     |         |         
+ actor              | INT(10)          | NO   |     |         |         
+ last_login         | DATETIME(19)     | YES  |     |         |         
+ create_time        | DATETIME(19)     | YES  |     |         |         
+ phone              | VARCHAR(100)     | YES  |     |         |         
+ valid              | INT(10)          | NO   |     |         |         
+ operation_class_id | INT UNSIGNED(10) | YES  |     |         |         
+--------------------+------------------+------+-----+---------+---------
+

@@ -1,0 +1,30 @@
+@CHARSET "UTF-8";
+
+/*CSS Sprite*/
+/*Loads tick picture*/
+.tick
+{
+    width: 17px;
+    height: 17px;
+    margin: 6px 0 0;
+    float: left;
+    background: url(../img/tipicon.png);
+    background-position: 0px -40px;
+    display: block;
+    /*text-decoration: none;
+    vertical-align:middle;*/
+}
+
+/*Loads error picture*/
+span.error
+{
+    width: 17px;
+    height: 17px;
+    margin: 6px 0 0;
+    float: left;
+    background: url(../img/tipicon.png);
+    background-position: 6px -23px;
+    display: block;
+    /*text-decoration: none;
+    vertical-align:middle;*/
+}
