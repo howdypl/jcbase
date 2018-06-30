@@ -1,7 +1,6 @@
 package com.yanxin.iot.mqtt;
 
 import com.jfinal.plugin.activerecord.Record;
-import com.sun.glass.ui.Timer;
 import com.yanxin.iot.Utils.ConstantsUtil;
 import com.yanxin.iot.json.DevicePayload;
 import com.yanxin.iot.json.JsonParser;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static com.yanxin.iot.mqtt.MqttClientController.printHelp;
 
-import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
@@ -96,7 +94,7 @@ public class CmdLineParser {
 
         protocol    = PropertiesUtil.getStringByKey("mqtt_protocol");
 
-        // Parse the arguments -
+        // Parse the arguments-
         
         if(null != args){
 	        for (int i=0; i<args.length; i++) {
@@ -178,25 +176,15 @@ public class CmdLineParser {
     }
 
     public void startController(){
-
-        // With a valid set of arguments, the real work of
-        // driving the client API can begin
-    	
         try {
             // Create an instance of this class
         	log.info("starting connections to MQTT broker:"+url);
-        	System.out.println("starting connections to MQTT broker:"+url);
             Client = new MqttClientController(url, clientId+ConstantsUtil.getAuth(), cleanSession, quietMode,userName,password);
 
             // log.info("starting subscribe the topic "+subTopic+ " from MQTT Server or broker!");
             // 订阅视频
             Client.subscribe(subTopic,qos);
             // Perform the requested action
-           /* if (action.equals("publish")) {
-                Client.publish(topic,qos,message.getBytes());
-            } else if (action.equals("subscribe")) {
-                Client.subscribe(topic,qos);
-            }*/
         } catch(MqttException me) {
             // Display full details of any exception that occurs
         	Client.close();
@@ -253,26 +241,6 @@ public class CmdLineParser {
 		final String  topic = this.getPubTopic();  // + "/"+ deviceId;
 		final int qos = this.getQos();
 		
-		/*Runnable runnable = new Runnable() {
-
-			public void run() {
-				DevicePayload payload = Client.getJsonParser().getCommand(deviceId, (int)type, value, (int)status);
-				try {
-					Client.publish(topic, qos, Client.getJsonParser().getJsonData(payload));
-					log.info("Publish a new command to switch: "+payload.toString());
-					
-					Client.close();
-				} catch (MqttException e) {
-					log.error("Errors happens when publishing time to sensors!");
-					e.printStackTrace();
-				}
-				
-				// DBop.setSensorStatus(payload);
-			}
-		};
-		
-		Thread thread = new Thread(runnable).start();*/
-		
 		class videoPublish extends java.util.TimerTask{
 
 			@Override
@@ -293,7 +261,6 @@ public class CmdLineParser {
 		
 		timer.schedule(new videoPublish(), 4000);
 		
-		// Client.getScheduler().scheduleAtFixedRate(runnable, 0, 10, TimeUnit.SECONDS);
 	}
 	
 	

@@ -87,14 +87,4 @@ public class CommandController extends Controller {
 		
 	}
 	
-	
-	private void command(String sensorCode, long type, long value, long status) {
-		String[] args = null;
-		final CmdLineParser parser = new CmdLineParser(args);
-
-        parser.startController();
-        
-        // parser.startSwitchPublishController(sensorCode,type,value,status);
-    
-	}
 }

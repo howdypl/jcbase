@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  *  If the application is run with the -h parameter then info is displayed that
  *  describes all of the options / parameters.
  */
-public class MqttClientController implements MqttCallback {
+public class MqttClientControllerReconnect implements MqttCallbackExtended {
 
 	/**
 	 * The main entry point of the sample.
@@ -56,7 +56,7 @@ public class MqttClientController implements MqttCallback {
 	 * command-line before performing the specified action.
 	 */
 
-	private static Logger log = LoggerFactory.getLogger(MqttClientController.class);
+	private static Logger log = LoggerFactory.getLogger(MqttClientControllerReconnect.class);
 	// Private instance variables
 	private MqttClient 			client;
 	private String 				brokerUrl;
@@ -65,7 +65,9 @@ public class MqttClientController implements MqttCallback {
 	private boolean 			clean;
 	private String password;
 	private String userName;
-		
+	
+	private String subTopic;
+	
 	private final static short KEEPALIVE_INTERVAL = 120;
 
 	private String jsonPayload;
@@ -121,7 +123,7 @@ public class MqttClientController implements MqttCallback {
    * @param password the password for the user
 	 * @throws MqttException
 	 */
-    public MqttClientController(String brokerUrl, String clientId, boolean cleanSession, boolean quietMode, String userName, String password) throws MqttException {
+    public MqttClientControllerReconnect(String brokerUrl, String clientId, boolean cleanSession, boolean quietMode, String userName, String password) throws MqttException {
     	this.brokerUrl = brokerUrl;
     	this.quietMode = quietMode;
     	this.clean 	   = cleanSession;
@@ -166,6 +168,13 @@ public class MqttClientController implements MqttCallback {
 			System.exit(1);
 		}
     }
+    
+    public MqttClientControllerReconnect(String brokerUrl, String clientId, boolean cleanSession, boolean quietMode, String userName, String password,String subTopic) throws MqttException {
+    	this(brokerUrl, clientId, cleanSession, quietMode, userName, password);
+    	this.subTopic = subTopic;
+    }
+
+    
 
 		/**
          * Publish / send a message to an MQTT server
@@ -225,6 +234,17 @@ public class MqttClientController implements MqttCallback {
     	// will be received at the same level they were published at.
     	log.info("[subscribe client] Subscribing to topic \""+topicName+"\" qos "+qos);
     	client.subscribe(topicName, qos);
+
+		// Continue waiting for messages until the Enter is pressed
+    	/*log.info("Press <Enter> to exit");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			//If we can't read we'll just exit
+		}*/
+
+		// Disconnect the client from the server
+
     }
     
 
@@ -314,7 +334,28 @@ public class MqttClientController implements MqttCallback {
 			}*/
 			
 		}
+		
+		/*try{
+			devicePayload = jsonParser.getGson().fromJson(jsonPayload, DevicePayload.class);
+		} catch (JsonSyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		if(null == devicePayload){
+			log.warn("We receive a MQTT payload with unexpected json syntax!");
+			return;
+		}
+		
+		for(int i = 0; i<devicePayload.getData().size();i++){
+    		
+    		String value = devicePayload.getData().get(i).getValue();
+    		int status = devicePayload.getData().get(i).getStatus();
+    		int type = devicePayload.getData().get(i).getType();
+    		
+		}*/
 
+		
+		
 	}
 
 	/**
@@ -427,5 +468,20 @@ public class MqttClientController implements MqttCallback {
 	              "messages until <enter> is pressed.\n\n"
 	          );
     }
+
+	@Override
+	public void connectComplete(boolean reconnect, String serverURI) {
+		log.info("On Connection Complete");
+		log.info("starting subscribe the topic " + subTopic + " from MQTT Server or broker!");
+		
+		
+		try {
+			client.subscribe(subTopic, 0);
+		} catch (MqttException ex) {
+			ex.printStackTrace();
+		}
+
+		
+	}
 
 }
