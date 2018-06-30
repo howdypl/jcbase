@@ -346,6 +346,45 @@ public class CmdLineParser {
 	 * @param type:02向右转，设置预设点03，
 	 * @param value
 	 */
+	public void startPatchSwitchPublishController(final List<String> deviceIds, final long type, final int selections) {
+
+		final java.util.Timer timer = new java.util.Timer();
+		final String  topic = this.getPubPlatformTopic();  // + "/"+ deviceId;
+		final int qos = this.getQos();
+		
+		class videoPublish extends java.util.TimerTask{
+
+			@Override
+			public void run() {
+				JsonParser jp = Client.getJsonParser();
+				// PlatformPayload payload = jp.getPlatform(deviceId, (int)type, selections);
+				
+				ArrayList<PlatformPayload> payloads = jp.getPlatformList(deviceIds,(int)type, selections);
+				
+				try {
+					Client.publish(topic, qos, jp.getJsonPlatformDataList(payloads));
+					
+					log.info("批量发送指令到设备："+payloads.toString());
+					Client.close();
+				} catch (MqttException e) {
+					log.error("Errors happens when publishing platform location to sensors!");
+					e.printStackTrace();
+				}
+				timer.cancel();
+			}
+		}
+		
+		timer.schedule(new videoPublish(), 4000);
+		
+		// Client.getScheduler().scheduleAtFixedRate(runnable, 0, 10, TimeUnit.SECONDS);
+	}
+	
+	/**
+	 * 转换云台指令API
+	 * @param deviceId
+	 * @param type:02向右转，设置预设点03，
+	 * @param value
+	 */
 	public void startTimePublishController(final String deviceId, final int type, final List<Record> records) {
 
 		final java.util.Timer timer = new java.util.Timer();

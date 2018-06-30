@@ -28,7 +28,6 @@ public class PlatformPayload {
 	}
 
 
-
 	/**
 	 * @return the deviceId
 	 */

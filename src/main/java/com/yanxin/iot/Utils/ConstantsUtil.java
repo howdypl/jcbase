@@ -138,6 +138,12 @@ public class ConstantsUtil {
         parser.startTimePublishControllerOnlyOne();
 	}
 	
+	/**
+	 * 
+	 * @param sensorCode
+	 * @param type
+	 * @param value
+	 */
 	public static void MQTTPlatformCMD(String sensorCode, long type, int value) {
 		
 		final CmdLineParser parser = getParser();
@@ -145,9 +151,18 @@ public class ConstantsUtil {
         parser.startController2();
         
         parser.startSwitchPublishController(sensorCode,type,value);
-        
-
 	}
+	
+	public static void MQTTPlatformCMDPatch(List<String> sensorCodeList, long type, int value) {
+		
+		final CmdLineParser parser = getParser();
+
+        parser.startController2();
+        
+        parser.startPatchSwitchPublishController(sensorCodeList, type, value);
+        
+	}
+	
 	
 	public static void MQTTPlatformTimeCMD(String sensorCode, int type, List<Record> records) {
 		
