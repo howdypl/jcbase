@@ -4,6 +4,7 @@
 package com.yanxin.common.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.core.Controller;
@@ -41,9 +42,13 @@ public class VideoController extends Controller {
 		int select = getParaToInt("platform");
         System.out.println(select+"egtentj");
         System.out.println(sensorCodeString+"fsgsjjjjjjjjjjjjjj");
+        List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		// 设置预设点
         try {
-        	ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_PRESET, select);
+        	ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_PRESET, select);
         	setAttr("result", true);
     		renderJson();
         }catch(Exception e){

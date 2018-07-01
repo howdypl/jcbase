@@ -3,8 +3,11 @@
  */
 package com.yanxin.common.controller;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -49,10 +52,14 @@ public class ImageSetController extends Controller {
 	
 	public void createImage(){
 		String sensorCodeString = getPara("sensor_code");
-			    
+		
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		// 设置预设点
 		try {
-			ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_IMAGE_CREATE, 0);
+			ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_IMAGE_CREATE, 0);
 			// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 			setAttr("result", true);
 			renderJson();
@@ -65,6 +72,8 @@ public class ImageSetController extends Controller {
 	public void setColour(){	
 		String sensorCodeString = getPara("sensor_code");	
 		final int select = getParaToInt("colour");
+		
+		// 将预设点状态更新到数据库
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -76,9 +85,14 @@ public class ImageSetController extends Controller {
 				}
 			}
 		}).start();
+		
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		try {
 			// 设置预设点
-			ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_IMAGE_COLOR, select);
+			ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_IMAGE_COLOR, select);
 			// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 			setAttr("result", true);
 			renderJson();
@@ -135,9 +149,13 @@ public class ImageSetController extends Controller {
 		Integer[] selectsIntegers = getParaValuesToInt("platform");
 		
 		int select = ConstantsUtil.codeMask(selectsIntegers);
-	    
+		
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		// 设置预设点
-		ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_PRESET, select);
+		ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_PRESET, select);
 		// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 		setAttr("result", true);
 		renderJson();

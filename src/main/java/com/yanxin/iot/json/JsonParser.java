@@ -205,7 +205,7 @@ public class JsonParser {
         devicesList.add("deaeadfaeaaf");
         devicesList.add("qezddvvqewe");
         devicesList.add("123aefads");
-        ArrayList<PlatformPayload> payloads = parser.getPlatformList(devicesList,0,0);
+        ArrayList<PlatformPayload> payloads = parser.getPlatformList(devicesList,ConstantsUtil.PLATFORM_CMD_IMAGE_CREATE,0);
 
         System.out.println(parser.getGson().toJson(payloads));
     }

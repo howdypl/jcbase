@@ -153,16 +153,15 @@ public class ConstantsUtil {
         parser.startSwitchPublishController(sensorCode,type,value);
 	}
 	
-	public static void MQTTPlatformCMDPatch(List<String> sensorCodeList, long type, int value) {
+	public static void MQTTPlatformCMDBatch(List<String> sensorCodeList, long type, int value) {
 		
 		final CmdLineParser parser = getParser();
 
         parser.startController2();
         
-        parser.startPatchSwitchPublishController(sensorCodeList, type, value);
+        parser.startBatchSwitchPublishController(sensorCodeList, type, value);
         
 	}
-	
 	
 	public static void MQTTPlatformTimeCMD(String sensorCode, int type, List<Record> records) {
 		

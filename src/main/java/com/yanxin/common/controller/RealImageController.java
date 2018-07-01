@@ -5,6 +5,7 @@ package com.yanxin.common.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -47,9 +48,12 @@ public class RealImageController extends Controller {
 	
 	public void createImage(){
 		String sensorCodeString = getPara("sensor_code");
-			    
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		// 设置预设点
-		ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_IMAGE_CREATE, 0);
+		ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_IMAGE_CREATE, 0);
 		// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 
 		renderJson();
@@ -63,8 +67,12 @@ public class RealImageController extends Controller {
 		
 		int select = ConstantsUtil.codeMask(selectsIntegers);
 	    
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		// 设置预设点
-		ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_IMAGE_COLOR, select);
+		ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_IMAGE_COLOR, select);
 		// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 
 		renderJson();
@@ -117,8 +125,12 @@ public class RealImageController extends Controller {
 		
 		int select = ConstantsUtil.codeMask(selectsIntegers);
 	    
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		// 设置预设点
-		ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_PRESET, select);
+		ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_PRESET, select);
 		// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 
 		renderJson();

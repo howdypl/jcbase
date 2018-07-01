@@ -341,12 +341,12 @@ public class CmdLineParser {
 	}
 	
 	/**
-	 * 转换云台指令API
+	 * 批量下发多个摄像头的转换云台指令API
 	 * @param deviceId
 	 * @param type:02向右转，设置预设点03，
 	 * @param value
 	 */
-	public void startPatchSwitchPublishController(final List<String> deviceIds, final long type, final int selections) {
+	public void startBatchSwitchPublishController(final List<String> deviceIds, final long type, final int selections) {
 
 		final java.util.Timer timer = new java.util.Timer();
 		final String  topic = this.getPubPlatformTopic();  // + "/"+ deviceId;
