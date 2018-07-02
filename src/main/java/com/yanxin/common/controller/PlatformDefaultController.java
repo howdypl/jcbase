@@ -5,6 +5,7 @@ package com.yanxin.common.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -103,8 +104,13 @@ public class PlatformDefaultController extends Controller {
 		Db.update("UPDATE platform_point set status = 0 WHERE pp_sensor_code='"+sensorCodeString+"'");
 		Db.update("UPDATE platform_point set status = 1 WHERE pp_sensor_code='"+sensorCodeString+"' and platform_code = '"+setName+"'");
 
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
+		
 		// 设置预设点
-		ConstantsUtil.MQTTPlatformCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_PRESET_DEFAULT, select);
+		ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_PRESET_DEFAULT, select);
 		// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 		setAttr("result", true);
 		renderJson();
