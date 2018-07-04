@@ -106,8 +106,9 @@
 <script src="js/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
 <script type="text/javascript">            
    $(window).load(function(){
-          getOperationClass();
-          
+			
+        getOperationClass();
+           
     }); 
    
    function command(){
@@ -215,21 +216,30 @@
 			    success: function(data) {
 					var result = data.oplist;
 					var notEmpty = data.notempty;
-					if(notEmpty){						 
-					     $.each(result, function(i,value){					     						    
-					    	$(which).append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+					if(notEmpty){
+						var index =1;
+					    $.each(result, function(i,value){					     						    
+					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
 					    });
+					    
+					   which.get(0).selectedIndex=index;//index为索引值
+					   	
+					   	var opClass = document.getElementById("station_op_class");//$('#station_op_class');
+        				getOpClassSelect(opClass);
 					}
+					
 			    }
 	        });
 		 /* getStation($('#station_op_class').val()); */
 		
 	}
-	function getOpClassSelect(which){			        
-	    var sindex = which.selectedIndex;	    
+	function getOpClassSelect(which){
+	    var sindex = which.selectedIndex;
+	    console.log("op_class selected index="+sindex); 
 		if(sindex == 0){
 			isSelect('typealert',which);
-		}else{			
+		}else{
+			console.log("op_class selected ="+which.value);
 			getStation(which.value);
 		}
 	}	
@@ -247,10 +257,15 @@
 					var result = data.stationRecords;
 					var notEmpty = data.notempty;
 					if(result){						
+						var index =9;
 					     $.each(result, function(i,value){					     	
 					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
 					    });
-					}
+					    
+					    $(which).get(0).selectedIndex=index;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+ 					}
 			    }
 	        });	        	        
 	}
@@ -278,10 +293,15 @@
 			    data:{"station":para},
 			    success: function(data) {
 					var result = data.buildingRecords;
-					if(result){						
+					if(result){
+						var index = 1;			
 					     $.each(result, function(i,value){					  
 					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
 					    });
+					    which.get(0).selectedIndex=index;//index为索引值
+					  
+						var building = document.getElementById("add_building");// $('#add_building');
+				        typeSelect(building);
 					}
 			    }
 	        });
@@ -314,10 +334,15 @@
 					var result = data.records;
 					
 					if(notEmpty){
+						var index = 1;
 					     $.each(result, function(i,value){
 					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
 					    	
 					    });
+					    $('#add_sensor_code').get(0).selectedIndex=index;//index为索引值
+					   
+						var device = document.getElementById("add_sensor_code");// $('#add_sensor_code');
+				        timeSelect(device);  
 					}
 			    }
 	        });
