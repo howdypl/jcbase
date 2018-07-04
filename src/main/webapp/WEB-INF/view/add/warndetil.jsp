@@ -17,102 +17,50 @@
                 </div>
                 <div class="box-content">
                 	<!-- <div class="alert alert-info"> -->
-      					<div hidden id="typealert" class="form-group alert alert-danger">
+      					<!-- <div hidden id="typealert" class="form-group alert alert-danger">
 					    	<strong>警告:</strong>请选择一个运维组！
 						</div>
       					<div hidden id="nooperationalert" class="form-group alert alert-danger">
 					   		 <strong>警告:</strong>没有可用的运维组，请先创建运维组！
+						</div> -->
+						<div class="row">
+							<div class="col-md-3" style="padding-left: 30px">
+							<label class="form-label control-label">运维班：</label>
+							</div>
+							<div class="col-md-3">
+							<label class="form-label control-label">变电站：</label>
+							</div>
+							<div class="col-md-3">
+							<label class="form-label control-label">设备间：</label>
+							</div>
+							<div class="col-md-3">
+							<label class="form-label control-label">设备：</label>
+							</div>
 						</div>
-
-      					<div class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属运维班</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
+						<div class="row">
+						    <div class="col-md-3" style="padding-left: 30px">
+								<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
 	                        		<option  value='0'>---请选择运维班---</option>
 	                       		</select>
-                       		</div>
-      					</div>     					
-                        <div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					
-					    <div hidden id="nostationalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>该运维组无变电站！
-						</div>
-      					<div hidden id="add_station_manager_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属变电站</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_station" onclick="managerSelect(this)" class="form-control selectpicker">
+							</div>
+							<div class="col-md-3">
+							   <select id="add_station" onclick="managerSelect(this)" class="form-control selectpicker">
 	                        		<option  value='0'>---请选择变电站---</option>
 	                       		</select>
-                       		</div>
-      					</div>
-      					
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					
-      					<div hidden id="nobuildingalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有设备间信息，请先创建设备间！
+							</div>
+							<div class="col-md-3">
+								<select id="add_building" onclick="typeSelect(this)" class="form-control selectpicker">
+	                        		<option  value='0'>---请选择设备间---</option>	
+		                       	</select>
+							</div>
+							<div class="col-md-3">
+								<select id="add_sensor_code" onclick="command(this)" class="form-control selectpicker">
+		                        		<option  value='0'>---请选择设备---</option>
+		                       	</select>	
+							</div>
 						</div>
-      					<div hidden id="add_building_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属设备间</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_building" onclick="typeSelect(this)" class="form-control selectpicker">
-                        		<option  value='0'>---请选择设备间---</option>	
-	                       		</select>
-                       		</div>
-      					</div>
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					<div hidden id="nosensoralert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有监控器，请先添加！
-						</div>
-						<div hidden id="nosensoralert2" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>该监控器不存在，请确认！
-						</div>
-      					<div hidden id = "sensor_code_div" class="form-inline row">
-      						<div class="col-md-2">
-        						<label class="form-label control-label">监控器编号</label>
-        					</div> 
-        					<div class="col-md-6">
-        						<select id="add_sensor_code" onclick="pointSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>----请选择监控器编号----</option>
-	                       		</select>
-        					</div>
-        					<div class="col-md-2">
-        						<span class='availability_status'></span>
-        					</div>
-      					</div>
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					     					
-      					<div hidden id="noroomalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有预设点信息，请先创建！
-						</div>
-      					<div hidden id="add_room_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属预设点</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_room" onclick="codeSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择预设点---</option>
-	                       		</select>
-                       		</div>
-      					</div>
-      					
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					<div hidden id = "time_div" class="form-inline row">
+						
+      					<!-- <div hidden id = "time_div" class="form-inline row">
       						<div class="col-md-2">
         						<label class="form-label control-label">起止时间</label> 
         					</div> 
@@ -127,23 +75,15 @@
       					</div>      					
                         <div class="row">
       						<span> &nbsp;&nbsp;</span>
-      					</div>
+      					</div> -->
                         
-                    <button id="op_class_add" type="button" onclick="command(this)" class="btn btn-success btn-lg" value="0" disabled><i
-                                class="glyphicon glyphicon-search glyphicon-white"></i>查询信息</button>
-                    <br>
-                <!-- </div> end of alert-info-->    
-                    <div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      				</div>
-                   <ul id = "myquerygallery" class="thumbnails gallery">
-                   </ul>
+                   <!--  <button id="op_class_add" type="button" onclick="command(this)" class="btn btn-success btn-lg" value="0" disabled><i
+                                class="glyphicon glyphicon-search glyphicon-white"></i>查询信息</button>    -->
                 </div>
             </div>
-        </div>
-        
-         <div hidden id="div1" class="box col-md-12" style="width:40%">
-            <div class="box-inner" style="height:500px;">               
+        </div>    
+	<div id="div1" class="box col-md-12" style="width:40%">
+            <div class="box-inner" style="height:800px;">               
 				<div id="myCarousel" class="carousel slide">
 					<!-- 轮播（Carousel）指标 -->
 					<ol class="carousel-indicators">
@@ -182,58 +122,81 @@
 				<div id="add_time" align="center" style="font-size: 25px"></div>
 				<!-- 时间地下显示“历史图像查看” -->
 				<div id="add_word" align="center" style="font-size: 20px">
-				    <a href="#">历史图像查看</a>
+				    <a href="javascript:void(0);" onclick="window.open('/galleryquery','_blank');" target="_blank">历史图像查看</a>
 				</div>
 		   </div>
         </div>
 
 
-	<div hidden id="div2" class="box col-md-12" style="width: 60%">
-		<div style="height: 500px;">
+	<div id="div2" class="box col-md-12" style="width: 30%">
+		<div style="height: 260px;">
 			<div class="box-content">
-				<div style="height: 200px; width: 50%; float: left">
+				<div>
 				    <table id="add_todaytime" class="table table-bordered">
 				        <tr>
-				            <th style="padding: 20px">今日最低</th>
-				            <th style="padding: 20px">今日最高</th>
+				            <th style="padding: 40px">今日最低</th>
+				            <th style="padding: 40px">今日最高</th>
 				        </tr>
 				        <tr id="add_number">
 				        
 				        </tr>
 				    </table>
 				</div>
-				<div id="add_alltime" style="height: 200px; width: 50%; background-color: #FF0000; float: left"></div>
 			</div>
 		</div>
 	</div>
+	
+	 <div class="box col-md-12" style="width:30%; padding-left: 0px;">
+            <div class="box-inner" style="height:265px;">
+                <div class="box-content">                
+					 <div id="container1" style="width: 320px; height: 250px; margin: 0 -10px"></div>
+                </div>
+            </div>
+        </div>
+     <div class="box col-md-12" style="width:60%;">
+            <div class="box-inner" style="height:200px;">
+                <div class="box-header well" style="margin-bottom: -10px">
+                    <h2><i class="glyphicon glyphicon-picture"></i> 30天内温度变化趋势</h2>
+                </div>
+                <div class="box-content">                
+					<div id="container2" style="width: 100%; height: 150px; margin: 0 auto"></div>
+                </div>
+            </div>
+        </div>
+        <div class="box col-md-12" style="width:60%;">
+            <div class="box-inner" style="height:296px;">
+                <div class="box-header well" style="background:  coral;">
+                    <h2><i class="glyphicon glyphicon-warning-sign"></i> 告警推送</h2>
+                </div>
+                <div class="box-content">                
+					<!-- <div id="container2" style="width: 100%; height: 150px; margin: 0 auto"></div> -->
+                </div>
+            </div>
+        </div>
 
 </div><!--/row-->
 <script src="js/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
+<script src="${res_url}first/jsto/highchart/highcharts.js"></script>
 <script type="text/javascript">            
    $(window).load(function(){
           getOperationClass();
     }); 
    
-   function command(){
-		getWarnImageDetil();
-		getTodayTemp();
-		$('#div1').show();
-		$('#div2').show();
-	}	
-   
-   
+   //****************得到轮播图片****************  
    function getWarnImageDetil(){
-		var point_type=$('#add_room').val();
-		var sensor_code=$('#add_sensor_code').val();
+		//var point_type=$('#add_room').val();
+		var sensor=$('#add_sensor_code').val();
 		 $.ajax({
 			    type: 'POST',
 			    dataType: 'json',
 			    url: "<%=request.getContextPath()%>"+"/warndetil/getWarnImageDetil",
-			    data:{"point_type":point_type,"sensor_code":sensor_code},
+			    data:{"sensor":sensor},
 			    success: function(data) {
 					var result = data.result;
 				    var imageList = data.imageList;
 		            if (result == true) { //成功添加
+		            	document.getElementById("add_Carousel").innerHTML = "";
+		            	document.getElementById("add_time").innerHTML = "";
 		            	  $.each(imageList, function(i,value){	
 		            		 if(i==0){
 		            			 $('#add_Carousel').append('<div class="item active"> <img src="<%=baseImagePath%>'+value.url+'" alt="First slide"> </div>');
@@ -246,55 +209,193 @@
 		            	  });
 						}
 		            else{
-		            	alert("ghgfd");
+		            	//alert("ghgfd");
 		             }
 				    }
 		        });
 		}
-   
+ //****************得到今日最低和最高温度****************  
    function getTodayTemp(){
-	    var point_type=$('#add_room').val();
-		var sensor_code=$('#add_sensor_code').val();
+	   var sensor=$('#add_sensor_code').val();
 		 $.ajax({
 			    type: 'POST',
 			    dataType: 'json',
 			    url: "<%=request.getContextPath()%>"+"/warndetil/getTodayTemp",
-			    data:{"point_type":point_type,"sensor_code":sensor_code},
+			    data:{"sensor":sensor},
 			    success: function(data) {
 					var result = data.result;
 				    var imageList = data.imageList;
 		            if (result == true) { //成功添加
+		            	document.getElementById("add_number").innerHTML = "";
 		            	  $.each(imageList, function(i,value){	
-		            	      $('#add_number').append('<td style="padding: 20px">'+value.min+'</td>');
-		            	      $('#add_number').append('<td style="padding: 20px">'+value.max+'</td>');
+		            	      $('#add_number').append('<td style="padding: 40px">'+value.min+'</td>');
+		            	      $('#add_number').append('<td style="padding: 40px">'+value.max+'</td>');
 		            	  });
 						}
 		            else{
-		            	alert("ghgfd");
+		            	//alert("ghgfd");
 		             }
 				    }
 		        });
 		}
-   
-   function getTodayTemp(){
-	    var point_type=$('#add_room').val();
-		var sensor_code=$('#add_sensor_code').val();
+ //****************得到历史温度记录****************  
+   function getHistogram(){
+	   var sensor=$('#add_sensor_code').val();
 		 $.ajax({
 			    type: 'POST',
 			    dataType: 'json',
-			    url: "<%=request.getContextPath()%>"+"/warndetil/getTodayTemp",
-			    data:{"point_type":point_type,"sensor_code":sensor_code},
+			    url: "<%=request.getContextPath()%>"+"/warndetil/getHistogram",
+			    data:{"sensor":sensor},
 			    success: function(data) {
 					var result = data.result;
 				    var imageList = data.imageList;
+				    var tempvalue=[];
+				    var curse = [];
 		            if (result == true) { //成功添加
 		            	  $.each(imageList, function(i,value){	
-		            	      $('#add_number').append('<td style="padding: 20px">'+value.min+'</td>');
-		            	      $('#add_number').append('<td style="padding: 20px">'+value.max+'</td>');
+		            		  tempvalue.push(value.zuigao);
+		            		  tempvalue.push(value.max_temp);
+		            		  tempvalue.push(value.yue);
 		            	  });
+		            	  curse.push({name:'温度对比', data:tempvalue});  
+	            		   var chart = {
+	            		      type: 'column'
+	            		   };
+	            		   var title = {
+	            		      text: ''   
+	            		   };
+	            		   var subtitle = {
+	            		      text: ''  
+	            		   };
+	            		   var xAxis = {
+	            		      categories: ['历史最高','当前温度','近30天内最高温度'],
+	            		      crosshair: true
+	            		   };
+	            		   var yAxis = {
+	            		      min: 0,
+	            		      title: {
+	            		         text: '温度值 (℃)'         
+	            		      }      
+	            		   };
+	            		   var tooltip = {
+	            		      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+	            		      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+	            		         '<td style="padding:0"><b>{point.y:.1f} ℃</b></td></tr>',
+	            		      footerFormat: '</table>',
+	            		      shared: true,
+	            		      useHTML: true
+	            		   };
+	            		   var plotOptions = {
+	            		      column: {
+	            		         pointPadding: 0.2,
+	            		         borderWidth: 0
+	            		      }
+	            		   };  
+	            		   var credits = {
+	            		      enabled: false
+	            		   };
+	            		   
+	            		   var series= curse;
+	            		      
+	            		   var json = {};   
+	            		   json.chart = chart; 
+	            		   json.title = title;   
+	            		   json.subtitle = subtitle; 
+	            		   json.tooltip = tooltip;
+	            		   json.xAxis = xAxis;
+	            		   json.yAxis = yAxis;  
+	            		   json.series = series;
+	            		   json.plotOptions = plotOptions;  
+	            		   json.credits = credits;
+	            		   $('#container1').highcharts(json);		            		  
 						}
 		            else{
-		            	alert("ghgfd");
+		            	//alert("ghgfd");
+		             }
+				    }
+		        });
+		}
+	
+ //****************得到温度曲线图****************  
+    
+     function getTempCurve(){
+    	 var sensor=$('#add_sensor_code').val();
+		 $.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/warndetil/getTempCurve",
+			    data:{"sensor":sensor},
+			    success: function(data) {
+					var result = data.result;
+				    var imageList = data.imageList;
+				    var time=[];
+				    var temp=[];
+				    var cause=[];
+		            if (result == true) { //成功添加
+		            	  $.each(imageList, function(i,value){	
+		            	     time.push(value.create_time);
+		            	     temp.push(value.max_temp);
+		            	  });
+		                  cause.push({name:'当前设备温度统计', data:temp});
+		            	  var chart = {
+		            		      type: 'areaspline'     
+		            		   };
+		            		   var title = {
+		            		      text: ''   
+		            		   }; 
+		            		   var subtitle = {
+		            		      style: {
+		            		         position: 'absolute',
+		            		         right: '0px',
+		            		         bottom: '10px'
+		            		      }
+		            		   };
+		            		   var legend = {
+		            		      layout: 'vertical',
+		            		      align: 'left',
+		            		      verticalAlign: 'top',
+		            		      x: 120,
+		            		      y: 30,
+		            		      floating: true,
+		            		      borderWidth: 1,
+		            		      backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+		            		   };
+		            		   var xAxis = {
+		            		      categories: time      
+		            		   };
+		            		   var yAxis = {
+		            		      title: {
+		            		         text: 'Fruit units'
+		            		      }      
+		            		   };
+		            		   var tooltip = {
+		            		       shared: true,
+		            		       valueSuffix: ' units'
+		            		   };
+		            		   var credits = {
+		            		       enabled: false
+		            		   }
+		            		   var plotOptions = {
+		            		      areaspline: {
+		            		         fillOpacity: 0.5
+		            		      }
+		            		   };   
+		            		   var series= cause;     
+		            		      
+		            		   var json = {};   
+		            		   json.chart = chart; 
+		            		   json.title = title; 
+		            		   json.subtitle = subtitle; 
+		            		   json.xAxis = xAxis;
+		            		   json.yAxis = yAxis;
+		            		   json.legend = legend;   
+		            		   json.plotOptions = plotOptions;
+		            		   json.credits = credits;
+		            		   json.series = series;
+		            		   $('#container2').highcharts(json);
+						}
+		            else{
+		            	//alert("ghgfd");
 		             }
 				    }
 		        });
@@ -317,36 +418,21 @@
 					     $.each(result, function(i,value){					     						    
 					    	$(which).append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
 					    });
-					}else{
-						showAlert('nooperationalert');
-						$('#add_station_manager_div').hide();
 					}
 			    }
 	        });
 	}
 	function getOpClassSelect(which){			        
 	    var sindex = which.selectedIndex;	    
-	    $('div.alert-danger').hide();
 		if(sindex == 0){
 			isSelect('typealert',which);
-			$('#add_station_manager_div').hide();
 		}else{			
-			$('#add_station_manager_div').show();	
 			getStation(which.value);
 		}
-		$('#add_building_div').hide();
-		$('#add_layer_div').hide();
-		$('#add_room_div').hide();
-		$('#add_type_div').hide();
-		$('#sensor_code_div').hide();
-		$('#time_div').hide();		
-		$('#op_class_add').prop('disabled', true);
 	}	
 	function getStation(op){
 		var which = $('#add_station');
 		var opclass = op;
-		// console.log("opclass="+opclass);
-		hiddleComp('nostationalert',which);
 		$(which).empty();
 		$(which).append("<option  value='0'>---请选择变电站---</option>");		
 		$.ajax({
@@ -361,34 +447,24 @@
 					     $.each(result, function(i,value){					     	
 					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
 					    });
-					}else{
-						// console.log('nostationalert');
-						showAlert('nostationalert');
-						$('#add_station_manager_div').hide();
 					}
 			    }
 	        });	        	        
 	}
 	function managerSelect(which){
 		var sindex = which.selectedIndex;
-		$('div.alert-danger').hide();
+		
 		if(sindex == 0){
 			$('#add_building_div').hide();
 		}else{
-			$('#add_building_div').show();			
+					
 			getBuilding(which.value);
 		}
-		$('#add_layer_div').hide();
-		$('#add_room_div').hide();
-		$('#add_type_div').hide();
-		$('#sensor_code_div').hide();
-		$('#time_div').hide();
-		$('#op_class_add').prop('disabled', true);
+		
 	}	
 	function getBuilding(op){
 		
 		var which = $('#add_building');
-		hiddleComp('nobuildingalert',which);
 		$(which).empty();
 		$(which).append("<option  value='0'>---请选择设备间---</option>");
 		var para = op;
@@ -403,31 +479,27 @@
 					     $.each(result, function(i,value){					  
 					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
 					    });
-					}else{
-						showAlert('nobuildingalert');
-						$('#add_building_div').hide();
 					}
 			    }
 	        });
 	}
 	function typeSelect(which){	
-		$('div.alert-danger').hide();
+
 		var sindex = which.selectedIndex;
 		if(sindex == 0){				
 			$('#sensor_code_div').hide();
 		}else{
-			$('#sensor_code_div').show();
+			
 			getCode(which);
 		}
-		$('#time_div').hide();
-		$('#op_class_add').prop('disabled', true);
+		
 	}
 	function getCode(op){		
 		var which = $(op);
 		var parentdiv = $(which).parents('.box-content');
 		var building_id = parentdiv.find("#add_building");
 		$('#add_sensor_code').empty();
-		$('#add_sensor_code').append("<option  value='0'>---请选择监控器编号---</option>");	
+		$('#add_sensor_code').append("<option  value='0'>---请选择设备---</option>");	
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
@@ -439,34 +511,40 @@
 					var result = data.records;
 					
 					if(notEmpty){
-						hiddleComp('nosensoralert',which);
 					     $.each(result, function(i,value){
-					     	l=i+1;
-					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"'>"+value.name+"</option>"); 
-					    	// console.log("add_sensor_code value="+l);
+					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
+					    	
 					    });
-					}else{
-						showAlert('nosensoralert');
-						$('#sensor_code_div').hide();
 					}
 			    }
 	        });
 	}
 	
-	function pointSelect(which){
-		var sindex = which.selectedIndex;
-		$('div.alert-danger').hide();
-		if(sindex == 0){		
+/* 	function command(){
+		getWarnImageDetil();
+		getTodayTemp();
+		$('#div1').show();
+		$('#div2').show();
+	}	 */
 	
-			$('#add_room_div').hide();
-		}else{
-			$('#add_room_div').show();
-			getPoint(which.value);
+	
+	function command(which){
+		var sindex = which.selectedIndex;
+		
+		if(sindex == 0){		
+	        /* alert() */
+		}else{	
+			getWarnImageDetil();
+			getTodayTemp();
+			$('#div1').show();
+			$('#div2').show();
+			getHistogram();
+			getTempCurve();
 		}
 	}
 	
 	
-	function getPoint(op){	
+	<%-- function getPoint(op){	
 		var which = $('#add_room');	
 		$(which).empty();
 		$(which).append("<option  value='0'>---请选择预设点---</option>");
@@ -489,11 +567,11 @@
 					}
 			    }
 	        });
-	}
+	} --%>
 
 	
 	
-	function codeSelect(which){
+	/* function codeSelect(which){
 		var code = $(which);
 		var sindex = which.selectedIndex;
 		$('div.alert-danger').hide();
@@ -527,7 +605,7 @@
 	}
 		$(document).ready(function() {
 		daterangetimeplugin();
-	}); 		
+	});  */		
 		function daterangetimeplugin(){
 					//时间插件
 					$('#reportrange span').html(moment().subtract('days', 1).format('YYYY-MM-DD HH:mm:ss') + ' - ' + moment().format('YYYY-MM-DD HH:mm:ss'));

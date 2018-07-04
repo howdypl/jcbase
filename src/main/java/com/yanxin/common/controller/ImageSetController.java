@@ -3,8 +3,6 @@
  */
 package com.yanxin.common.controller;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

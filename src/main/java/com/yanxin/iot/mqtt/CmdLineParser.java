@@ -52,7 +52,7 @@ public class CmdLineParser {
     private String userName;
     private String protocol;
 
-    private String url = "tcp://192.168.1.101:61613";
+    private String url = "tcp://192.168.1.100:61613";
 
     private MqttClientController Client;
     private MqttClientController switchPubClient;

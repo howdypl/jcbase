@@ -2039,7 +2039,7 @@ pre code {
 		width: 33.33333333%
 	}
 	.col-md-3 {
-		width: 25%
+		width: 21%
 	}
 	.col-md-2 {
 		width: 16.66666667%
@@ -2547,7 +2547,7 @@ legend {
 label {
 	display: inline-block;
 	max-width: 100%;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 	font-weight: 700
 }
 
@@ -2593,7 +2593,7 @@ output {
 
 .form-control {
 	display: block;
-	width: 100%;
+	width: auto;
 	height: 34px;
 	padding: 6px 12px;
 	font-size: 14px;

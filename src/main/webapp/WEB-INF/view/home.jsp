@@ -7,14 +7,14 @@
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>	
 <link type="text/css" href="${res_url}css/style.css" rel="stylesheet" />
-<script type="text/javascript" src="${res_url}bower_components/jquery/jquery.js"></script>
-<script type="text/javascript" src="${res_url}js/scroll.js"></script>
-<jsp:include page="/WEB-INF/view/add/common/header2.jsp" flush="true" />
+<%-- <script type="text/javascript" src="${res_url}first/bower_components/jquery/jquery.js"></script> --%>
+<%-- <script type="text/javascript" src="${res_url}js/scroll.js"></script> --%>
+<jsp:include page="/WEB-INF/view/add/common/header.jsp" flush="true" />
     <div class="row">
-        <div class="box col-md-12">
-            <div class="box-inner" style="height:140px;">
+        <div class="box col-md-12" style="width:100%">
+            <div class="box-inner" style="height:190px;">
                 <div class="box-header well">
-                    <h2><i class="glyphicon glyphicon-search"></i> 各站测温动态</h2>
+                    <h2><i class="glyphicon glyphicon-search"></i> 测温动态光字牌</h2>
                 </div>
                  <div class="box-content" class="table-responsive" style="padding: 0 10px 10px 10px">
                     <table id="add_table" class="table table-bordered">
@@ -24,23 +24,45 @@
                         <tr id="add_number">
                         
                         </tr>
+                        <tr id="add_temp">
+                        
+                        </tr>
                     </table>
                 </div>
             </div>
         </div>
-         <div class="box col-md-12" style="width:73%">
+        <div class="box col-md-12" style="width:100%">
+            <div class="box-inner" style="height:470px;">
+                <div class="box-header well">
+                    <h2><i class="glyphicon glyphicon-picture"></i> 设备实时测温及变化趋势</h2>
+                    
+                    <select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker" style=" width:auto; float:right; margin-top: -17px;">
+                		<option  value='0'>---请选择变电站---</option>
+               		</select>
+               		<h2 style="float:right; margin-right: 10px;">变电站：</h2>
+               		<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker" style=" width:auto; float:right; margin-top: -17px; margin-right: 25px;">
+                		<option  value='0'>---请选择运维班---</option>
+               		</select>
+               		<h2 style="float:right; margin-right: 10px;">运维班：</h2>
+                </div>
+                <div class="box-content">
+                	 
+                </div>
+            </div>
+        </div>
+         <div class="box col-md-12" style="width:100%">
             <div class="box-inner" style="height:470px;">
                 <div class="box-header well">
                     <h2><i class="glyphicon glyphicon-picture"></i> 温度异常抓拍图像</h2>
                 </div>
                 <div class="box-content">
-                	 <ul id = "myquerygallery" class="thumbnails gallery" style="padding-left: 10px;">
+                	 <ul id = "myquerygallery" class="thumbnails gallery">
                 	
                      </ul>
                 </div>
             </div>
         </div>
-        <div class="box col-md-12" style="width:auto">
+<!--         <div class="box col-md-12" style="width:auto">
             <div class="box-inner" style="height:470px;">
                 <div class="box-header well" style="background:  coral;">
                     <h2><i class="glyphicon glyphicon-warning-sign"></i> 告警推送</h2>
@@ -49,7 +71,7 @@
             <div class="bcon">
 				<div class="list_lh">
 					<ul id="news">
-						<!-- <li>
+						<li>
 							<p><a href="http://www.16sucai.com/" target="_blank">1000000</a><a href="http://www.16sucai.com/" target="_blank" class="btn_lh">领号</a><em>获得</em></p>
 							<p><a href="http://www.16sucai.com/" target="_blank" class="a_blue">网游战江湖公测豪华礼包</a><span>17:28:05</span></p>
 						</li>
@@ -96,12 +118,12 @@
 						<li>
 							<p><a href="http://www.16sucai.com/" target="_blank">1200000</a><a href="http://www.16sucai.com/" target="_blank" class="btn_lh">领号</a><em>获得</em></p>
 							<p><a href="http://www.16sucai.com/" target="_blank" class="a_blue">网游战江湖公测豪华礼包</a><span>17:28:05</span></p>
-						</li> -->
+						</li>
 					</ul>
 				</div>
 	         </div>
             </div>
-        </div>
+        </div> -->
     </div><!--/row-->
 
 <script type="text/javascript">
@@ -110,7 +132,7 @@ $(window).load(function(){
 	getWarnNews();
 	getWarnNumber();
 }); 
-$(document).ready(function(){
+/* $(document).ready(function(){
 	$('.list_lh li:even').addClass('lieven');
 })
 $(function(){
@@ -118,7 +140,7 @@ $(function(){
 		speed:40, //数值越大，速度越慢
 		rowHeight:68 //li的高度
 	});
-});
+}); */
 /**
  * 得到各站的告警状态
  */
@@ -133,6 +155,9 @@ function getWarnNumber(){
 				var result = data.result;
 			    var imageList = data.imageList;
 	            if (result == true) { //成功添加
+	            	 $('#add_lie').append('<th>站名</th>');
+	            	 $('#add_number').append('<td>告警</td>');
+            		 $('#add_temp').append('<td>温度</td>');
 	            	  $.each(imageList, function(i,value){	
 	            		 if(value.number!=0){
 	            			 $('#add_lie').append('<th style="background-color: #FF0000">'+value.address+'</th>');
@@ -140,6 +165,7 @@ function getWarnNumber(){
 	            			 $('#add_lie').append('<th>'+value.address+'</th>');
 	            		 }
 	            		 $('#add_number').append('<td>'+value.number+'</td>');
+	            		 $('#add_temp').append('<td>'+value.temper+'</td>');
 	            	  });
 					}
 	            else{
