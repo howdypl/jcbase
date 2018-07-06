@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <script src="${res_url}sweetalert-master/docs/assets/sweetalert/sweetalert.min.js"></script> 
-<script src="${res_url}bower_components/jquery/jquery.min.js"></script>
+<script src="${res_url}first/bower_components/jquery/jquery.min.js"></script>
 <div class="navbar-header pull-left">
 					<a href="javascript:;" class="navbar-brand">
 						<small>

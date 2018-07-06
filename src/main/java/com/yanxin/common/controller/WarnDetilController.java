@@ -21,7 +21,7 @@ public class WarnDetilController extends Controller{
 		String[] sensor=this.getPara("sensor").split("/");
 		String sensor_code=sensor[0];
 		String point_type=sensor[1];
-		String sqlString = "SELECT warn.*,images.url FROM warn,images WHERE warn.point_type=images.point_type AND warn.sensor_code=images.im_sensor_code AND warn.create_time=images.create_time AND warn.point_type=? AND warn.sensor_code=? ORDER BY warn.create_time DESC LIMIT 3";
+		String sqlString = "SELECT images.* FROM images WHERE images.point_type=? AND images.im_sensor_code=? ORDER BY images.create_time DESC LIMIT 3";
 		List<Record> imageList = Db.find(sqlString,point_type,sensor_code);
 		setAttr("imageList", imageList);
 		if(imageList != null && imageList.size() > 0){

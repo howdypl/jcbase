@@ -1,45 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
-<!--[if !IE]> -->
-<script type="text/javascript">
-	window.jQuery || document.write("<script src='${res_url}ace-1.3.3/assets/js/jquery.js'>"+"<"+"/script>");
-</script>
-
-<!-- <![endif]-->
-
-<!--[if IE]>
-<script type="text/javascript">
- window.jQuery || document.write("<script src='${res_url}ace-1.3.3/assets/js/jquery1x.js'>"+"<"+"/script>");
-</script>
-<![endif]-->
-<script type="text/javascript">
-if('ontouchstart' in document.documentElement) document.write("<script src='${res_url}ace-1.3.3/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
-
-(function($){  
-	$.fn.serializeJson=function(){
-		var serializeObj={};
-		var array=this.serializeArray();
-		var str=this.serialize();
-		$(array).each(function(){
-			if(serializeObj[this.name]){
-				if($.isArray(serializeObj[this.name])){
-					serializeObj[this.name].push(this.value);
-				}else{
-					serializeObj[this.name]=[serializeObj[this.name],this.value];  
-				}
-			}else{
-				serializeObj[this.name]=this.value;
-			}
-		});
-		return serializeObj;
-	};
-});
-
-</script>
-
-		
-		
-
 <script src="${res_url}first/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 <!-- library for cookie management -->
@@ -49,7 +9,6 @@ if('ontouchstart' in document.documentElement) document.write("<script src='${re
 <script src='${res_url}first/bower_components/fullcalendar/dist/fullcalendar.min.js'></script>
 <!-- data table plugin -->
 <script src='${res_url}first/jsto/jquery.dataTables.min.js'></script>
-<script src='${res_url}first/jsto/datatables.js'></script>
 <!-- select or dropdown enhancer -->
 <script src="${res_url}first/bower_components/chosen/chosen.jquery.min.js"></script>
 <!-- plugin for gallery image view -->

@@ -1,4 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>红外测温监控系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="红外测温监控系统">
+    <meta name="author" content="Guozhen Cheng">
+    <!-- The styles -->
 	<link id="bs-css" href="${res_url}first/cssto/bootstrap-cerulean.min.css" rel="stylesheet">
 	<!-- jQuery -->
     <script src="${res_url}first/bower_components/jquery/jquery.min.js"></script>
@@ -39,3 +48,9 @@
     <link rel="shortcut icon" href="${res_url}first/img/favicon.ico">
 <!-- 	<link href='css/bootstrap-combined.min.css' rel='stylesheet' type='text/css'> -->
 	<link href='${res_url}first/cssto/bootstrap-datetimepicker.min.css' rel='stylesheet' type='text/css'>
+	
+	</head>
+
+<body>
+</body>
+</html>

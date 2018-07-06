@@ -15,15 +15,8 @@
                     <h2><i class="glyphicon glyphicon-search"></i> 具体信息</h2>
 
                 </div>
-                <div class="box-content">
-                	<!-- <div class="alert alert-info"> -->
-      					<!-- <div hidden id="typealert" class="form-group alert alert-danger">
-					    	<strong>警告:</strong>请选择一个运维组！
-						</div>
-      					<div hidden id="nooperationalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有可用的运维组，请先创建运维组！
-						</div> -->
-						<div class="row">
+                <div class="box-content" style="padding-bottom: 30px;">
+						<div class="row" style="margin-left: 30px">
 							<div class="col-md-3" style="padding-left: 30px">
 							<label class="form-label control-label">运维班：</label>
 							</div>
@@ -37,7 +30,7 @@
 							<label class="form-label control-label">设备：</label>
 							</div>
 						</div>
-						<div class="row">
+						<div class="row" style="margin-left: 30px">
 						    <div class="col-md-3" style="padding-left: 30px">
 								<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
 	                        		<option  value='0'>---请选择运维班---</option>
@@ -122,7 +115,8 @@
 				<div id="add_time" align="center" style="font-size: 25px"></div>
 				<!-- 时间地下显示“历史图像查看” -->
 				<div id="add_word" align="center" style="font-size: 20px">
-				    <a href="javascript:void(0);" onclick="window.open('/galleryquery','_blank');" target="_blank">历史图像查看</a>
+				    <a href="/#/galleryquery" target="_parent">历史图像查看</a>
+				    <input type="button" value="注册" onclick="window.location.href('http://localhost:8080/#/galleryquery')" />
 				</div>
 		   </div>
         </div>
@@ -175,7 +169,7 @@
         </div>
 
 </div><!--/row-->
-<script src="js/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
+<script src="${res_url}first/jsto/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
 <script src="${res_url}first/jsto/highchart/highcharts.js"></script>
 <script type="text/javascript">            
    $(window).load(function(){
@@ -401,146 +395,154 @@
 		        });
 		}
 	
-	function getOperationClass(){
-		var which = $('#station_op_class');
-		$(which).empty();
-		$(which).append("<option value='0'>---请选择运维班---</option>"); 
-		var name="${sessionScope.sysUser.name}";
-		$.ajax({
-			    type: 'POST',
-			    dataType: 'json',
-			    url: "<%=request.getContextPath()%>"+"/getoperation",
-			    data:{"username":name},
-			    success: function(data) {
-					var result = data.oplist;
-					var notEmpty = data.notempty;
-					if(notEmpty){						 
-					     $.each(result, function(i,value){					     						    
-					    	$(which).append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
-					    });
-					}
-			    }
-	        });
-	}
-	function getOpClassSelect(which){			        
-	    var sindex = which.selectedIndex;	    
-		if(sindex == 0){
-			isSelect('typealert',which);
-		}else{			
-			getStation(which.value);
-		}
-	}	
-	function getStation(op){
-		var which = $('#add_station');
-		var opclass = op;
-		$(which).empty();
-		$(which).append("<option  value='0'>---请选择变电站---</option>");		
-		$.ajax({
-			    type: 'POST',
-			    dataType: 'json',
-			    url: "<%=request.getContextPath()%>"+"/building/getStation",
-			    data:{"opclass":opclass},
-			    success: function(data) {
-					var result = data.stationRecords;
-					var notEmpty = data.notempty;
-					if(result){						
-					     $.each(result, function(i,value){					     	
-					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
-					    });
-					}
-			    }
-	        });	        	        
-	}
-	function managerSelect(which){
-		var sindex = which.selectedIndex;
+     function getOperationClass(){
+ 		var which = $('#station_op_class');
+ 		$(which).empty();
+ 		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+ 		var name="${sessionScope.sysUser.name}";
+ 		$.ajax({
+ 			    type: 'POST',
+ 			    dataType: 'json',
+ 			    url: "<%=request.getContextPath()%>"+"/getoperation",
+ 			    data:{"username":name},
+ 			    success: function(data) {
+ 					var result = data.oplist;
+ 					var notEmpty = data.notempty;
+ 					if(notEmpty){
+ 						var index =1;
+ 					    $.each(result, function(i,value){					     						    
+ 					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+ 					    });
+ 					    
+ 					   which.get(0).selectedIndex=index;//index为索引值
+ 					   	
+ 					   	var opClass = document.getElementById("station_op_class");//$('#station_op_class');
+         				getOpClassSelect(opClass);
+ 					}
+ 					
+ 			    }
+ 	        });
+ 		
+ 	}
+ 	function getOpClassSelect(which){
+ 	    var sindex = which.selectedIndex;
+ 	   // console.log("op_class selected index="+sindex); 
+ 		if(sindex == 0){
+ 			isSelect('typealert',which);
+ 		}else{
+ 		//	console.log("op_class selected ="+which.value);
+ 			getStation(which.value);
+ 		}
+ 	}	
+ 	function getStation(op){
+ 		var which = $('#add_station');
+ 		var opclass = op;
+ 		$(which).empty();
+ 		$(which).append("<option  value='0'>---请选择变电站---</option>");		
+ 		$.ajax({
+ 			    type: 'POST',
+ 			    dataType: 'json',
+ 			    url: "<%=request.getContextPath()%>"+"/building/getStation",
+ 			    data:{"opclass":opclass},
+ 			    success: function(data) {
+ 					var result = data.stationRecords;
+ 					var notEmpty = data.notempty;
+ 					if(result){						
+ 						var index =9;
+ 					     $.each(result, function(i,value){					     	
+ 					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
+ 					    });
+ 					    
+ 					    $(which).get(0).selectedIndex=index;//index为索引值
+ 						var station = document.getElementById("add_station");// $('#add_station');
+ 				        managerSelect(station);
+  					}else{
+  						$(which).get(0).selectedIndex=0;//index为索引值
+ 						var station = document.getElementById("add_station");// $('#add_station');
+ 				        managerSelect(station);
+  					}
+ 			    }
+ 	        });	        	        
+ 	}
+ 	function managerSelect(which){
+ 		getBuilding(which.value);
+ 		//command();			
+ 	}	
+ 	function getBuilding(op){
+ 		
+ 		var which = $('#add_building');
+ 		$(which).empty();
+ 		$(which).append("<option  value='0'>---请选择设备间---</option>");
+ 		var para = op;
+ 		$.ajax({
+ 			    type: 'POST',
+ 			    dataType: 'json',
+ 			    url: "<%=request.getContextPath()%>"+"/building/getBuilding",
+ 			    data:{"station":para},
+ 			    success: function(data) {
+ 					var result = data.buildingRecords;
+ 					if(result){
+ 						var index = 1;			
+ 					     $.each(result, function(i,value){					  
+ 					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
+ 					    });
+ 					    which.get(0).selectedIndex=index;//index为索引值
+ 					  
+ 						var building = document.getElementById("add_building");// $('#add_building');
+ 				        typeSelect(building);
+ 					}else{
+ 						which.get(0).selectedIndex=0;//index为索引值 
+ 						var building = document.getElementById("add_building");// $('#add_building');
+ 				        typeSelect(building);
+ 					}
+ 			    }
+ 	        });
+ 	}
+ 	function typeSelect(which){							
+ 		//command();
+ 		getCode(which.value);
+ 	}
+ 	function getCode(op){		
+ 		var which = $("#add_building");
+ 		var building_id = op;
+ 		$('#add_sensor_code').empty();
+ 		$('#add_sensor_code').append("<option  value='0'>---请选择设备间---</option>");
+ 		$.ajax({
+ 			    type: 'POST',
+ 			    dataType: 'json',
+ 			    url: "<%=request.getContextPath()%>"+"/galleryquery/getSensorCode",
+ 			    data:{//"room":room.val(),
+ 			    	"building_id":building_id},
+ 			    success: function(data) {
+ 			    	var notEmpty = data.result;
+ 					var result = data.records;
+ 					
+ 					if(notEmpty){
+ 						var index = 7;
+ 					     $.each(result, function(i,value){
+ 					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
+ 					    	
+ 					    });
+ 					    $('#add_sensor_code').get(0).selectedIndex=index;//index为索引值					   
+ 						//var device = document.getElementById("add_sensor_code");// $('#add_sensor_code');				       
+ 					}
+ 					timeSelect();
+ 			    }
+ 	        });
+ 	}
+ 	function timeSelect(){	
+ 		//daterangetimeplugin();
+ 		command();
+ 	}
+	
+	function command(){
 		
-		if(sindex == 0){
-			$('#add_building_div').hide();
-		}else{
-					
-			getBuilding(which.value);
-		}
-		
-	}	
-	function getBuilding(op){
-		
-		var which = $('#add_building');
-		$(which).empty();
-		$(which).append("<option  value='0'>---请选择设备间---</option>");
-		var para = op;
-		$.ajax({
-			    type: 'POST',
-			    dataType: 'json',
-			    url: "<%=request.getContextPath()%>"+"/building/getBuilding",
-			    data:{"station":para},
-			    success: function(data) {
-					var result = data.buildingRecords;
-					if(result){						
-					     $.each(result, function(i,value){					  
-					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
-					    });
-					}
-			    }
-	        });
-	}
-	function typeSelect(which){	
-
-		var sindex = which.selectedIndex;
-		if(sindex == 0){				
-			$('#sensor_code_div').hide();
-		}else{
 			
-			getCode(which);
-		}
-		
-	}
-	function getCode(op){		
-		var which = $(op);
-		var parentdiv = $(which).parents('.box-content');
-		var building_id = parentdiv.find("#add_building");
-		$('#add_sensor_code').empty();
-		$('#add_sensor_code').append("<option  value='0'>---请选择设备---</option>");	
-		$.ajax({
-			    type: 'POST',
-			    dataType: 'json',
-			    url: "<%=request.getContextPath()%>"+"/galleryquery/getSensorCode",
-			    data:{//"room":room.val(),
-			    	"building_id":building_id.val()},
-			    success: function(data) {
-			    	var notEmpty = data.result;
-					var result = data.records;
-					
-					if(notEmpty){
-					     $.each(result, function(i,value){
-					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
-					    	
-					    });
-					}
-			    }
-	        });
-	}
-	
-/* 	function command(){
-		getWarnImageDetil();
-		getTodayTemp();
-		$('#div1').show();
-		$('#div2').show();
-	}	 */
-	
-	
-	function command(which){
-		var sindex = which.selectedIndex;
-		
-		if(sindex == 0){		
-	        /* alert() */
-		}else{	
 			getWarnImageDetil();
 			getTodayTemp();
-			$('#div1').show();
-			$('#div2').show();
 			getHistogram();
 			getTempCurve();
-		}
+		
 	}
 	
 	

@@ -64,20 +64,44 @@ public class GalleryQueryController extends Controller {
 	}
 	
 	public void getImages() {
-		String[] sensor=this.getPara("sensor").split("/");
-		String sensorCodeString=sensor[0];
-		String point_type=sensor[1];
 		String createTimeString = getPara("create_time");
 		String endTimeString = getPara("end_time");
-		String sqlString = "SELECT DISTINCT building.building_name,images.url as url, temp.av_temp as av, temp.max_temp as max, temp.min_temp as min, images.id as id, images.create_time as create_time, images.im_sensor_code as im_sensor_code,sensor.name as sensor_name FROM images, temp, sensor,building WHERE building.id=sensor.building_id AND images.im_sensor_code = temp.temp_sensor_code AND images.create_time = temp.create_time AND images.im_sensor_code=sensor.sensor_code AND im_sensor_code = ? AND images.point_type=temp.point_type AND images.point_type=?  AND images.create_time> ? AND images.create_time< ? ORDER BY images.create_time DESC LIMIT 150";
-		List<Record> imageList = Db.find(sqlString,sensorCodeString,point_type,createTimeString,endTimeString);
+		String op_class=this.getPara("op_class");
+		String station=this.getPara("station");
+		String building=this.getPara("building");
+		String sensor=this.getPara("sensor");
+		String s[] = null;
+		String sqlString=null;
+		List<Record> imageList=null;
+		//查询整个运维班的图片
+		if(station.equals("0")) {
+			sqlString = "SELECT DISTINCT building.building_name,images.url as url, temp.av_temp as av, temp.max_temp as max, temp.min_temp as min, images.id as id, images.create_time as create_time, images.im_sensor_code as im_sensor_code,sensor.name as sensor_name FROM images, temp, sensor,building,station,operation_class WHERE operation_class.id=station.op_id AND operation_class.id=? AND station.id=building.station_id AND building.id=sensor.building_id AND images.im_sensor_code = temp.temp_sensor_code AND images.create_time = temp.create_time AND images.im_sensor_code=sensor.sensor_code  AND images.create_time> ? AND images.create_time< ? ORDER BY images.create_time DESC LIMIT 150";
+			imageList = Db.find(sqlString,op_class,createTimeString,endTimeString);
+		}else {
+			//查询整个变电站的图片
+			if(building.equals("0")) {
+				sqlString = "SELECT DISTINCT building.building_name,images.url as url, temp.av_temp as av, temp.max_temp as max, temp.min_temp as min, images.id as id, images.create_time as create_time, images.im_sensor_code as im_sensor_code,sensor.name as sensor_name FROM images, temp, sensor,building,station,operation_class WHERE operation_class.id=station.op_id AND station.id=building.station_id AND station.id=? AND building.id=sensor.building_id AND images.im_sensor_code = temp.temp_sensor_code AND images.create_time = temp.create_time AND images.im_sensor_code=sensor.sensor_code  AND images.create_time> ? AND images.create_time< ? ORDER BY images.create_time DESC LIMIT 150";
+				imageList = Db.find(sqlString,station,createTimeString,endTimeString);
+			}else {
+				//查询整个设备间的图片
+				if(sensor.equals("0")) {
+					sqlString = "SELECT DISTINCT building.building_name,images.url as url, temp.av_temp as av, temp.max_temp as max, temp.min_temp as min, images.id as id, images.create_time as create_time, images.im_sensor_code as im_sensor_code,sensor.name as sensor_name FROM images, temp, sensor,building WHERE building.id=sensor.building_id AND building.id=? AND images.im_sensor_code = temp.temp_sensor_code AND images.create_time = temp.create_time AND images.im_sensor_code=sensor.sensor_code  AND images.create_time> ? AND images.create_time< ? ORDER BY images.create_time DESC LIMIT 150";
+					imageList = Db.find(sqlString,building,createTimeString,endTimeString);
+				}else {
+					s=sensor.split("/");
+					String sensorCodeString=s[0];
+					String point_type=s[1];
+					sqlString = "SELECT DISTINCT building.building_name,images.url as url, temp.av_temp as av, temp.max_temp as max, temp.min_temp as min, images.id as id, images.create_time as create_time, images.im_sensor_code as im_sensor_code,sensor.name as sensor_name FROM images, temp, sensor,building WHERE building.id=sensor.building_id AND images.im_sensor_code = temp.temp_sensor_code AND images.create_time = temp.create_time AND images.im_sensor_code=sensor.sensor_code AND im_sensor_code = ? AND images.point_type=temp.point_type AND images.point_type=?  AND images.create_time> ? AND images.create_time< ? ORDER BY images.create_time DESC LIMIT 150";
+					imageList = Db.find(sqlString,sensorCodeString,point_type,createTimeString,endTimeString);	
+				}
+			}
+		}	
 		setAttr("imageList", imageList);
 		if(imageList != null && imageList.size() > 0){
 			setAttr("result", true);
 		}else{
 			setAttr("result", false);
 		}
-		
 		renderJson();
 		
 	}

@@ -7,8 +7,6 @@
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>	
 <link type="text/css" href="${res_url}css/style.css" rel="stylesheet" />
-<%-- <script type="text/javascript" src="${res_url}first/bower_components/jquery/jquery.js"></script> --%>
-<%-- <script type="text/javascript" src="${res_url}js/scroll.js"></script> --%>
 <jsp:include page="/WEB-INF/view/add/common/header.jsp" flush="true" />
     <div class="row">
         <div class="box col-md-12" style="width:100%">
@@ -36,7 +34,7 @@
                 <div class="box-header well">
                     <h2><i class="glyphicon glyphicon-picture"></i> 设备实时测温及变化趋势</h2>
                     
-                    <select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker" style=" width:auto; float:right; margin-top: -17px;">
+                    <select id="add_station" onchange="getOpClassSelect(this)" class="form-control selectpicker" style=" width:auto; float:right; margin-top: -17px;">
                 		<option  value='0'>---请选择变电站---</option>
                		</select>
                		<h2 style="float:right; margin-right: 10px;">变电站：</h2>
@@ -46,7 +44,7 @@
                		<h2 style="float:right; margin-right: 10px;">运维班：</h2>
                 </div>
                 <div class="box-content">
-                	 
+                	 <div id="container" style="width: 50%; height: 390px; margin: 0 auto; float: left;"></div>
                 </div>
             </div>
         </div>
@@ -125,22 +123,16 @@
             </div>
         </div> -->
     </div><!--/row-->
-
+<script src="${res_url}first/jsto/highchart/highcharts.js"></script>
 <script type="text/javascript">
 $(window).load(function(){
+	getOperationClass();
 	command();
 	getWarnNews();
 	getWarnNumber();
+	
+	
 }); 
-/* $(document).ready(function(){
-	$('.list_lh li:even').addClass('lieven');
-})
-$(function(){
-	$("div.list_lh").myScroll({
-		speed:40, //数值越大，速度越慢
-		rowHeight:68 //li的高度
-	});
-}); */
 /**
  * 得到各站的告警状态
  */
@@ -291,6 +283,164 @@ function command(){
 			    }
 	        });
 	}
+	/*
+	 得到变电站的历史最高温度和当前温度
+	*/
+ function getStationTemp(){
+	 var op_class= $("#station_op_class").val();
+	 alert(op_class);
+	 var station= $("#add_station").val();
+	 $.ajax({
+		    type: 'POST',
+		    dataType: 'json',
+		    url: "<%=request.getContextPath()%>"+"/warn/getStationTemp",
+		    data:{"op_class":op_class},
+		    success: function(data) {
+				var result = data.result;
+			    var tempList = data.tempList;
+			    var maxTemp=[];
+			    var currentTemp=[];
+			    var stationName=[];
+			    var curse=[];
+	            if (result == true) { //成功添加
+	            	  $.each(tempList, function(i,value){	
+	            		  maxTemp.push(value.max_temp);
+	            		  currentTemp.push(value.current_temp);
+	            		  stationName.push(value.station_name);
+	            	  });
+	            	  curse.push({name:'历史最高', data:maxTemp});
+	            	  curse.push({name:'当前温度', data:currentTemp});
+	            	  var chart = {
+	            		      type: 'column'
+	            		   };
+	            		   var title = {
+	            		      text: ''   
+	            		   };
+	            		   var subtitle = {
+	            		      text: ''  
+	            		   };
+	            		   var xAxis = {
+	            		      categories: stationName,
+	            		      crosshair: true
+	            		   };
+	            		   var yAxis = {
+	            		      min: 0,
+	            		      title: {
+	            		         text: '温度 (℃)'         
+	            		      }      
+	            		   };
+	            		   var tooltip = {
+	            		      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+	            		      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+	            		         '<td style="padding:0"><b>{point.y:.1f} ℃</b></td></tr>',
+	            		      footerFormat: '</table>',
+	            		      shared: true,
+	            		      useHTML: true
+	            		   };
+	            		   var plotOptions = {
+	            		      column: {
+	            		         pointPadding: 0.2,
+	            		         borderWidth: 0
+	            		      }
+	            		   };  
+	            		   var credits = {
+	            		      enabled: false
+	            		   };
+	            		   
+	            		   var series= curse;     
+	            		      
+	            		   var json = {};   
+	            		   json.chart = chart; 
+	            		   json.title = title;   
+	            		   json.subtitle = subtitle; 
+	            		   json.tooltip = tooltip;
+	            		   json.xAxis = xAxis;
+	            		   json.yAxis = yAxis;  
+	            		   json.series = series;
+	            		   json.plotOptions = plotOptions;  
+	            		   json.credits = credits;
+	            		   $('#container').highcharts(json);
+					}
+	            else{
+	            	alert("ghgfd");
+	            }
+			    }
+	        });
+	}
+	
+ function getOperationClass(){
+		var which = $('#station_op_class');
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		var name="${sessionScope.sysUser.name}";
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/getoperation",
+			    data:{"username":name},
+			    success: function(data) {
+					var result = data.oplist;
+					var notEmpty = data.notempty;
+					if(notEmpty){
+						var index =1;
+					    $.each(result, function(i,value){					     						    
+					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+					    });
+					    
+					   which.get(0).selectedIndex=index;//index为索引值
+					   	
+					   var opClass = document.getElementById("station_op_class");//$('#station_op_class');
+      				   getOpClassSelect(opClass);
+					}
+					
+			    }
+	        });
+		
+	}
+	function getOpClassSelect(which){
+	    var sindex = which.selectedIndex;
+	   // console.log("op_class selected index="+sindex); 
+		if(sindex == 0){
+			isSelect('typealert',which);
+		}else{
+			getStationTemp();
+			getStation(which.value);
+		}
+	}	
+	function getStation(op){
+		var which = $('#add_station');
+		var opclass = op;
+		$(which).empty();
+		$(which).append("<option  value='0'>---请选择变电站---</option>");		
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/building/getStation",
+			    data:{"opclass":opclass},
+			    success: function(data) {
+					var result = data.stationRecords;
+					var notEmpty = data.notempty;
+					if(result){						
+						var index =9;
+					     $.each(result, function(i,value){					     	
+					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
+					    });
+					    
+					    $(which).get(0).selectedIndex=index;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+					}else{
+						$(which).get(0).selectedIndex=0;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+					}
+			    }
+	        });	        	        
+	}
+	function managerSelect(which){
+		//getBuilding(which.value);
+		//command();			
+	}	
 </script>
 
 <jsp:include page="/WEB-INF/view/add/common/footer.jsp" flush="true" />
