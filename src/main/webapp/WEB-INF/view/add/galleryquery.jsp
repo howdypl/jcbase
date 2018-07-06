@@ -26,7 +26,7 @@
 
                 </div>
                 <div class="box-content">
-                    <div class="row" style="margin-left: 30px">
+                    <div class="row" style="margin-left: 15px">
 							<div class="col-md-3" style="width: 16%">
 							<label class="form-label control-label">运维班：</label>
 							</div>
@@ -43,24 +43,24 @@
 							<label class="form-label control-label">起止时间</label> 
 							</div>
 						</div>
-						<div class="row" style="margin-left: 30px">
+						<div class="row" style="margin-left: 15px">
 						    <div class="col-md-3" style="width: 16%">
 								<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
 	                        		 <option  value='0'>---请选择运维班---</option>
 	                       		</select>
 							</div>
 							<div class="col-md-3" style="width: 16%">
-							   <select id="add_station" onclick="managerSelect(this)" class="form-control selectpicker">
+							   <select id="add_station" onchange="managerSelect(this)" class="form-control selectpicker">
 	                        		<option  value='0'>---请选择变电站---</option>
 	                       		</select>
 							</div>
 							<div class="col-md-3" style="width: 16%">
-								<select id="add_building" onclick="typeSelect(this)" class="form-control selectpicker">
+								<select id="add_building" onchange="typeSelect(this)" class="form-control selectpicker">
 	                        		<option  value='0'>---请选择设备间---</option>
 		                       	</select>
 							</div>
 							<div class="col-md-3" style="width: 16%">
-								<select id="add_sensor_code" onclick="timeSelect(this)"  class="form-control selectpicker">
+								<select id="add_sensor_code" onchange="timeSelect(this)"  class="form-control selectpicker">
 		                        		<option  value='0'>---请选择设备---</option>
 		                       	</select>	
 							</div>
@@ -72,7 +72,7 @@
 								</div>	
 							</div>
 						</div>
-      					<!--  <div hidden id = "time_div" class="form-inline row">
+      				<!-- <div hidden id = "time_div" class="form-inline row">
       						<div class="col-md-2">
         						<label class="form-label control-label">起止时间</label> 
         					</div> 
@@ -84,50 +84,38 @@
 									<b class="caret"></b>
 								</div>
         					</div>        					
-      					</div>      					
-                        <div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-                        
-                    <button id="op_class_add" type="button" onclick="command(this)" class="btn btn-success btn-lg" value="0" disabled><i
-                                class="glyphicon glyphicon-search glyphicon-white"></i>查询图像</button>
-                    <br>
-                </div> end of alert-info    
-                    <div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      				</div>
-                   <ul id = "myquerygallery" class="thumbnails gallery">
+      					</div>      		 -->			
+                    
+                   <ul id = "myquerygallery" class="thumbnails gallery" style="margin-top: 30px">
                    </ul>
-                </div> -->
+                </div>
             </div>
         </div>
         <!--/span-->
     </div><!--/row-->
-<script src="js/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
+<script src="${res_url}first/js/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
 <script type="text/javascript">            
    $(window).load(function(){
 			
         getOperationClass();
            
     }); 
-   
-   function command(){
-		command1();
-	}
-   
     var status = 0;
-	function command1(){
-		var parentdiv = $(which).parents('.box-content');	
-		var sensor= parentdiv.find("#add_sensor_code");
-		var building = parentdiv.find("#add_building");
+	function command(){
+		var op_class= $("#station_op_class").val();
+		var station= $("#add_station").val();
+		var building = $("#add_building").val();
+		var sensor= $("#add_sensor_code").val();
 		var timeArray = $('#reportrange span').html().split(" - ");	
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
 			    url: "<%=request.getContextPath()%>"+"/galleryquery/getImages",
 			    data: {
-			    		"sensor":sensor.find("option:selected").val(),
-			    		"building":building.val(),
+			    	    "op_class":op_class,
+			    	    "station":station,
+			    		"sensor":sensor,
+			    		"building":building,
 			    		"create_time":timeArray[0],
 			    		"end_time":timeArray[1],
 			    		},
@@ -138,7 +126,6 @@
 		            if (result == true) { //成功添加
 		            	 document.getElementById("myquerygallery").innerHTML = ""; 
 		                 $.each(imageList, function(i,value){		                	 
-<%-- 		                $('#myquerygallery').append(" <li id='"+value.id+"' class='thumbnail'> <a style='background:url(<%=baseImagePath%>" + value.url + ")' title='"+value.create_time+"' href='<%=baseImagePath %>"+value.url+"'> <img class='gallery' src='<%=baseImagePath %>"+value.url+"' alt='"+value.create_time+"'>"+value.id+"</a></li>"); --%>
 					     	var temp = document.createElement("li"); 
 					     	temp.id = value.id;
 					     	//temp.setAttribute("class", "thumbnail");
@@ -161,16 +148,14 @@
 					     	tempa.appendChild(tempimg);					     	
 					     	var div=document.createElement("div");
 					     	div.className="tags";
-					     	tempa.appendChild(div);
-					     	
+					     	tempa.appendChild(div);					     	
 					     	var span1=document.createElement("span");
 					     	span1.className="label-holder";
 					     	var span2=document.createElement("span");
 					     	span2.className="label label-info";
 					     	span2.innerHTML="Max : "+value.max+"°C";
 					     	span1.appendChild(span2);
-					     	div.appendChild(span1);
-					     	
+					     	div.appendChild(span1);					     	
 					     	var span3=document.createElement("span");
 					     	span3.className="label-holder";
 					     	var span4=document.createElement("span");
@@ -230,7 +215,6 @@
 					
 			    }
 	        });
-		 /* getStation($('#station_op_class').val()); */
 		
 	}
 	function getOpClassSelect(which){
@@ -265,20 +249,17 @@
 					    $(which).get(0).selectedIndex=index;//index为索引值
 						var station = document.getElementById("add_station");// $('#add_station');
 				        managerSelect(station);
+ 					}else{
+ 						$(which).get(0).selectedIndex=0;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
  					}
 			    }
 	        });	        	        
 	}
 	function managerSelect(which){
-		var sindex = which.selectedIndex;
-		
-		if(sindex == 0){
-			$('#add_building_div').hide();
-		}else{
-					
-			getBuilding(which.value);
-		}
-		
+		getBuilding(which.value);
+		//command();			
 	}	
 	function getBuilding(op){
 		
@@ -302,97 +283,56 @@
 					  
 						var building = document.getElementById("add_building");// $('#add_building');
 				        typeSelect(building);
+					}else{
+						which.get(0).selectedIndex=0;//index为索引值 
+						var building = document.getElementById("add_building");// $('#add_building');
+				        typeSelect(building);
 					}
 			    }
 	        });
 	}
-	function typeSelect(which){	
-
-		var sindex = which.selectedIndex;
-		if(sindex == 0){				
-			$('#sensor_code_div').hide();
-		}else{
-			
-			getCode(which);
-		}
-		
+	function typeSelect(which){							
+		//command();
+		getCode(which.value);
 	}
 	function getCode(op){		
-		var which = $(op);
-		var parentdiv = $(which).parents('.box-content');
-		var building_id = parentdiv.find("#add_building");
+		var which = $("#add_building");
+		var building_id = op;
 		$('#add_sensor_code').empty();
-		$('#add_sensor_code').append("<option  value='0'>---请选择设备---</option>");
+		$('#add_sensor_code').append("<option  value='0'>---请选择设备间---</option>");
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
 			    url: "<%=request.getContextPath()%>"+"/galleryquery/getSensorCode",
 			    data:{//"room":room.val(),
-			    	"building_id":building_id.val()},
+			    	"building_id":building_id},
 			    success: function(data) {
 			    	var notEmpty = data.result;
 					var result = data.records;
 					
 					if(notEmpty){
-						var index = 1;
+						var index = 7;
 					     $.each(result, function(i,value){
 					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
 					    	
 					    });
-					    $('#add_sensor_code').get(0).selectedIndex=index;//index为索引值
-					   
-						var device = document.getElementById("add_sensor_code");// $('#add_sensor_code');
-				        timeSelect(device);  
+					    $('#add_sensor_code').get(0).selectedIndex=index;//index为索引值					   
+						//var device = document.getElementById("add_sensor_code");// $('#add_sensor_code');				       
 					}
+					timeSelect();
 			    }
 	        });
 	}
-	function timeSelect(which){	
-
-		var sindex = which.selectedIndex;
-		if(sindex == 0){				
-			
-		}else{
-			
-			daterangetimeplugin();
-		}
-		
-	}
-	
-	function showAlert(comp){
-		var selected = "#"+comp;
-		console.log("selected="+selected);
-		$(selected).show();
-	}
-	
-		//判断密码不为空
-	function isSelect(comp,obj){
-		var selected = "#"+comp;
-		if(obj.selectedIndex == 0){
-			//$('#passalert').removeClass("hidden");
-			$(selected).show();
-		}
-	}
-	
-	//获取焦点后，隐藏告警信息
-	function hiddleComp(comp,obj){
-		//$('#passalert').addClass("hidden");
-		var selected = "#"+comp;
-		$(selected).hide();
-	}
-	/* $(document).ready(function() {
+	function timeSelect(){	
 		daterangetimeplugin();
-	}); 		 */
+		command();
+	}
 		function daterangetimeplugin(){
 					//时间插件
 					$('#reportrange span').html(moment().subtract('days', 1).format('YYYY-MM-DD HH:mm:ss') + ' - ' + moment().format('YYYY-MM-DD HH:mm:ss'));
 
 					$('#reportrange').daterangepicker(
 							{
-								// startDate: moment().startOf('day'),
-								//endDate: moment(),
-								//minDate: '01/01/2012',	//最小时间
-								// maxDate : moment(), //最大时间 
 								dateLimit : {
 									days : 30
 								}, //起止时间的最大间隔
@@ -458,8 +398,10 @@
 
 						}
 		          });
+		      	$('#reportrange').on('apply.daterangepicker',function() {
+		      	 command();
+		      	});
 			      //设置日期菜单被选项  --结束--
-		      	command1();
 		}
 </script>
 
