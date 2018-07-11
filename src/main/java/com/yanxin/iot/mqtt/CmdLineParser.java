@@ -52,8 +52,8 @@ public class CmdLineParser {
     private String userName;
     private String protocol;
 
-    private String url = "tcp://192.168.1.100:61613";
-
+    //private String url = "tcp://192.168.1.100:61613";
+    private String url = "tcp://localhost:61613";
     private MqttClientController Client;
     private MqttClientController switchPubClient;
     private MqttClientController timePubClient;
@@ -368,7 +368,7 @@ public class CmdLineParser {
 					log.info("批量发送指令到设备："+payloads.toString());
 					Client.close();
 				} catch (MqttException e) {
-					log.error("Errors happens when publishing platform location to sensors!");
+					log.error("发送云台命令是发生异常，未发送成功!");
 					e.printStackTrace();
 				}
 				timer.cancel();

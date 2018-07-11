@@ -178,14 +178,14 @@ public class MqttClientController implements MqttCallback {
 
     	// Connect to the MQTT server
     	
-    	log.info("[publish client] Connecting to "+brokerUrl + " with client ID "+client.getClientId());
+    	log.info("[发布命令客户端] 连接到： "+brokerUrl + "，客户端ID是:"+client.getClientId());
     	this.connect2();
-		log.info("[publish client] Successfully Connected!!");
+		log.info("[发布命令客户端] 连接成功!!");
 		
 		// this.connect();
 
     	String time = new Timestamp(System.currentTimeMillis()).toString();
-    	log.info("[publish client] Publishing at: "+time+ " to topic \""+topicName+"\" qos "+qos);
+    	log.info("[发布命令客户端] 发布时间为: "+time+ "，主题为: \""+topicName+"\", qos为： "+qos);
 
     	// Create and configure a message
    		MqttMessage message = new MqttMessage(payload);
