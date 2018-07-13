@@ -34,7 +34,7 @@
                 <div class="box-header well">
                     <h2><i class="glyphicon glyphicon-picture"></i> 设备实时测温及变化趋势</h2>
                     
-                    <select id="add_station" onchange="getOpClassSelect(this)" class="form-control selectpicker" style=" width:auto; float:right; margin-top: -17px;">
+                    <select id="add_station" onchange="managerSelect(this)" class="form-control selectpicker" style=" width:auto; float:right; margin-top: -17px;">
                 		<option  value='0'>---请选择变电站---</option>
                		</select>
                		<h2 style="float:right; margin-right: 10px;">变电站：</h2>
@@ -45,6 +45,7 @@
                 </div>
                 <div class="box-content">
                 	 <div id="container" style="width: 50%; height: 390px; margin: 0 auto; float: left;"></div>
+                	 <div id="container1" style="width: 50%; height: 390px; margin: 0 auto;float: left;"></div>
                 </div>
             </div>
         </div>
@@ -123,7 +124,7 @@
             </div>
         </div> -->
     </div><!--/row-->
-<script src="${res_url}first/jsto/highchart/highcharts.js"></script>
+<script src="${res_url}jsto/highchart/highcharts.js"></script>
 <script type="text/javascript">
 $(window).load(function(){
 	getOperationClass();
@@ -288,7 +289,6 @@ function command(){
 	*/
  function getStationTemp(){
 	 var op_class= $("#station_op_class").val();
-	 alert(op_class);
 	 var station= $("#add_station").val();
 	 $.ajax({
 		    type: 'POST',
@@ -362,7 +362,105 @@ function command(){
 	            		   $('#container').highcharts(json);
 					}
 	            else{
-	            	alert("ghgfd");
+	            	document.getElementById("container").innerHTML = "";
+	            	$.toaster({ priority : 'warning', title : '告警信息', message : '没有数据'});
+	            }
+			    }
+	        });
+	}
+	/*
+	得到当前变电站每个设备的折线图
+	*/
+ function getSensorTemp(){
+	 var op_class= $("#station_op_class").val();
+	 var station= $("#add_station").val();
+	 $.ajax({
+		    type: 'POST',
+		    dataType: 'json',
+		    url: "<%=request.getContextPath()%>"+"/warn/getSensorTemp",
+		    data:{"op_class":op_class,"station":station},
+		    success: function(data) {
+				var result = data.result;
+			    var tempList = data.tempList;
+			    var time=[];
+			    var curse=[];
+			    var list=new Set();
+	            if (result == true) { //成功添加
+	            	  $.each(tempList, function(i,value){
+	            		  var name=value.sensor_name+"("+value.platform_point_name+")";
+	            		  if(!list.has(name)){
+	            			  list.add(name);
+	            		  }
+	            		  time.push(value.create_time);
+	            	  });
+	            	  list.forEach(function (x, sameElement, set) {
+	            		  var temp=[];
+	            		  var eachTime=new Set();
+	            		  $.each(tempList, function(i,value){
+	            			  var name=value.sensor_name+"("+value.platform_point_name+")";
+	            			  if(x==name){
+	            				  eachTime.add(value.create_time);
+	            			  }
+		            	  });
+	            		  $.each(tempList, function(i,value){
+	            			  var name=value.sensor_name+"("+value.platform_point_name+")";
+	            			  if(x==name && eachTime.has(value.create_time)){
+	            				  temp.push(value.max_temp);
+	            			  }
+	            			  else{
+	            				  temp.push(null);
+	            			  }
+		            	  });
+	            		 curse.push({name:x, data:temp}); 
+	            		});	            	  	            	  
+	            	  var title = {
+	            		      text: ''   
+	            		   };
+	            		   var subtitle = {
+	            		      text: ''
+	            		   };
+	            		   var xAxis = {
+	            		      categories: time
+	            		   };
+	            		   var yAxis = {
+	            		      title: {
+	            		         text: '温度（℃）'
+	            		      },
+	            		      plotLines: [{
+	            		         value: 0,
+	            		         width: 1,
+	            		         color: '#808080'
+	            		      }]
+	            		   };   
+
+	            		   var tooltip = {
+	            		      valueSuffix: '\xB0C'
+	            		   }
+
+	            		   var legend = {
+            				  layout: 'horizontal',
+           				      align: 'center',
+           				      verticalAlign: 'bottom',
+           				      borderWidth: 0
+	            		   };
+
+	            		   var series =curse;
+
+	            		   var json = {};
+
+	            		   json.title = title;
+	            		   json.subtitle = subtitle;
+	            		   json.xAxis = xAxis;
+	            		   json.yAxis = yAxis;
+	            		   json.tooltip = tooltip;
+	            		   json.legend = legend;
+	            		   json.series = series;
+
+	            		   $('#container1').highcharts(json);
+					}
+	            else{
+	            	document.getElementById("container1").innerHTML = "";
+	            	$.toaster({ priority : 'warning', title : '告警信息', message : '没有数据'});
 	            }
 			    }
 	        });
@@ -438,8 +536,7 @@ function command(){
 	        });	        	        
 	}
 	function managerSelect(which){
-		//getBuilding(which.value);
-		//command();			
+		getSensorTemp();			
 	}	
 </script>
 

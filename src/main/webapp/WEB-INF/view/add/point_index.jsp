@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ include file="/WEB-INF/taglib.jsp"%>
 <%
-	String virtualImages = "/backendupload";
+	String virtualImages = "/backenduploadinf";
 	String baseImagePath = request.getScheme()+"://"
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>

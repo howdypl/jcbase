@@ -5,16 +5,17 @@ package com.yanxin.common.controller;
 
 import java.util.List;
 
-import com.jfinal.core.Controller;
+import com.jcbase.core.controller.JCBaseController;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.yanxin.iot.mqtt.CmdLineParser;
+import com.yanxin.common.model.Images;
 
 /**
  * @author Cheng Guozhen
  * 
  */
-public class GalleryQueryController extends Controller {
+public class GalleryQueryController extends JCBaseController {
 	
 	public void index() {
 		
@@ -63,7 +64,7 @@ public class GalleryQueryController extends Controller {
 		
 	}
 	
-	public void getImages() {
+/*	public void getImages() {
 		String createTimeString = getPara("create_time");
 		String endTimeString = getPara("end_time");
 		String op_class=this.getPara("op_class");
@@ -104,6 +105,34 @@ public class GalleryQueryController extends Controller {
 		}
 		renderJson();
 		
+	}*/
+	
+	public void getImages() {
+		String createTimeString = getPara("create_time");
+		String endTimeString = getPara("end_time");
+		String op_class=this.getPara("op_class");
+		String station=this.getPara("station");
+		String building=this.getPara("building");
+		String sensor=this.getPara("sensor");
+		if(op_class.equals("0")) {
+			op_class=null;
+		}
+		if(station.equals("0")) {
+			station=null;
+		}
+		if(building.equals("0")) {
+			building=null;
+		}
+		if(sensor.equals("0")) {
+			sensor=null;
+		}
+		Page<Images> pageInfo=Images.me.getImagesPage(this.getPage(), this.getRows(),op_class,station,building,sensor,createTimeString,endTimeString,this.getOrderbyStr());
+		setAttr("imageList", pageInfo.getList());
+		if(pageInfo.getList() != null && pageInfo.getList().size()>0){
+			setAttr("result", true);
+		}else{
+			setAttr("result", false);
+		}
+		renderJson();
 	}
-
 }

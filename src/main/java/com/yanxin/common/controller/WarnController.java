@@ -6,11 +6,9 @@ import com.jcbase.core.controller.JCBaseController;
 import com.jcbase.core.util.JqGridModelUtils;
 import com.jcbase.core.view.InvokeResult;
 import com.jcbase.model.SysUserRole;
-import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.yanxin.common.model.Sensor;
 import com.yanxin.common.model.Warn;
 
 public class WarnController extends JCBaseController{
@@ -49,12 +47,11 @@ public class WarnController extends JCBaseController{
 		
 		renderJson();
 	}
-	/*
+	/**
 	 * 得到变电站的历史最高温度和当前温度
 	 */
 	public void getStationTemp() {
 		String op_class=this.getPara("op_class");
-		System.out.println(op_class+"*******************************");
 		String sqlString = "SELECT station.current_temp,station.max_temp ,station.station_name FROM station,operation_class WHERE operation_class.id=station.op_id AND operation_class.id=?";
 		List<Record> tempList = Db.find(sqlString,op_class);
 		setAttr("tempList", tempList);
@@ -63,9 +60,25 @@ public class WarnController extends JCBaseController{
 		}else{
 			setAttr("result", false);
 		}
-		
 		renderJson();
 	}
+	/**
+	 * 得到当前变电站每个设备的折线图
+	 */
+	public void getSensorTemp() {
+		String op_class=this.getPara("op_class");
+		String station=this.getPara("station");
+		String sqlString = "SELECT sensor_name, platform_point_name,max_temp,create_time FROM temp_view WHERE op_id=? AND station_id=? ORDER BY create_time desc LIMIT 0,500";
+		List<Record> tempList = Db.find(sqlString,op_class,station);
+		setAttr("tempList", tempList);
+		if(tempList != null && tempList.size() > 0){
+			setAttr("result", true);
+		}else{
+			setAttr("result", false);
+		}		
+		renderJson();
+	}
+	
 	
 	/**
 	 * 测温动态光字牌
@@ -108,7 +121,7 @@ public class WarnController extends JCBaseController{
 		if(sensor.equals("0")) {
 			sensor=null;
 		}
-		Page<Warn> pageInfo=Warn.me.getWarnPage(getPage(), this.getRows(),op_class,station,building,sensor,this.getOrderbyStr());
+		Page<Warn> pageInfo=Warn.me.getWarnPage(this.getPage(), this.getRows(),op_class,station,building,sensor,this.getOrderbyStr());
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
 	

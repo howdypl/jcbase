@@ -402,11 +402,9 @@
 		}
 		function getOpClassSelect(which){
 		    var sindex = which.selectedIndex;
-		    console.log("op_class selected index="+sindex); 
 			if(sindex == 0){
 				isSelect('typealert',which);
 			}else{
-				console.log("op_class selected ="+which.value);
 				getStation(which.value);
 			}
 		}	

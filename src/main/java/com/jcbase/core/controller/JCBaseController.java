@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 
 import com.jcbase.core.util.CommonUtils;
 import com.jfinal.core.Controller;
-import com.jfinal.plugin.druid.DruidPlugin;
 /**
  * 
  * @author eason
@@ -68,7 +67,7 @@ public abstract class JCBaseController extends Controller {
 	 * @return
 	 */
 	protected int getRows(){
-		int rows=this.getParaToInt("rows", 20);
+		int rows=this.getParaToInt("rows", 10);
 		if(rows>1000)rows=1000;
 		return rows;
 	}

@@ -11,7 +11,6 @@
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <jsp:include page="/WEB-INF/view/common/basecss.jsp" flush="true" />
 </head>
-
 <body class="no-skin">
 	<div class="main-container" id="main-container">
 		<script type="text/javascript">

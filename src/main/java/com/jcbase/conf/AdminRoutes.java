@@ -43,6 +43,7 @@ import com.yanxin.common.controller.RoomListController;
 import com.yanxin.common.controller.SensorListController;
 import com.yanxin.common.controller.SensorTypeController;
 import com.yanxin.common.controller.StationListController;
+import com.yanxin.common.controller.TempLookController;
 import com.yanxin.common.controller.TemperatureController;
 import com.yanxin.common.controller.TimeSyncController;
 import com.yanxin.common.controller.UserAddController;
@@ -93,6 +94,7 @@ public class AdminRoutes extends Routes{
 		add("/setpoint",PointSetController.class,"/WEB-INF/view/add");
 		add("/warn",WarnController.class,"/WEB-INF/view/add");
 		add("/warndetil",WarnDetilController.class,"/WEB-INF/view/add");
+		add("/looktemp",TempLookController.class,"/WEB-INF/view/add");
 
 	}
 

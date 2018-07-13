@@ -2,22 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <% System.setProperty("no_visible_elements", "false"); %>
 <%@ include file="common/header.jsp" %>
- <style>
-<!--
-tab选项卡
--->
- *{ margin: 0; padding: 0}
-    ul,li{ list-style: none}
-    .tabClick{ background: #f3f3f3; overflow: hidden}
-    .tabClick li{ height:40px; line-height: 40px; width: 50%; float: left; text-align: center}
-    .tabClick li.active{ color: #099; transition: 0.1s; font-weight: bold}
-    .tabCon{ overflow: hidden}
-    .tabBox{ position: relative}
-    .tabList{line-height:30px }
-    .lineBorder{ height: 2px; overflow: hidden; border-bottom:1px solid #099; background: #f3f3f3}
-    .lineDiv{ background: #099; height: 2px; width: 50%;}
-</style>
-
 <div>
     <ul class="breadcrumb">
         <li>
@@ -35,292 +19,115 @@ tab选项卡
                 <h2><i class="glyphicon glyphicon-dashboard"></i> 温度曲线</h2>
             </div>
              <div class="box-content">
-                	<!-- <div class="alert alert-info"> -->
-      					<div hidden id="typealert" class="form-group alert alert-danger">
-					    	<strong>警告:</strong>请选择一个运维组！
+				<div class="row" style="margin-left: 15px">
+					<div class="col-md-3" style="width: 16%">
+						<label class="form-label control-label">运维班：</label>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<label class="form-label control-label">变电站：</label>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<label class="form-label control-label">设备间：</label>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<label class="form-label control-label">设备：</label>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<label class="form-label control-label">起止时间</label>
+					</div>
+				</div>
+				<div class="row" style="margin-left: 15px">
+					<div class="col-md-3" style="width: 16%">
+						<select id="station_op_class" onchange="getOpClassSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择运维班---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<select id="add_station" onchange="managerSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择变电站---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<select id="add_building" onchange="typeSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择设备间---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<select id="add_sensor_code" onchange="timeSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择设备---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 16%">
+						<div id="reportrange" class="pull-left dateRange"
+							style="width: 350px">
+							<i class="glyphicon glyphicon-calendar fa fa-calendar"></i> <span
+								id="searchDateRange"></span> <b class="caret"></b>
 						</div>
-      					<div hidden id="nooperationalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有可用的运维组，请先创建运维组！
-						</div>
-
-      					<div class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属运维班</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择运维班---</option>
-	                       		</select>
-                       		</div>
-      					</div>
-      					
-                        <div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					
-					    <div hidden id="nostationalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>该运维组无变电站！
-						</div>
-      					<div hidden id="add_station_manager_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属变电站</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_station" onclick="managerSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择变电站---</option>
-	                       		</select>
-                       		</div>
-      					</div>
-      					
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					
-      					<div hidden id="nobuildingalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有设备间信息，请先创建设备间！
-						</div>
-      					<div hidden id="add_building_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属设备间</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_building" onclick="typeSelect(this)" class="form-control selectpicker">
-                        		<option  value='0'>---请选择设备间---</option>	
-	                       		</select>
-                       		</div>
-      					</div>
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					
-      					<div hidden id="nosensoralert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有监控器，请先添加！
-						</div>
-						<div hidden id="nosensoralert2" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>该监控器不存在，请确认！
-						</div>
-      					<div hidden id = "sensor_code_div" class="form-inline row">
-      						<div class="col-md-2">
-        						<label class="form-label control-label">监控器编号</label>
-        					</div> 
-        					<div class="col-md-6">
-        						<select id="add_sensor_code" onclick="codeSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>----请选择监控器编号----</option>
-	                       		</select>
-        						<!-- <input  id ="add_sensor_code_value" type="text"  onblur="isNameEmpt(this)" onfocus="hiddenNameAlert()" class="form-control" value=""> -->
-        					</div>
-        					<div class="col-md-2">
-        						<span class='availability_status'></span>
-        					</div>
-      					</div>
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					<div hidden id = "time_div" class="form-inline row">
-      						<div class="col-md-2">
-        						<label class="form-label control-label">起止时间</label> 
-        					</div> 
-        					<div class="col-md-6">
-        						
-        						<div id="reportrange" class="pull-left dateRange" style="width:350px">
-									<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-									<span id="searchDateRange"></span>
-									<b class="caret"></b>
-								</div>
-        					</div>
-        					
-      					</div>
-      					
-                        <div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-                        
-                    <button id="op_class_add" type="button" onclick="command(this)" class="btn btn-success btn-lg" value="0" disabled><i
+					</div>
+				</div>
+                <br><br>
+				<!-- <button id="op_class_add" type="button" onclick="command(this)" class="btn btn-success btn-lg" value="0" disabled><i
                                 class="glyphicon glyphicon-search glyphicon-white"></i>查询图像</button>
-
+ -->
                     <br>
                 <!-- </div> end of alert-info-->    
                     <div class="row">
       						<span> &nbsp;&nbsp;</span>
       				</div>
                 <!-- </div> -->    
-                <div hidden class="wrap" id="wrap">
-				    <ul class="tabClick">
-				        <li class="active">温度曲线</li>
-				        <li>温度记录</li>
-				    </ul>
-				    <div class="lineBorder">
-				        <div class="lineDiv"><!--移动的div--></div>
-				    </div>
-				    <div class="tabCon">
-				        <div class="tabBox">
-				            <div class="tabList">
-				                 <div id="container" style="width: 1100px; height: 400px; margin: 0 auto"></div>
-				            </div>
-				            <div class="tabList">
-				                 <div id ='tempdatarow' class="row">
-								    <div class="box col-md-12">
-								        <div class="box-inner">            
-								          <div style="display:inline-block; *display:inline; *zoom:1">
-								            <div style="width:auto; height:auto; display:inline"><button type="button" value="0" class="btn btn-success btn-lg" onclick="getImport(this)"><i class="glyphicon glyphicon-download glyphicon-white"> </i>导出全部记录 </button></div>
-								            <div style="width:200px; height:auto; display:inline"> <button type="button" id="btn" value="0" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-download glyphicon-white"> </i>导出当前记录  </button></div>
-								          </div> 
-								            <div id="mytabledata" class="box-content">
-												<table id="userTable2" class="table table-striped table-bordered bootstrap-datatable datatable responsive text-nowrap">
-												    <thead>
-												    <tr id="table_tr">
-												    	<th>序号</th>
-												        <th align="center">摄像头编号</th>
-												        <th>最低温度</th>
-												        <th>平均温度</th>
-												        <th>最高温度</th>
-												        <th>创建时间</th>
-												    </tr>
-												    </thead> 
-											    </table>
-								            </div>
-								        </div>
-								    </div>
-								</div><!--/row-->
-				            </div>  
-				        </div>
-				    </div>
+                
+                <ul hidden id="myTab" class="nav nav-tabs">
+					<li class="active">
+						<a href="#home" data-toggle="tab">
+							 温度曲线
+						</a>
+					</li>
+					<li><a href="#ios" data-toggle="tab">温度记录</a></li>
+					
+				</ul>
+				<div id="myTabContent" class="tab-content">
+					<div class="tab-pane fade in active" id="home">
+						<div id="container" style="width: 1100px; height: 400px; margin: 0 auto"></div>
+					</div>
+					<div class="tab-pane fade" id="ios">
+						<div id ='tempdatarow' class="row">
+						    <div class="box col-md-12">
+						        <div class="box-inner">            
+						          <div style="display:inline-block; *display:inline; *zoom:1">
+						            <div style="width:auto; height:auto; display:inline"><button type="button" value="0" class="btn btn-success btn-lg" onclick="getImport(this)"><i class="glyphicon glyphicon-download glyphicon-white"> </i>导出全部记录 </button></div>
+						            <div style="width:200px; height:auto; display:inline"> <button type="button" id="btn" value="0" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-download glyphicon-white"> </i>导出当前记录  </button></div>
+						          </div> 
+						            <div id="mytabledata" class="box-content">
+										<table id="userTable2" class="table table-striped table-bordered bootstrap-datatable datatable responsive text-nowrap">
+										    <thead>
+										    <tr id="table_tr">
+										    	<th>序号</th>
+										        <th align="center">摄像头编号</th>
+										        <th>最低温度</th>
+										        <th>平均温度</th>
+										        <th>最高温度</th>
+										        <th>创建时间</th>
+										    </tr>
+										    </thead> 
+									    </table>
+						            </div>
+						        </div>
+						    </div>
+						</div>
+					</div>
 				</div>           
             </div>
         </div>
     </div>
 </div><!--/row-->
 <!-- 导出数据***************************** -->
-<script type="text/javascript" src="${res_url}jsto/easy/jquery.min.js"></script> 
+<script type="text/javascript" src="${res_url}/jsto/easy/jquery.min.js"></script>
 <script type="text/javascript" src="${res_url}jsto/jquery.table2excel.min.js"></script>
 <script type="text/javascript">
-//tab选项卡
-window.onload = function (){
-    var windowWidth = document.body.clientWidth; //window 宽度;
-	var wrap = document.getElementById('wrap');
-    var tabClick = wrap.querySelectorAll('.tabClick')[0];
-    var tabLi = tabClick.getElementsByTagName('li');  
-    var tabBox =  wrap.querySelectorAll('.tabBox')[0];
-    var tabList = tabBox.querySelectorAll('.tabList');  
-    var lineBorder = wrap.querySelectorAll('.lineBorder')[0];
-    var lineDiv = lineBorder.querySelectorAll('.lineDiv')[0];  
-    var tar = 0;
-    var endX = 0;
-    var dist = 0;  
-    tabBox.style.overflow='hidden';
-    tabBox.style.position='relative';
-    tabBox.style.width=windowWidth*tabList.length+"px";    
-    for(var i = 0 ;i<tabLi.length; i++ ){
-          tabList[i].style.width=windowWidth+"px";
-          tabList[i].style.float='left';
-          tabList[i].style.float='left';
-          tabList[i].style.padding='0';
-          tabList[i].style.margin='0';
-          tabList[i].style.verticalAlign='top';
-          tabList[i].style.display='table-cell';
-    }
-    
-    for(var i = 0 ;i<tabLi.length; i++ ){
-        tabLi[i].start = i;
-        tabLi[i].onclick = function(){
-            var star = this.start;
-            for(var i = 0 ;i<tabLi.length; i++ ){
-                tabLi[i].className='';
-            };
-            tabLi[star].className='active';
-            init.lineAnme(lineDiv,windowWidth/tabLi.length*star)
-            init.translate(tabBox,windowWidth,star);
-            endX= -star*windowWidth;
-        }
-    }
-    
-    function OnTab(star){
-        if(star<0){
-            star=0;
-        }else if(star>=tabLi.length){
-            star=tabLi.length-1
-        }
-        for(var i = 0 ;i<tabLi.length; i++ ){
-            tabLi[i].className='';
-        };
-        
-         tabLi[star].className='active';
-        init.translate(tabBox,windowWidth,star);
-        endX= -star*windowWidth;
-    };
-    
-    tabBox.addEventListener('touchstart',chstart,false);
-    tabBox.addEventListener('touchmove',chmove,false);
-    tabBox.addEventListener('touchend',chend,false);
-    //按下
-    function chstart(ev){
-        ev.preventDefault;
-        var touch = ev.touches[0];
-        tar=touch.pageX;
-        tabBox.style.webkitTransition='all 0s ease-in-out';
-        tabBox.style.transition='all 0s ease-in-out';
-    };
-    //滑动
-    function chmove(ev){
-        var stars = wrap.querySelector('.active').start;
-        ev.preventDefault;
-        var touch = ev.touches[0];
-        var distance = touch.pageX-tar;
-        dist = distance;
-        init.touchs(tabBox,windowWidth,tar,distance,endX);
-        init.lineAnme(lineDiv,-dist/tabLi.length-endX/4);
-    };
-    //离开
-    function chend(ev){
-        var str= tabBox.style.transform;
-        var strs = JSON.stringify(str.split(",",1));  
-        endX = Number(strs.substr(14,strs.length-18)); 
-        
-        if(endX>0){
-            init.back(tabBox,windowWidth,tar,0,0,0.3);
-            endX=0
-        }else if(endX<-windowWidth*tabList.length+windowWidth){
-            endX=-windowWidth*tabList.length+windowWidth
-            init.back(tabBox,windowWidth,tar,0,endX,0.3);
-        }else if(dist<-windowWidth/3){
-             OnTab(tabClick.querySelector('.active').start+1);
-             init.back(tabBox,windowWidth,tar,0,endX,0.3);
-        }else if(dist>windowWidth/3){
-             OnTab(tabClick.querySelector('.active').start-1);
-        }else{
-             OnTab(tabClick.querySelector('.active').start);
-        }
-        var stars = wrap.querySelector('.active').start;
-        init.lineAnme(lineDiv,stars*windowWidth/4);
-        
-    };
-};
-
-var init={
-    translate:function(obj,windowWidth,star){
-        obj.style.webkitTransform='translate3d('+-star*windowWidth+'px,0,0)';
-        obj.style.transform='translate3d('+-star*windowWidth+',0,0)px';
-        obj.style.webkitTransition='all 0.3s ease-in-out';
-        obj.style.transition='all 0.3s ease-in-out';
-    },
-    touchs:function(obj,windowWidth,tar,distance,endX){
-        obj.style.webkitTransform='translate3d('+(distance+endX)+'px,0,0)';
-        obj.style.transform='translate3d('+(distance+endX)+',0,0)px';
-    },
-    lineAnme:function(obj,stance){
-        obj.style.webkitTransform='translate3d('+stance+'px,0,0)';
-        obj.style.transform='translate3d('+stance+'px,0,0)';
-        obj.style.webkitTransition='all 0.1s ease-in-out';
-        obj.style.transition='all 0.1s ease-in-out';
-    },
-    back:function(obj,windowWidth,tar,distance,endX,time){
-        obj.style.webkitTransform='translate3d('+(distance+endX)+'px,0,0)';
-        obj.style.transform='translate3d('+(distance+endX)+',0,0)px';
-        obj.style.webkitTransition='all '+time+'s ease-in-out';
-        obj.style.transition='all '+time+'s ease-in-out';
-    },
-}
-
 //导出当前页面的方法**************************************************
  $(function(){
         $("#btn").click(function(){
@@ -450,53 +257,33 @@ function getImport(which){
 </script>
 <script type="text/javascript" src="${res_url}jsto/highchart/highcharts.js"></script>
 <script type="text/javascript" src="${res_url}jsto/highchart/exporting.js"></script>
-
 <script type="text/javascript">
    $(window).load(function(){
-		getOperationClass();
-		
+		getOperationClass();	
     });  
     var status = 0;
-	function command(which){
-		 $('#wrap').show();
-		var parentdiv = $(which).parents('.box-content');
-		
-		var type = parentdiv.find("#add_type");
-		var sensor_code = parentdiv.find("#add_sensor_code");
-		var station_op = parentdiv.find("#station_op_class");
-		var station = parentdiv.find("#add_station");
-		var building = parentdiv.find("#add_building");
-		var layer = parentdiv.find("#add_layer");
-		var room = parentdiv.find("#add_room");
-		
-		var timeArray = $('#reportrange span').html().split(" - ");
-		 
-		var tbody_tr = $('#mytabledata').find('tbody');
-		
+	function command(){
+		var op_class= $("#station_op_class").val();
+		var station= $("#add_station").val();
+		var building = $("#add_building").val();
+		var sensor= $("#add_sensor_code").val();
+		var timeArray = $('#reportrange span').html().split(" - ");	
 		clearData();
-		// tbody_tr.html('');
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
 			    async: false,
 			    url: "<%=request.getContextPath()%>"+"/temp/getData",
-			    data: {"type":type.val(),
-			    		"sensor_code":sensor_code.find("option:selected").val(),
-			    		"station_op":station_op.val(),
-			    		"station":station.val(),
-			    		"building":building.val(),
-			    		"layer":layer.val(),
-			    		"room":room.val(),
-			    		"create_time":timeArray[0],
-			    		"end_time":timeArray[1],
-			    		"status":status},
+			    data: { "op_class":op_class,
+		    	    "station":station,
+		    		"sensor":sensor,
+		    		"building":building,
+		    		"create_time":timeArray[0],
+		    		"end_time":timeArray[1],},
 			    timeout:10000,
 			    success: function(data) {
-			    	
 					var result = data.result;
-				    //console.log("result="+result);
 				    var dataList = data.dataList;
-				    var source = dataList[0].temp_sensor_code;
 		            if (result == true) { //成功添加
 		            	var create_time = [];
 		            	var avtemp = [];
@@ -525,7 +312,7 @@ function getImport(which){
 						            text: '红外测温结果'
 						        },
 						        subtitle: {
-						            text: '数据来源: '+source
+						            text: ''
 						        },
 						        xAxis: {
 						            categories: create_time
@@ -545,11 +332,9 @@ function getImport(which){
 						        },
 						        series: curse
 						    });
-
-
+							$('#myTab').show();
 		                return true;
-		            }else{ //添加失败
-		            	
+		            }else{ //添加失败	
 		                $.toaster({ priority : 'warning', title : '告警信息', message : '在此时间区间没有数据报告！'});
 		                return false;
 		            }
@@ -570,7 +355,7 @@ function getImport(which){
 		$('#userTable2').DataTable().clear().draw();
 	}
 	
-	function getOperationClass(){
+	<%-- function getOperationClass(){
 	
 		var which = $('#station_op_class');
 		
@@ -769,9 +554,147 @@ function getImport(which){
 					}
 			    }
 	        });
+	} --%>
+	
+	function getOperationClass(){
+		var which = $('#station_op_class');
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		var name="${sessionScope.sysUser.name}";
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/getoperation",
+			    data:{"username":name},
+			    success: function(data) {
+					var result = data.oplist;
+					var notEmpty = data.notempty;
+					if(notEmpty){
+						var index =1;
+					    $.each(result, function(i,value){					     						    
+					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+					    });
+					    
+					   which.get(0).selectedIndex=index;//index为索引值
+					   	
+					   	var opClass = document.getElementById("station_op_class");//$('#station_op_class');
+        				getOpClassSelect(opClass);
+					}
+					
+			    }
+	        });
+		
+	}
+	function getOpClassSelect(which){
+	    var sindex = which.selectedIndex;
+		if(sindex == 0){
+			isSelect('typealert',which);
+		}else{
+			getStation(which.value);
+		}
+	}	
+	function getStation(op){
+		var which = $('#add_station');
+		var opclass = op;
+		$(which).empty();
+		$(which).append("<option  value='0'>---请选择变电站---</option>");		
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/building/getStation",
+			    data:{"opclass":opclass},
+			    success: function(data) {
+					var result = data.stationRecords;
+					var notEmpty = data.notempty;
+					if(result){						
+						var index =9;
+					     $.each(result, function(i,value){					     	
+					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
+					    });
+					    
+					    $(which).get(0).selectedIndex=index;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+ 					}else{
+ 						$(which).get(0).selectedIndex=0;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+ 					}
+			    }
+	        });	        	        
+	}
+	function managerSelect(which){
+		getBuilding(which.value);
+		//command();			
+	}	
+	function getBuilding(op){
+		
+		var which = $('#add_building');
+		$(which).empty();
+		$(which).append("<option  value='0'>---请选择设备间---</option>");
+		var para = op;
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/building/getBuilding",
+			    data:{"station":para},
+			    success: function(data) {
+					var result = data.buildingRecords;
+					if(result){
+						var index = 1;			
+					     $.each(result, function(i,value){					  
+					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
+					    });
+					    which.get(0).selectedIndex=index;//index为索引值
+					  
+						var building = document.getElementById("add_building");// $('#add_building');
+				        typeSelect(building);
+					}else{
+						which.get(0).selectedIndex=0;//index为索引值 
+						var building = document.getElementById("add_building");// $('#add_building');
+				        typeSelect(building);
+					}
+			    }
+	        });
+	}
+	function typeSelect(which){							
+		//command();
+		getCode(which.value);
+	}
+	function getCode(op){		
+		var which = $("#add_building");
+		var building_id = op;
+		$('#add_sensor_code').empty();
+		$('#add_sensor_code').append("<option  value='0'>---请选择设备间---</option>");
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/galleryquery/getSensorCode",
+			    data:{//"room":room.val(),
+			    	"building_id":building_id},
+			    success: function(data) {
+			    	var notEmpty = data.result;
+					var result = data.records;
+					
+					if(notEmpty){
+						var index = 7;
+					     $.each(result, function(i,value){
+					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
+					    	
+					    });
+					    $('#add_sensor_code').get(0).selectedIndex=index;//index为索引值					   
+						//var device = document.getElementById("add_sensor_code");// $('#add_sensor_code');				       
+					}
+					timeSelect();
+			    }
+	        });
+	}
+	function timeSelect(){	
+//  		daterangetimeplugin();
+ 		command();
 	}
 	
-	function codeSelect(which){
+<%-- 	function codeSelect(which){
 		clearData();
 		var code = $(which);
 		var sindex = which.selectedIndex;
@@ -809,7 +732,7 @@ function getImport(which){
 			    }
 	        });
 		}
-	}
+	} --%>
 	
 	function showAlert(comp){
 		var selected = "#"+comp;
@@ -923,6 +846,9 @@ function getImport(which){
 
 						}
 		          });
+		      	$('#reportrange').on('apply.daterangepicker',function() {
+			      	 command();
+			     });
 			      //设置日期菜单被选项  --结束--
 		}
 	

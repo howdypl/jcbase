@@ -3,7 +3,7 @@
 <% System.setProperty("no_visible_elements", "false"); %>
 <%-- <link href='${res_url}bower_components/colorbox/example1/colorbox.css' rel='stylesheet'> --%>
 <%
-	String virtualImages = "/backendimage";
+	String virtualImages = "/backendimageinf";
 	String baseImagePath = request.getScheme()+"://"
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>	
@@ -16,42 +16,47 @@
 
                 </div>
                 <div class="box-content" style="padding-bottom: 30px;">
-						<div class="row" style="margin-left: 30px">
-							<div class="col-md-3" style="padding-left: 30px">
-							<label class="form-label control-label">运维班：</label>
-							</div>
-							<div class="col-md-3">
-							<label class="form-label control-label">变电站：</label>
-							</div>
-							<div class="col-md-3">
-							<label class="form-label control-label">设备间：</label>
-							</div>
-							<div class="col-md-3">
-							<label class="form-label control-label">设备：</label>
-							</div>
-						</div>
-						<div class="row" style="margin-left: 30px">
-						    <div class="col-md-3" style="padding-left: 30px">
-								<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择运维班---</option>
-	                       		</select>
-							</div>
-							<div class="col-md-3">
-							   <select id="add_station" onclick="managerSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择变电站---</option>
-	                       		</select>
-							</div>
-							<div class="col-md-3">
-								<select id="add_building" onclick="typeSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择设备间---</option>	
-		                       	</select>
-							</div>
-							<div class="col-md-3">
-								<select id="add_sensor_code" onclick="command(this)" class="form-control selectpicker">
-		                        		<option  value='0'>---请选择设备---</option>
-		                       	</select>	
-							</div>
-						</div>
+						<div class="row" style="padding-top: 10px">
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">运维班：</label>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">变电站：</label>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">设备间：</label>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">设备：</label>
+					</div>
+
+				</div>
+				<div class="row" style="padding-bottom: 30px;">
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="station_op_class" onchange="getOpClassSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择运维班---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="add_station" onchange="managerSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择变电站---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="add_building" onchange="typeSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择设备间---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="add_sensor_code" onchange="command()"
+							class="form-control selectpicker">
+							<option value='0'>---请选择设备---</option>
+						</select>
+					</div>
+				</div>
 						
       					<!-- <div hidden id = "time_div" class="form-inline row">
       						<div class="col-md-2">
@@ -169,8 +174,8 @@
         </div>
 
 </div><!--/row-->
-<script src="${res_url}first/jsto/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
-<script src="${res_url}first/jsto/highchart/highcharts.js"></script>
+<script src="${res_url}jsto/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
+<script src="${res_url}jsto/highchart/highcharts.js"></script>
 <script type="text/javascript">            
    $(window).load(function(){
           getOperationClass();
@@ -426,11 +431,9 @@
  	}
  	function getOpClassSelect(which){
  	    var sindex = which.selectedIndex;
- 	   // console.log("op_class selected index="+sindex); 
  		if(sindex == 0){
  			isSelect('typealert',which);
  		}else{
- 		//	console.log("op_class selected ="+which.value);
  			getStation(which.value);
  		}
  	}	

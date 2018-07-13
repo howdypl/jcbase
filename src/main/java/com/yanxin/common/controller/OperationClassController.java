@@ -36,6 +36,7 @@ public class OperationClassController extends JCBaseController {
 	public void getListData() {
 		String keyword=this.getPara("name");
 		Page<OperationClass> pageInfo=OperationClass.me.getOperationClassPage(getPage(), this.getRows(),keyword,this.getOrderbyStr());
+		System.out.println("第几页：："+getPage()+"*************************");
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
 //	public void getListData() {

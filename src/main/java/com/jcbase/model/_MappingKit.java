@@ -2,6 +2,7 @@ package com.jcbase.model;
 
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.yanxin.common.model.Building;
+import com.yanxin.common.model.Images;
 import com.yanxin.common.model.OperationClass;
 import com.yanxin.common.model.Point;
 import com.yanxin.common.model.Sensor;
@@ -39,6 +40,7 @@ public class _MappingKit {
 		arp.addMapping("platform_point", "id", Point.class);
 		arp.addMapping("sensor", "id", Sensor.class);
 		arp.addMapping("warn", "id", Warn.class);
+		arp.addMapping("images", "id", Images.class);
 	}
 }
 
