@@ -2,11 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <% System.setProperty("no_visible_elements", "false"); %>
 <%
-	String virtualImages = "/backendimage";
+	String virtualImages = "/backendimageinf";
 	String baseImagePath = request.getScheme()+"://"
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>	
-<link type="text/css" href="${res_url}css/style.css" rel="stylesheet" />
+<link type="text/css" href="${res_url}css/style2.css" rel="stylesheet" />
 <jsp:include page="/WEB-INF/view/add/common/header.jsp" flush="true" />
     <div class="row">
         <div class="box col-md-12" style="width:100%">

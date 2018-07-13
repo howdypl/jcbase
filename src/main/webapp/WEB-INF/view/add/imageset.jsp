@@ -5,18 +5,6 @@
  String localPathString = "../res/img/show_img/";
 %>
 <%@ include file="common/header.jsp" %>
-
-<div>
-    <ul class="breadcrumb">
-        <li>
-            <a href="/">主页</a>
-        </li>
-        <li>
-            <a href="#">图片色带设置</a>
-        </li>
-    </ul>
-</div>
-
 <div class="row">
 
     <div class="box col-md-12">
@@ -26,145 +14,54 @@
 
             </div>
             <div class="box-content">
-                	<!-- <div class="alert alert-info"> -->
-      					<div hidden id="typealert" class="form-group alert alert-danger">
-					    	<strong>警告:</strong>请选择一个运维组！
-						</div>
-      					<div hidden id="nooperationalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有可用的运维组，请先创建运维组！
-						</div>
+                	<div class="row" style="padding-top: 10px">
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">运维班：</label>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">变电站：</label>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">设备间：</label>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<label class="form-label control-label">设备：</label>
+					</div>
 
-      					<div class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属运维班</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择运维班---</option>
-	                       		</select>
-                       		</div>
-      					</div>
-      					
-                        <div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					
-					    <div hidden id="nostationalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>该运维组无变电站！
-						</div>
-      					<div hidden id="add_station_manager_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属变电站</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_station" onclick="managerSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择变电站---</option>
-	                       		</select>
-                       		</div>
-      					</div>
-      					
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-      					
-      					<div hidden id="nobuildingalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有设备间信息，请先创建设备间！
-						</div>
-      					<div hidden id="add_building_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属设备间</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_building" onclick="typeSelect(this)" class="form-control selectpicker">
-                        		<option  value='0'>---请选择设备间---</option>	
-	                       		</select>
-                       		</div>
-      					</div>
-      					<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-
-<!--       					<div hidden id="nolayeralert" class="form-group alert alert-danger"> -->
-<!-- 					   		 <strong>警告:</strong>没有楼层信息，请先创建楼层！ -->
-<!-- 						</div> -->
-<!--       					<div hidden id="add_layer_div" class="form-inline row"> -->
-<!--       						<div class="col-md-2"> -->
-<!--       							<label class="form-label control-label">所属楼层</label> -->
-<!--       						</div> -->
-<!--       						<div class="col-md-6">	 -->
-<!-- 	      						<select id="add_layer" onclick="roomSelect(this)" class="form-control selectpicker"> -->
-<!--                         		<option  value='0'>---请选择楼层---</option> -->	 
-<!-- 	                       		</select> -->
-<!--                        		</div> -->
-<!--       					</div> -->
-      					
-      					<!-- <div hidden id="noroomalert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有变电室信息，请先创建！
-						</div>
-      					<div hidden id="add_room_div" class="form-inline row">
-      						<div class="col-md-2">
-      							<label class="form-label control-label">所属变电室</label>
-      						</div>
-      						<div class="col-md-6">	
-	      						<select id="add_room" onclick="roomSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择变电室---</option>
-	                       		</select>
-                       		</div>
-      					</div> -->
-      					
-<!--       					<div hidden id="notypealert" class="form-group alert alert-danger"> -->
-<!-- 					   		 <strong>警告:</strong>没有类型信息，请先创建！ -->
-<!-- 						</div> -->
-<!--       					<div hidden id="add_type_div" class="form-inline row"> -->
-<!--       						<div class="col-md-2"> -->
-<!--       							<label class="form-label control-label">所属类型</label> -->
-<!--       						</div> -->
-<!--       						<div class="col-md-6">	 -->
-<!-- 	      						<select id="add_type" onclick="typeSelect(this)" class="form-control selectpicker"> -->
-<!--                       		<option  value='0'>---请选择监控器类型---</option>  -->	  
-<!-- 	                       		</select> -->
-<!--                        		</div> -->
-<!--       					</div> -->
-      					
-      					<div hidden id="nosensoralert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有监控器，请先添加！
-						</div>
-						<div hidden id="nosensoralert2" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>该监控器不存在，请确认！
-						</div>
-      					<div hidden id = "sensor_code_div" class="form-inline row">
-      						<div class="col-md-2">
-        						<label class="form-label control-label">监控器编号</label>
-        					</div> 
-        					<div class="col-md-6">
-        						<select id="add_sensor_code" onclick="codeSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>----请选择监控器编号----</option>
-	                       		</select>
-        						<!-- <input  id ="add_sensor_code_value" type="text"  onblur="isNameEmpt(this)" onfocus="hiddenNameAlert()" class="form-control" value=""> -->
-        					</div>
-        					<div class="col-md-2">
-        						<span class='availability_status'></span>
-        					</div>
-        					
-        				<div class="row">
-      						<span> &nbsp;&nbsp;</span>
-      					</div>
-        					
-      					</div>
-      					<div hidden id="nocolouralert" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>没有配置云台设置点，请先添加！
-						</div>
-						<div hidden id="nocolouralert2" class="form-group alert alert-danger">
-					   		 <strong>警告:</strong>设置点不存在，请确认！
-						</div>
-						
+				</div>
+				<div class="row" style="padding-bottom: 30px;">
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="station_op_class" onchange="getOpClassSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择运维班---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="add_station" onchange="managerSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择变电站---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="add_building" onchange="typeSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择设备间---</option>
+						</select>
+					</div>
+					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
+						<select id="add_sensor_code" onchange="timeSelect(this)"
+							class="form-control selectpicker">
+							<option value='0'>---请选择设备---</option>
+						</select>
+					</div>
+				</div>		
 						<div class="row">
       						<span> &nbsp;&nbsp;</span>
       					</div> 
 						
       					<div hidden id = "platform_code_div" class="form-inline row">
       						<div class="col-md-2">
-        						<label class="form-label control-label">色带选择</label>
+        						<label style="padding-left: 20px;">色带选择</label>
         					</div> 
         					<div class="col-md-8">
 								<div id = "platform_checkbox" >
@@ -365,11 +262,8 @@
 
 	
 	function getOperationClass(){
-	
 		var which = $('#station_op_class');
-		
 		$(which).empty();
-		
 		$(which).append("<option value='0'>---请选择运维班---</option>"); 
 		var name="${sessionScope.sysUser.name}";
 		$.ajax({
@@ -381,50 +275,34 @@
 					var result = data.oplist;
 					var notEmpty = data.notempty;
 					if(notEmpty){
-						 
-					     $.each(result, function(i,value){
-					     	
-					    	//$('#operationclass').options.add(new Option(value.op_name,value.id));
-					    	// console.log(value.id+"--"+value.op_name);
-					    	//$('#operationclass').append("<option value='"+value.id+"'"+">"+value.op_name+"</option>");
-					    	$(which).append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+						var index =1;
+					    $.each(result, function(i,value){					     						    
+					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
 					    });
-					}else{
-						showAlert('nooperationalert');
-						$('#add_station_manager_div').hide();
+					    
+					   which.get(0).selectedIndex=index;//index为索引值
+					   	
+					   	var opClass = document.getElementById("station_op_class");//$('#station_op_class');
+        				getOpClassSelect(opClass);
 					}
+					
 			    }
 	        });
-	}	
+		
+	}
 	function getOpClassSelect(which){
-			        
-	    var sindex = which.selectedIndex;
-	    $('div.alert-danger').hide(); 
+	    var sindex = which.selectedIndex;	  
 		if(sindex == 0){
 			isSelect('typealert',which);
-			$('#add_station_manager_div').hide();			
-		}else{			
-			$('#add_station_manager_div').show();									
+		}else{
 			getStation(which.value);
 		}
-		$('#add_building_div').hide();
-		$('#add_layer_div').hide();
-		$('#add_room_div').hide();
-		$('#add_type_div').hide();
-		$('#sensor_code_div').hide();
-		$('#image_show_div').hide();
-		$('#platform_code_div').hide();
-		$('#op_class_add').prop('disabled', true);
-		$('#op_class_add2').prop('disabled', true);		
 	}	
 	function getStation(op){
 		var which = $('#add_station');
 		var opclass = op;
-		// console.log("opclass="+opclass);
-		hiddleComp('nostationalert',which);
 		$(which).empty();
-		$(which).append("<option  value='0'>---请选择变电站---</option>");
-		
+		$(which).append("<option  value='0'>---请选择变电站---</option>");		
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
@@ -433,288 +311,93 @@
 			    success: function(data) {
 					var result = data.stationRecords;
 					var notEmpty = data.notempty;
-					if(result){
-						
-					     $.each(result, function(i,value){
-					     	
-					    	//$('#operationclass').options.add(new Option(value.op_name,value.id));
-					    	// console.log(value.id+"--"+value.user_name);
-					    	//$('#operationclass').append("<option value='"+value.id+"'"+">"+value.op_name+"</option>");
+					if(result){						
+						var index =9;
+					     $.each(result, function(i,value){					     	
 					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
 					    });
-					}else{
-						// console.log('nostationalert');
-						showAlert('nostationalert');
-						$('#add_station_manager_div').hide();
-					}
+					    
+					    $(which).get(0).selectedIndex=index;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+ 					}else{
+ 						$(which).get(0).selectedIndex=0;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+ 					}
 			    }
 	        });	        	        
 	}
-	
 	function managerSelect(which){
-		var sindex = which.selectedIndex;
-		$('div.alert-danger').hide(); 
-		if(sindex == 0){
-			$('#add_building_div').hide();
-			
-		}else{
-			$('#add_building_div').show();
-			
-			
-			getBuilding(which.value);
-		}
-		$('#add_layer_div').hide();
-		$('#add_room_div').hide();
-		$('#add_type_div').hide();
-		$('#sensor_code_div').hide();
-		$('#platform_code_div').hide();
-		$('#image_show_div').hide();
-		$('#op_class_add').prop('disabled', true);
-		$('#op_class_add2').prop('disabled', true);
-	}
-	function getBuilding(op){		
+		getBuilding(which.value);
+		//command();			
+	}	
+	function getBuilding(op){
+		
 		var which = $('#add_building');
-		hiddleComp('nobuildingalert',which);
 		$(which).empty();
 		$(which).append("<option  value='0'>---请选择设备间---</option>");
 		var para = op;
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
-			    url: "<%=request.getContextPath()%>"+"/layer/getBuilding",
+			    url: "<%=request.getContextPath()%>"+"/building/getBuilding",
 			    data:{"station":para},
 			    success: function(data) {
 					var result = data.buildingRecords;
 					if(result){
-						
-					     $.each(result, function(i,value){
-					     	
-					    	//$('#operationclass').options.add(new Option(value.op_name,value.id));
-					    	//console.log(value.id+"--"+value.user_name);
-					    	//$('#operationclass').append("<option value='"+value.id+"'"+">"+value.op_name+"</option>");
+						var index = 1;			
+					     $.each(result, function(i,value){					  
 					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
 					    });
+					    which.get(0).selectedIndex=index;//index为索引值
+					  
+						var building = document.getElementById("add_building");// $('#add_building');
+				        typeSelect(building);
 					}else{
-						showAlert('nobuildingalert');
-						$('#add_building_div').hide();
+						which.get(0).selectedIndex=0;//index为索引值 
+						var building = document.getElementById("add_building");// $('#add_building');
+				        typeSelect(building);
 					}
 			    }
 	        });
 	}
-
-// 	function buildingSelect(which){
-// 		var sindex = which.selectedIndex;
-// 		$('div.alert-danger').hide(); 
-// 		if(sindex == 0){
-// 			$('#add_layer_div').hide();
-			
-// 		}else{
-// 			$('#add_layer_div').show();
-
-// 			getLayer(which.value);
-// 		}
-		
-// 		$('#add_room_div').hide();
-// 		$('#add_type_div').hide();
-// 		$('#sensor_code_div').hide();
-// 		$('#platform_code_div').hide();
-// 		$('#image_show_div').hide();
-// 		$('#op_class_add').prop('disabled', true);
-// 		$('#op_class_add2').prop('disabled', true);
-// 	}
-	
-// 	function getLayer(op){
-		
-// 		var which = $('#add_layer');
-		
-// 		$(which).empty();
-// 		$(which).append("<option  value='0'>---请选择楼层---</option>");
-// 		var para = op;
-// 		$.ajax({
-// 			    type: 'POST',
-// 			    dataType: 'json',
-<%-- 			    url: "<%=request.getContextPath()%>"+"/room/getLayer", --%>
-// 			    data:{"layer":para},
-// 			    success: function(data) {
-// 					var result = data.layerRecords;
-// 					if(result){
-// 						hiddleComp('nolayeralert',which);
-// 					     $.each(result, function(i,value){
-					     	
-// 					    	//$('#operationclass').options.add(new Option(value.op_name,value.id));
-// 					    	//console.log(value.id+"--"+value.user_name);
-// 					    	//$('#operationclass').append("<option value='"+value.id+"'"+">"+value.op_name+"</option>");
-// 					    	$(which).append("<option value='"+value.id+"'>"+value.layer_name+"</option>"); 
-// 					    });
-// 					}else{
-// 						showAlert('nolayeralert');
-// 						$('#add_layer_div').hide();
-// 					}
-// 			    }
-// 	        });
-// 	}
-	
-// 	function layerSelect(which){
-// 		var sindex = which.selectedIndex;
-// 		$('div.alert-danger').hide(); 
-// 		if(sindex == 0){			
-// 			$('#add_room_div').hide();
-			
-// 		}else{
-// 			$('#add_room_div').show();
-			
-// 			getRoom(which.value);
-// 		}
-// 		$('#add_type_div').hide();
-// 		$('#sensor_code_div').hide();
-// 		$('#platform_code_div').hide();
-// 		$('#image_show_div').hide();
-// 		$('#op_class_add').prop('disabled', true);
-// 		$('#op_class_add2').prop('disabled', true);
-// 	}
-	
-// 	function getRoom(op){
-		
-// 		var which = $('#add_room');
-		
-// 		$(which).empty();
-// 		$(which).append("<option  value='0'>---请选择变电室---</option>");
-		
-// 		var para = op;
-// 		$.ajax({
-// 			    type: 'POST',
-// 			    dataType: 'json',
-<%-- 			    url: "<%=request.getContextPath()%>"+"/room/getRoom", --%>
-// 			    data:{"layer":para},
-// 			    success: function(data) {
-// 					var result = data.roomRecords;
-// 					if(result){
-// 						hiddleComp('noroomalert',which);
-// 					     $.each(result, function(i,value){
-					     	
-// 					    	//$('#operationclass').options.add(new Option(value.op_name,value.id));
-// 					    	//console.log(value.id+"--"+value.user_name);
-// 					    	//$('#operationclass').append("<option value='"+value.id+"'"+">"+value.op_name+"</option>");
-// 					    	$(which).append("<option value='"+value.id+"'>"+value.room_name+"</option>"); 
-// 					    });
-// 					}else{
-// 						showAlert('noroomalert');
-// 						$('#add_room_div').hide();
-// 					}
-// 			    }
-// 	        });
-// 	}
-
-// 	function roomSelect(which){
-// 		var sindex = which.selectedIndex;
-// 		$('div.alert-danger').hide(); 
-// 		if(sindex == 0){		
-		
-// 			$('#add_type_div').hide();
-			
-// 		}else{
-// 			$('#add_type_div').show();
-			
-// 			getType(which.value);
-// 		}
-// 		$('#sensor_code_div').hide();
-// 		$('#platform_code_div').hide();
-// 		$('#image_show_div').hide();
-// 		$('#op_class_add').prop('disabled', true);
-// 		$('#op_class_add2').prop('disabled', true);
-// 	}
-	
-// 	function getType(op){
-		
-// 		var which = $('#add_type');
-		
-// 		$(which).empty();
-// 		$(which).append("<option  value='0'>---请选择监控器类型---</option>");
-		
-// 		var para = op;
-// 		$.ajax({
-// 			    type: 'POST',
-// 			    dataType: 'json',
-<%-- 			    url: "<%=request.getContextPath()%>"+"/temp/getSensorType", --%>
-// 			    data:{"room":para},
-// 			    success: function(data) {
-// 					var result = data.sensorTypeList;
-// 					if(result){
-// 						hiddleComp('notypealert',which);
-// 					     $.each(result, function(i,value){
-					     	
-// 					    	//$('#operationclass').options.add(new Option(value.op_name,value.id));
-// 					    	//console.log(value.id+"--"+value.user_name);
-// 					    	//$('#operationclass').append("<option value='"+value.id+"'"+">"+value.op_name+"</option>");
-// 					    	$(which).append("<option value='"+value.id+"'>"+value.type_name+"</option>"); 
-// 					    });
-// 					}else{
-// 						showAlert('notypealert');
-// 						$('#add_type_div').hide();
-// 					}
-// 			    }
-// 	        });
-// 	}
-	
-	function typeSelect(which){
-	
-		
-		var sindex = which.selectedIndex;
-		$('div.alert-danger').hide(); 
-		if(sindex == 0){		
-		
-			$('#sensor_code_div').hide();
-			
-		}else{
-			$('#sensor_code_div').show();
-			getCode(which);
-		}
-		$('#platform_code_div').hide();
-		$('#image_show_div').hide();
-		$('#op_class_add').prop('disabled', true);
-		$('#op_class_add2').prop('disabled', true);
+	function typeSelect(which){							
+		//command();
+		getCode(which.value);
 	}
-	
-	function getCode(op){
-		
-		var which = $(op);
-		
-		
-		var parentdiv = $(which).parents('.box-content');
-
-// 		var room = parentdiv.find("#add_room");
-// 		var sensor_type = parentdiv.find("#add_type");
-        var building_id = parentdiv.find("#add_building");
+	function getCode(op){		
+		var which = $("#add_building");
+		var building_id = op;
 		$('#add_sensor_code').empty();
-		$('#add_sensor_code').append("<option  value='0'>---请选择监控器编号---</option>");
-		
+		$('#add_sensor_code').append("<option  value='0'>---请选择设备---</option>");
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
 			    url: "<%=request.getContextPath()%>"+"/temp/getSensorCode",
 			    data:{//"room":room.val(),
-			    	"building_id":building_id.val()},
+			    	"building_id":building_id},
 			    success: function(data) {
 			    	var notEmpty = data.result;
 					var result = data.records;
 					
 					if(notEmpty){
-						hiddleComp('nosensoralert',which);
+						var index = 3;
 					     $.each(result, function(i,value){
-					     	l=i+1;
 					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"'>"+value.name+"</option>"); 
-					    	// console.log("add_sensor_code value="+l);
+					    	
 					    });
-					}else{
-						showAlert('nosensoralert');
-						$('#sensor_code_div').hide();
+					    $('#add_sensor_code').get(0).selectedIndex=index;//index为索引值					   
+						var device = document.getElementById("add_sensor_code");// $('#add_sensor_code');	
+						timeSelect(device);
 					}
+					
 			    }
 	        });
-	}
+	}	
 
 	
-	function codeSelect(which){
+	function timeSelect(which){
 
 		var code = $(which);
 		var sindex = which.selectedIndex;

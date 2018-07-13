@@ -10,17 +10,6 @@
 			+request.getServerPort()+virtualImages+"/"; %>
 <%@ include file="common/header.jsp" %>
 <link href='${res_url}cssto/bootstrap-combined.min.css' rel='stylesheet' type='text/css'>
-<div>
-    <ul class="breadcrumb">
-        <li>
-            <a href="/">主页</a>
-        </li>
-        <li>
-            <a href="#">云台控制</a>
-        </li>
-    </ul>
-</div>
-
 <div class="row">
 
     <div class="box col-md-12">
@@ -758,7 +747,11 @@
 					if(notEmpty){
 						hiddleComp('nocolouralert');
 					     $.each(result, function(i,value){
-					    	$('#platform_checkbox').append("<input OnClick='checkChanged()' type='checkbox' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
+					    	 if(value.status > 0){
+					    		 $('#platform_checkbox').append("<input OnClick='checkChanged()' type='checkbox' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode' checked='checked'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
+						     	}else {
+						    		$('#platform_checkbox').append("<input OnClick='checkChanged()' type='checkbox' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
+						    	}	
 					    	var paths="<%=baseImagePath%>";
 					    	paths += value.images;
 					    	var backgroud = "background:url('"+paths+"')";

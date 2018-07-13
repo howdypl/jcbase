@@ -19,72 +19,36 @@ public class TempLookController extends Controller {
 	
 	public void index() {
 		
-		render("chart.jsp");
+		render("temp_look.jsp");
 	}
 
-public void getSensorCode() {
-		
-		//long roomid = getParaToLong("room");
-		long building_id = getParaToLong("building_id");
-		
-		List<Record> records = Db.find("select sensor_code,status,name from sensor where building_id = ?", building_id);
-		
-		if (records != null && !records.isEmpty()) {
-			setAttr("records", records);
-			setAttr("result", true);
-			renderJson();
+	public void getImages() {
+		String op_class=this.getPara("op_class");
+		String station=this.getPara("station");
+		String building=this.getPara("building");
+		String s[] = null;
+		String sqlString=null;
+		List<Record> imageList=null;
+		//查询整个运维班的图片
+		if(station.equals("0")) {
+            sqlString="select su.*,sensor.`name`,station.station_name, (select temp.max_temp from temp where temp.point_type=su.point_type AND temp.temp_sensor_code=su.pp_sensor_code ORDER BY temp.create_time DESC LIMIT 1) as maxTemp FROM platform_point su,sensor,building,station,operation_class WHERE operation_class.id=station.op_id AND operation_class.id=? AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=su.pp_sensor_code";
+			imageList = Db.find(sqlString,op_class);
 		}else {
-			setAttr("result", false);
-			renderJson();
-		}
-		
-	}
-	
-	public void getSensorType() {
-		
-		// String sqlString = "select * from sensor_type where id<>11 and id <>10";
-		String sqlString = "select * from sensor_type";
-		List<Record> sensorTypeList = Db.find(sqlString);
-		setAttr("sensorTypeList", sensorTypeList);
-		renderJson();
-	}
-	
-	public void getSensorStatus() {
-		
-		String sensor_code = getPara("sensor_code");
-		
-		Record record = Db.findById("sensor", "sensor_code", sensor_code);
-		
-		setAttr("record", record);
-		
-		renderJson();
-		
-	}
-	
-	public void getData() {
-		
-		String createTimeString = getPara("create_time");
-		String endTimeString = getPara("end_time");
-//		String op_class=this.getPara("op_class");
-//		String station=this.getPara("station");
-//		String building=this.getPara("building");
-		String[] s=this.getPara("sensor").split("/");
-		String sensorCodeString=s[0];
-		String point_type=s[1];
-		
-		String sqlString = "SELECT * FROM temp WHERE temp_sensor_code = ? AND point_type= ? AND create_time>? AND create_time<? ORDER BY create_time ASC LIMIT 50";
-		
-		List<Record> dataList = Db.find(sqlString,sensorCodeString,point_type,createTimeString,endTimeString);
-		setAttr("dataList", dataList);
-		
-		// render("galleryquery.jsp");
-		
-		if(dataList != null && dataList.size() > 0){
+			//查询整个变电站的图片
+			if(building.equals("0")) {
+                sqlString="select su.*,sensor.`name`,station.station_name, (select temp.max_temp from temp where temp.point_type=su.point_type AND temp.temp_sensor_code=su.pp_sensor_code ORDER BY temp.create_time DESC LIMIT 1) as maxTemp FROM platform_point su,sensor,building,station,operation_class WHERE operation_class.id=station.op_id AND station.id=building.station_id AND station.id=? AND building.id=sensor.building_id AND sensor.sensor_code=su.pp_sensor_code";
+				imageList = Db.find(sqlString,station);
+			}else {
+				sqlString="select su.*,sensor.`name`,station.station_name, (select temp.max_temp from temp where temp.point_type=su.point_type AND temp.temp_sensor_code=su.pp_sensor_code ORDER BY temp.create_time DESC LIMIT 1) as maxTemp FROM platform_point su,sensor,building,station,operation_class WHERE operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND building.id=? AND sensor.sensor_code=su.pp_sensor_code";
+				imageList = Db.find(sqlString,building);
+			}
+		}	
+		setAttr("imageList", imageList);
+		if(imageList != null && imageList.size() > 0){
 			setAttr("result", true);
 		}else{
 			setAttr("result", false);
 		}
-		
 		renderJson();
 		
 	}

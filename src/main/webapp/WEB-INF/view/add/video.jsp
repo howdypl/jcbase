@@ -686,10 +686,10 @@
 	}
 	
 
-	function exeCMD(cmd) {
+	/* function exeCMD(cmd) {
 		b = new ActiveXObject("wscript.shell");
 		b.run(cmd);
-	}
+	} */
 </script>
 
 <%@ include file="common/footer.jsp" %>

@@ -10,18 +10,6 @@
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>
 <%@ include file="common/header.jsp" %>
-
-<div>
-    <ul class="breadcrumb">
-        <li>
-            <a href="/">主页</a>
-        </li>
-        <li>
-            <a href="#">云台控制</a>
-        </li>
-    </ul>
-</div>
-
 <div class="row">
 
     <div class="box col-md-12">

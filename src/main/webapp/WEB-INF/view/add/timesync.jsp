@@ -2,18 +2,6 @@
 
 <% System.setProperty("no_visible_elements", "false"); %>
 <%@ include file="common/header.jsp" %>
-
-<div>
-    <ul class="breadcrumb">
-        <li>
-            <a href="/">主页</a>
-        </li>
-        <li>
-            <a href="#">手动时间校准</a>
-        </li>
-    </ul>
-</div>
-
 <div class="row">
 
     <div class="box col-md-12">

@@ -480,7 +480,7 @@
 			var which = $("#add_building");
 			var building_id = op;
 			$('#add_sensor_code').empty();
-			$('#add_sensor_code').append("<option  value='0'>---请选择设备间---</option>");
+			$('#add_sensor_code').append("<option  value='0'>---请选择设备---</option>");
 			$.ajax({
 				    type: 'POST',
 				    dataType: 'json',
@@ -492,7 +492,7 @@
 						var result = data.records;
 						
 						if(notEmpty){
-							var index = 7;
+							var index = 5;
 						     $.each(result, function(i,value){
 						    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
 						    	

@@ -7,7 +7,10 @@
 	String baseImagePath = request.getScheme()+"://"
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>	
-<jsp:include page="/WEB-INF/view/add/common/header.jsp" flush="true" />
+<link type="text/css" href="${res_url}css/style.css" rel="stylesheet" />
+<script type="text/javascript" src="${res_url}bower_components/jquery/jquery.js"></script>
+<script type="text/javascript" src="${res_url}js/scroll.js"></script>
+<jsp:include page="/WEB-INF/view/add/common/header2.jsp" flush="true" />
     <div class="row">
         <div class="box col-md-12">
             <div class="box-inner">
@@ -81,8 +84,8 @@
             </div>
         </div>    
 	<div id="div1" class="box col-md-12" style="width:40%">
-            <div class="box-inner" style="height:800px;">               
-				<div id="myCarousel" class="carousel slide">
+            <div class="b" style="height:725px;">               
+				<div id="myCarousel" class="carousel slide" style='margin-top: 80px;'>
 					<!-- 轮播（Carousel）指标 -->
 					<ol class="carousel-indicators">
 						<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -119,9 +122,11 @@
 				<!-- 图片地下显示时间 -->
 				<div id="add_time" align="center" style="font-size: 25px"></div>
 				<!-- 时间地下显示“历史图像查看” -->
-				<div id="add_word" align="center" style="font-size: 20px">
-				    <a href="/#/galleryquery" target="_parent">历史图像查看</a>
-				    <input type="button" value="注册" onclick="window.location.href('http://localhost:8080/#/galleryquery')" />
+				<div id="add_word" align="center" style="font-size: 20px;margin-top: 100px;">
+				    <button type="button" id="btn" value="0" class="btn btn-success btn-lg" style="margin-left: 20px;" onclick="window.location='/galleryquery'">历史图像查看</button>
+				    <button type="button" id="btn" value="0" class="btn btn-success btn-lg" style="margin-left: 100px;">查看实时视频</button>
+				    <!-- <a href="/#/galleryquery" target="_parent">历史图像查看</a>
+				    <input type="button" value="注册" onclick="window.location.href('http://localhost:8080/#/galleryquery')" /> -->
 				</div>
 		   </div>
         </div>
@@ -167,9 +172,12 @@
                 <div class="box-header well" style="background:  coral;">
                     <h2><i class="glyphicon glyphicon-warning-sign"></i> 告警推送</h2>
                 </div>
-                <div class="box-content">                
-					<!-- <div id="container2" style="width: 100%; height: 150px; margin: 0 auto"></div> -->
-                </div>
+                 <div class="bcon" style="width: 672px;">
+					<div class="list_lh" style="height: 235px;">
+						<ul id="news">
+						</ul>
+				   </div>
+			   </div>
             </div>
         </div>
 
@@ -180,7 +188,15 @@
    $(window).load(function(){
           getOperationClass();
     }); 
-   
+   $(document).ready(function(){
+		$('.list_lh li:even').addClass('lieven');
+	})
+	$(function(){
+		$("div.list_lh").myScroll({
+			speed:60, //数值越大，速度越慢
+			rowHeight:68 //li的高度
+		});
+	});
    //****************得到轮播图片****************  
    function getWarnImageDetil(){
 		//var point_type=$('#add_room').val();
@@ -400,6 +416,31 @@
 		        });
 		}
 	
+     /**
+      *  告警推送 
+      */
+     	
+      function getWarnNews(){
+     	 $.ajax({
+     		    type: 'POST',
+     		    dataType: 'json',
+     		    url: "<%=request.getContextPath()%>"+"/warn/getWarnNews",
+     		    success: function(data) {
+     				var result = data.result;
+     			    var imageList = data.imageList;
+     	            if (result == true) { //成功添加
+     	            	  $.each(imageList, function(i,value){	
+     	  	                 $('#news').append('<li><p><a href="#" target="_blank">'+value.op_name+'</a><a href="#" target="_blank" class="btn_lh">'+value.platform_code+'</a><em>告警</em></p><p><a href="#" target="_blank" class="a_blue">'+value.station_name+'->'+value.building_name+'->'+value.name+'</a><span>'+value.create_time+'</span></p></li>'); 
+     	            	  });
+     	            	  $('.list_lh li:even').addClass('lieven');
+     					}
+     	            else{
+     	            	alert("ghgfd");
+     	            }
+     			    }
+     	        });
+     	}
+     
      function getOperationClass(){
  		var which = $('#station_op_class');
  		$(which).empty();
@@ -509,7 +550,7 @@
  		var which = $("#add_building");
  		var building_id = op;
  		$('#add_sensor_code').empty();
- 		$('#add_sensor_code').append("<option  value='0'>---请选择设备间---</option>");
+ 		$('#add_sensor_code').append("<option  value='0'>---请选择设备---</option>");
  		$.ajax({
  			    type: 'POST',
  			    dataType: 'json',
@@ -521,7 +562,7 @@
  					var result = data.records;
  					
  					if(notEmpty){
- 						var index = 7;
+ 						var index = 5;
  					     $.each(result, function(i,value){
  					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
  					    	
@@ -545,6 +586,7 @@
 			getTodayTemp();
 			getHistogram();
 			getTempCurve();
+			getWarnNews();
 		
 	}
 	

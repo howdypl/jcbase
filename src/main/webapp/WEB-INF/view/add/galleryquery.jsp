@@ -8,21 +8,11 @@
 			+request.getServerName()+":"
 			+request.getServerPort()+virtualImages+"/"; %>	
 <jsp:include page="/WEB-INF/view/add/common/header.jsp" flush="true" />
-    <div>
-        <ul class="breadcrumb">
-            <li>
-                <a href="/">主页</a>
-            </li>
-            <li>
-                <a href="#">红外图像查询</a>
-            </li>
-        </ul>
-    </div>
     <div class="row">
         <div class="box col-md-12">
             <div class="box-inner">
                 <div class="box-header well" data-original-title="">
-                    <h2><i class="glyphicon glyphicon-search"></i> 红外监控图像</h2>
+                    <h2><i class="glyphicon glyphicon-search"></i> 图库</h2>
 
                 </div>
                 <div class="box-content">
@@ -93,7 +83,7 @@
         </div>
         <!--/span-->
     </div><!--/row-->
-<script src="${res_url}first/js/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
+<%-- <script src="${res_url}jsto/jquery.magnific-popup.min.js"></script> <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) --> --%>
 <script type="text/javascript">            
    $(window).load(function(){
 			
@@ -297,7 +287,7 @@
 		var which = $("#add_building");
 		var building_id = op;
 		$('#add_sensor_code').empty();
-		$('#add_sensor_code').append("<option  value='0'>---请选择设备间---</option>");
+		$('#add_sensor_code').append("<option  value='0'>---请选择设备---</option>");
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',
@@ -309,7 +299,7 @@
 					var result = data.records;
 					
 					if(notEmpty){
-						var index = 7;
+						var index = 5;
 					     $.each(result, function(i,value){
 					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"/"+value.point_type+"'>"+value.name+"("+value.platform_code+")</option>"); 
 					    	
