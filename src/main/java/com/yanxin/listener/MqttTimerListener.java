@@ -3,13 +3,9 @@
  */
 package com.yanxin.listener;
 
-import java.awt.Event;
-import java.net.SocketException;
-import java.util.Timer;
+
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -18,8 +14,6 @@ import org.apache.log4j.Logger;
 
 import com.yanxin.iot.Utils.ConstantsUtil;
 import com.yanxin.iot.mqtt.CmdLineParser;
-
-import sun.util.logging.resources.logging;
 
 /**
  * @author Cheng Guozhen

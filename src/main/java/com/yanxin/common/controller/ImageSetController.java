@@ -4,26 +4,15 @@
 package com.yanxin.common.controller;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
-
-import org.apache.commons.collections.map.StaticBucketMap;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
-import com.sun.prism.shader.Mask_TextureRGB_AlphaTest_Loader;
-import com.yanxin.cmd.StreamGobbler;
 import com.yanxin.iot.Utils.ConstantsUtil;
-import com.yanxin.iot.json.TimePayload;
 import com.yanxin.iot.mqtt.CmdLineParser;
 
-import javassist.expr.NewArray;
 
 /**
  * @author Cheng Guozhen
@@ -55,7 +44,7 @@ public class ImageSetController extends Controller {
 		if(sensorCodeString != null){
 			sensorList.add(sensorCodeString);
 		}
-		// 设置预设点
+		// 璁剧疆棰勮鐐�
 		try {
 			ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_IMAGE_CREATE, 0);
 			// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
@@ -71,7 +60,7 @@ public class ImageSetController extends Controller {
 		String sensorCodeString = getPara("sensor_code");	
 		final int select = getParaToInt("colour");
 		
-		// 将预设点状态更新到数据库
+		// 灏嗛璁剧偣鐘舵�佹洿鏂板埌鏁版嵁搴�
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -89,7 +78,7 @@ public class ImageSetController extends Controller {
 			sensorList.add(sensorCodeString);
 		}
 		try {
-			// 设置预设点
+			// 璁剧疆棰勮鐐�
 			ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_IMAGE_COLOR, select);
 			// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 			setAttr("result", true);
@@ -152,7 +141,7 @@ public class ImageSetController extends Controller {
 		if(sensorCodeString != null){
 			sensorList.add(sensorCodeString);
 		}
-		// 设置预设点
+		// 璁剧疆棰勮鐐�
 		ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_PRESET, select);
 		// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
 		setAttr("result", true);
