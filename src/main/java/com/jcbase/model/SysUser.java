@@ -67,6 +67,13 @@ public class SysUser extends BaseSysUser<SysUser>
 		long count=Db.queryLong("select count(*) from sys_user_role where role_id=? and user_id=?", 1,this.getId());
 		return  count>0?true:false;
 	}
+	
+	public SysUser getUserOP(String username){
+		
+		SysUser user = me.findFirst("SELECT * FROM sys_user WHERE sys_user.`name`=?",username);
+		return user;
+	}
+	
 	/**
 	 * 用户登陆
 	 * @author eason	
@@ -134,6 +141,34 @@ public class SysUser extends BaseSysUser<SysUser>
 		this.update(conditions, newValues);
 		return InvokeResult.success();
 	} 
+	
+	public InvokeResult delUserByIDs(String bids) {
+//		List<Integer> i=CommonUtils.getIntegerListByStrs(bids);
+//		if(i.contains(1)){
+//			return InvokeResult.failure(-2,"超级管理员不能被修改");
+//		}
+		List<Integer> ids=new ArrayList<Integer>();
+		if(bids.contains(",")){
+			
+			for(String aid : bids.split(",")){
+				if(StrKit.notBlank(aid)){
+					ids.add(Integer.valueOf(aid));
+				}
+			}
+		}else{
+			if(StrKit.notBlank(bids)){
+				ids.add(Integer.valueOf(bids));
+			}
+		}
+		if(bids.length()>0){
+			bids=bids.subSequence(0, bids.length()-1).toString();
+		}
+		Set<Condition> conditions=new HashSet<Condition>();
+		conditions.add(new Condition("id",Operators.IN,ids));		
+		this.delete(conditions);
+		return InvokeResult.success();
+	} 
+	
 	/**
 	 * 用户名是否已存在
 	 * @param name
@@ -150,17 +185,22 @@ public class SysUser extends BaseSysUser<SysUser>
 		conditions.add(new Condition("name",Operators.EQ,name));
 		return this.get(conditions);
 	}
-	public InvokeResult save(Integer id,String username,String password,String des,String phone,String email,Integer operation_class_id,Integer station_id){
+	public SysUser getByPhone(String phone){
+		Set<Condition> conditions=new HashSet<Condition>();
+		conditions.add(new Condition("phone",Operators.EQ,phone));
+		return this.get(conditions);
+	}
+	public InvokeResult save(Integer id,String username,String password,String des,String phone,String email,Integer work_area,Integer userType,Integer operation_class_id){
 		if(null!=id){
 			SysUser sysUser=this.findById(id);
-			sysUser.set("des", des).set("phone", phone).set("email", email).set("operation_class_id", operation_class_id).set("station_id", station_id).update();
+			sysUser.set("des", des).set("phone", phone).set("email", email).set("work_area_id",work_area).set("user_type",userType).set("operation_class_id", operation_class_id).update();
 		}else {
 			if(this.hasExist(username)){
 				return InvokeResult.failure("用户名已存在");
 			}else {
 				if(StrKit.isBlank(password))password="123456";
 				SysUser sysUser=new SysUser();
-				sysUser.set("name", username).set("pwd", MyDigestUtils.shaDigestForPasswrod(password)).set("createdate", new Date()).set("des", des).set("phone", phone).set("email", email).set("operation_class_id", operation_class_id).set("station_id", station_id).save();
+				sysUser.set("name", username).set("pwd", MyDigestUtils.shaDigestForPasswrod(password)).set("createdate", new Date()).set("des", des).set("phone", phone).set("email", email).set("work_area_id",work_area).set("user_type",userType).set("operation_class_id", operation_class_id).save();
 			}
 		}
 		return InvokeResult.success();
@@ -200,20 +240,39 @@ public class SysUser extends BaseSysUser<SysUser>
 		}
 		
 	}
-	public Page<SysUser> getSysUserPage(int page, int rows, String keyword,
+	public Page<SysUser> getSysUserPage(int page, int rows, String keyword,String username,
 			String orderbyStr) {
-		StringBuffer sqlExceptSelect = null;
-		String select="select su.*, (select group_concat(name) as roleNames from sys_role where id in(select role_id from sys_user_role where user_id=su.id)) as roleNames,(SELECT op_name FROM operation_class where su.operation_class_id=operation_class.id) AS op_name,(SELECT station_name FROM station WHERE station.id=su.station_id) AS station_name";
-		if(SysUserRole.dao.isHight(keyword)) {
-			sqlExceptSelect=new StringBuffer("from sys_user su");
+		Set<Condition> conditions=new HashSet<Condition>();
+		List<Object> outConditionValues=new ArrayList<Object>();
+		StringBuffer sqlExceptSelect=new StringBuffer();
+		
+		int userType = SysUserRole.dao.userOP(username);
+		
+		if(CommonUtils.isNotEmpty(keyword)){
+			conditions.add(new Condition("name",Operators.LIKE,keyword));
 		}
-		else {
-			sqlExceptSelect=new StringBuffer("from sys_user su WHERE operation_class_id=(SELECT operation_class_id FROM sys_user WHERE `name`="+keyword+")");
+		if(userType == 2){
+			SysUser user = SysUser.me.getByName(username);
+			//Integer areaID = user.getWork_area_id();
+			conditions.add(new Condition("work_area_id",Operators.LIKE,user.getWork_area_id()));
 		}
+		
+		if(SysUserRole.dao.isOp(username)) {			
+			sqlExceptSelect.append("from sys_user su"+super.getWhereSql(conditions, outConditionValues)+" ORDER BY su.createdate DESC");			
+		}else {
+			sqlExceptSelect.append("from sys_user su WHERE operation_class_id=(SELECT operation_class_id FROM sys_user WHERE `name`='"+username+"')"+super.getWhereSql(conditions, outConditionValues)+" ORDER BY su.createdate DESC");
+			if(sqlExceptSelect.indexOf("where")!=-1) {
+				int s=sqlExceptSelect.indexOf("where");
+				sqlExceptSelect.replace(s, s+5, "AND");
+			}
+		}
+		
+		// String select="select su.*, (select group_concat(name) as roleNames from sys_role where id in(select role_id from sys_user_role where user_id=su.id)) as roleNames,(SELECT op_name FROM operation_class where su.operation_class_id=operation_class.id) AS op_name,(SELECT station_name FROM station WHERE station.id=su.station_id) AS station_name";
+		String select="select su.*, (select group_concat(name) as roleNames from sys_role where id in(select role_id from sys_user_role where user_id=su.id)) as roleNames,(SELECT area FROM work_area where su.work_area_id=work_area.id) AS area,(SELECT op_name FROM operation_class where su.operation_class_id=operation_class.id) AS op_name";
 		return this.paginate(page, rows, select, sqlExceptSelect.toString());
 	}
 	//根据用户名模糊查找
-	public Page<SysUser> seachSysUserPage(int page, int rows, String keyword,
+	/*public Page<SysUser> seachSysUserPage(int page, int rows, String keyword,
 			String orderbyStr,String name) {
 		StringBuffer sqlExceptSelect = null;
 		String select="select su.*, (select group_concat(name) as roleNames from sys_role where id in(select role_id from sys_user_role where user_id=su.id)) as roleNames,(SELECT op_name FROM operation_class where su.operation_class_id=operation_class.id) AS op_name,(SELECT station_name FROM station WHERE station.id=su.station_id) AS station_name";
@@ -224,7 +283,7 @@ public class SysUser extends BaseSysUser<SysUser>
 			sqlExceptSelect=new StringBuffer("from sys_user su WHERE operation_class_id=(SELECT operation_class_id FROM sys_user WHERE `name`="+keyword+") and `name` like '%"+name+"%'");
 		}
 		return this.paginate(page, rows, select, sqlExceptSelect.toString());
-	}
+	}*/
 	
 	//通过用户名查找用户id
 	public int getId(String name) {

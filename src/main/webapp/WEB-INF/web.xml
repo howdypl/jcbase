@@ -17,9 +17,9 @@ id="jcbase" version="2.5">
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   <!-- Tomcat启动监听器 -->
-  <listener>
+  <!-- <listener>
   	<listener-class>
-  		com.yanxin.listener.MqttTimerListener
+  		com.yanxin.listener.MqttHeartBitListener
   	</listener-class>
-  </listener>
+  </listener>  -->
 </web-app>

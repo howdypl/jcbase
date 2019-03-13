@@ -88,11 +88,11 @@ public abstract class BaseSysUser<M extends BaseSysUser<M>> extends BaseModel<M>
 	public java.lang.String getToken() {
 		return get("token");
 	}
-	public void setOperation_class_id(java.lang.Integer operation_class_id) {
+	public void setOperation_class_id(java.lang.Long operation_class_id) {
 		set("operation_class_id", operation_class_id);
 	}
 
-	public java.lang.Integer getOperation_class_id() {
+	public java.lang.Long getOperation_class_id() {
 		return get("operation_class_id");
 	}
 	public void setStation_id(java.lang.Integer station_id) {
@@ -101,5 +101,20 @@ public abstract class BaseSysUser<M extends BaseSysUser<M>> extends BaseModel<M>
 
 	public java.lang.Integer getStation_id() {
 		return get("station_id");
+	}
+	
+	public void setWork_area_id(java.lang.Integer work_area_id) {
+		set("work_area_id", work_area_id);
+	}
+
+	public java.lang.Integer getWork_area_id() {
+		return get("work_area_id");
+	}
+	public void setUserType(java.lang.Long userType) {
+		set("user_type", userType);
+	}
+
+	public java.lang.Long getUserType() {
+		return get("user_type");
 	}
 }

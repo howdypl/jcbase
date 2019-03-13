@@ -3,14 +3,17 @@
  */
 package com.yanxin.common.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import com.jcbase.core.controller.JCBaseController;
+import com.jcbase.core.util.CommonUtils;
 import com.jcbase.core.util.JqGridModelUtils;
 import com.jcbase.core.view.InvokeResult;
+import com.jcbase.model.SysUser;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
@@ -38,14 +41,31 @@ public class SensorListController extends JCBaseController {
 	
 	public void getListData() {
 		String keyword=this.getPara("name");
-		Page<Sensor> pageInfo=Sensor.me.getSensorPage(getPage(), this.getRows(),keyword,this.getOrderbyStr());
+		String username=this.getPara("username");
+		Page<Sensor> pageInfo=Sensor.me.getSensorPage(getPage(), this.getRows(),keyword,username,this.getOrderbyStr());
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
+	
+	public void getListDataNew() {
+		String username=this.getPara("username");
+		int area = this.getParaToInt("workarea");
+		int opID = this.getParaToInt("op_id");
+		int station = this.getParaToInt("station");
+		int building = this.getParaToInt("building");
+		
+		Page<Sensor> pageInfo=Sensor.me.getSensorPageNew(getPage(), this.getRows(),username,area,opID,station,building,this.getOrderbyStr());
+		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
+	}
+	
+
+	
 	
 	public void add() {
 		Integer id=this.getParaToInt("id");
 		if(id!=null){
-			this.setAttr("item", Sensor.me.findById(id));
+			//this.setAttr("item", Sensor.me.findById(id));
+			Record r = Db.findFirst("select sensor.*,building.station_id,station.op_id,operation_class.work_area_id from sensor,building,station,operation_class where sensor.id=? and sensor.building_id=building.id and building.station_id=station.id and station.op_id=operation_class.id", id);
+			this.setAttr("item", r);
 		}
 		this.setAttr("id", id);
 		render("sensor_add.jsp");
@@ -55,7 +75,9 @@ public class SensorListController extends JCBaseController {
 		String sensor_code=this.getPara("sensor_code");
 		Integer id=this.getParaToInt("id");
 		Integer building_id=this.getParaToInt("building_id");
-		InvokeResult result=Sensor.me.save(id, name,sensor_code,building_id);
+		Integer sensor_id=this.getParaToInt("sensor_id");
+		
+		InvokeResult result=Sensor.me.save(id, name,sensor_code,building_id,sensor_id);
 		this.renderJson(result); 
 	}
 	
@@ -64,23 +86,63 @@ public class SensorListController extends JCBaseController {
 		InvokeResult invokeResult=Sensor.me.deleteData(id);
 		this.renderJson(invokeResult);
 	}
-
-	
-	
 	
 public void getSensorCode() {		
-		List<Record> records = Db.find("select sensor_code,name from sensor");
-		if (records != null && !records.isEmpty()) {
-			setAttr("records", records);
-			setAttr("result", true);
-			renderJson();
-		}else {
-			setAttr("result", false);
-			renderJson();
-		}
+	long building_id = getParaToLong("building_id");
+	List<Record> records = new ArrayList<Record>();
+	if(building_id>0){
+		records = Db.find("select sensor.* from sensor where building_id=?",building_id);
+	}
+	if (records != null && !records.isEmpty()) {
+		setAttr("content", records);
+		setAttr("result", true);
+		renderJson();
+	}else {
+		setAttr("result", false);
+		renderJson();
+	}
 		
+}
+public void getSensorCodeById() {	
+	int id=this.getParaToInt("buliding");
+	//System.out.println(id+"%%%%%%%%%%%%%%%%%5");
+	List<Record> records = Db.find("select sensor_code,name from sensor where building_id=?",id);
+	if (records != null && !records.isEmpty()) {
+		setAttr("content", records);
+		setAttr("result", true);
+		renderJson();
+	}else {
+		setAttr("result", false);
+		renderJson();
 	}
 	
+}
+
+
+	protected String getOrderbyStr(){
+		String sord=this.getPara("sord");
+		String sidx=this.getPara("sidx");
+		String order = "";
+		if(CommonUtils.isNotEmpty(sidx)){
+			if(sidx.equals("status")){
+				order= " order by sensor."+ sidx+" "+sord;
+			}else if(sidx.equals("create_time")){
+				order= " order by sensor."+ sidx+" "+sord;
+			}else if(sidx.equals("update_time")){
+				order= " order by sensor."+ sidx+" "+sord;
+			}else if(sidx.equals("building_name")){
+				order= " order by building."+ sidx+" "+sord;
+			}else if(sidx.equals("station_name")){
+				order= " order by station."+ sidx+" "+sord;
+			}else if(sidx.equals("op_name")){
+				order= " order by operation_class."+ sidx+" "+sord;
+			}		
+			
+		}
+		return order;
+	}
+
+
 //	public void deleteSensor() {
 //		boolean result;
 //		String sensorCodeString = getPara("sensorcode");

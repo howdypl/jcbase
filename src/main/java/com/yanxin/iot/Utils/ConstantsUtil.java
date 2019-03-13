@@ -46,6 +46,13 @@ public class ConstantsUtil {
 	
 	public static final int PLATFORM_CMD_PRESET = 0x07;
 	public static final int PLATFORM_CMD_PRESET_DEFAULT = 0x97;
+	
+	public static final int FLUSH_CMD_OP = 0x01;
+	public static final int FLUSH_CMD_OPEN = 0x0b;
+	
+	public static final long CONNECTION_TIMEOUT = 360000; // 6分钟超时周期
+	public static final int PLATFORM_CMD_SCAN = 0x98;
+	
 	public static final int PLATFORM_CMD_TIMES = 0x99;
 	
 	public static final int PLATFORM_CMD_IMAGE_ALL = 0x9A;	
@@ -53,10 +60,27 @@ public class ConstantsUtil {
 	public static final int PLATFORM_CMD_IMAGE_CREATE = 0x80;
 	public static final int PLATFORM_CMD_IMAGE_COLOR = 0x81;
 	
+	public static final int ACCEPT_NOTIFICATION = 1;
+	public static final int UNACCEPT_NOTIFICATION = 0;
+	
+	public static final int HEART_TYPE_EMITTANCE = 0x20;
+	public static final int HEART_TYPE_DEFAULT_POINT = 0x22;
+	public static final int HEART_TYPE_ALERT_TEMP = 0x21;
+	public static final int HEART_TYPE_TOTAL_POINT = 0x23;
+	
+	public static final String APP_URL_PREFIX = "http://116.255.207.148:33334/inf/backenduploadinf/app";
+	
 	// 阿里云
 	public  static final String SERVER_IP = "192.168.1.100";
 	
 	public static final String CMD = "ffplay -f h264 udp://";
+	
+	//告警报告临时导出文件夹
+	public static final String export_word_temp_dir = "E:/demoword/";
+	//测温报告图片临时导出文件夹
+	public static final String export_img_temp_dir = "E:/RCXImage/";
+	
+	public static final String image_upload_temp_dir = "E:/work/backend/upload";
 	
 	private static final CmdLineParser parser = new CmdLineParser(null);
 
@@ -153,6 +177,26 @@ public class ConstantsUtil {
         parser.startSwitchPublishController(sensorCode,type,value);
 	}
 	
+	public static void MqttHeartBit() {
+		
+		final CmdLineParser parser = getParser();
+
+        parser.startSubController();
+
+	}
+	public static void MqttHeartBitAsync() {
+		
+		final CmdLineParser parser = getParser();
+
+        parser.startSubControllerAsync();
+	}
+	
+	/**
+	 * 一键抓拍控制
+	 * @param sensorCodeList
+	 * @param type
+	 * @param value
+	 */
 	public static void MQTTPlatformCMDBatch(List<String> sensorCodeList, long type, int value) {
 		
 		final CmdLineParser parser = getParser();
@@ -162,14 +206,29 @@ public class ConstantsUtil {
         parser.startBatchSwitchPublishController(sensorCodeList, type, value);
         
 	}
+	/**
+	 * 雨刷控制
+	 * @param sensorCodeList
+	 * @param type
+	 * @param value
+	 */
+	public static void MQTTFlushCMDBatch(List<String> sensorCodeList, long type, int value) {
+		
+		final CmdLineParser parser = getParser();
+
+        parser.startFlushController();
+        
+        parser.startBatchFlushController(sensorCodeList, type, value);
+        
+	}
 	
-	public static void MQTTPlatformTimeCMD(String sensorCode, int type, List<Record> records) {
+	public static void MQTTPlatformTimeCMD(List<String> sensorCodeList, int type, List<Record> records) {
 		
 		final CmdLineParser parser = getParser();
 
         parser.startController2();
         
-        parser.startTimePublishController(sensorCode, type, records);
+        parser.startTimePublishController(sensorCodeList, type, records);
 	}
 	
 	// 未添加色带
@@ -261,6 +320,21 @@ public class ConstantsUtil {
 			}
 		}
 		return select;
+	}
+	
+	public static int getStatFromInt(Object ob){
+		if(ob!=null){
+			return Integer.parseInt(ob.toString());
+		}else {
+			return 0;
+		}
+	}
+	public static int getStatFromFloat(Object ob){
+		if(ob!=null){
+			return Double.valueOf(ob.toString()).intValue();
+		}else {
+			return 0;
+		}
 	}
 	
 	/*public static void main(String[] args) {

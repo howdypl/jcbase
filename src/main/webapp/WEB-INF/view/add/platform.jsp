@@ -21,7 +21,7 @@
             <div class="box-content">
 				<div class="row" style="padding-top: 10px">
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
-						<label class="form-label control-label">运维班：</label>
+						<label class="form-label control-label">班组：</label>
 					</div>
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
 						<label class="form-label control-label">变电站：</label>
@@ -38,7 +38,7 @@
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
 						<select id="station_op_class" onchange="getOpClassSelect(this)"
 							class="form-control selectpicker">
-							<option value='0'>---请选择运维班---</option>
+							<option value='0'>---请选择班组---</option>
 						</select>
 					</div>
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
@@ -81,12 +81,14 @@
 
 					</ul>
 				</div>
-				<button id="op_class_add" type="button" onclick="command(this)" class="btn btn-danger btn-lg" value="0" disabled><i
-                                class="glyphicon glyphicon-hdd glyphicon-white"></i>转动云台</button>
-
+				<button id="op_class_add" type="button" onclick="command(this)" class="btn btn-success btn-lg" value="0" disabled><i
+                                class="glyphicon glyphicon-hdd glyphicon-white"></i>动态拍图</button>
+				<span> &nbsp;&nbsp;&nbsp;&nbsp;</span>
+				<button id="platform_scan" type="button" onclick="cmdScan(this)" class="btn btn-success btn-lg" value="0" disabled><i
+                                class="glyphicon glyphicon-hdd glyphicon-white"></i>扫描预设点</button>
+				
                     <br> 
             
-
             </div>
         </div>
     </div>
@@ -147,12 +149,12 @@
 
 </div><!--/row-->
 
-<script type="text/javascript" src="${res_url}jsto/highchart/highcharts.js"></script>
-<script type="text/javascript" src="${res_url}jsto/highchart/exporting.js"></script>
+<%-- <script type="text/javascript" src="${res_url}jsto/highchart/highcharts.js"></script>
+<script type="text/javascript" src="${res_url}jsto/highchart/exporting.js"></script> --%>
 
 <script type="text/javascript">
    $(window).load(function(){
-     
+
 	   getOperationClass();
 		
 		$('#datetimepicker3').datetimepicker({
@@ -187,8 +189,10 @@
         }
         if(tag){
         	$('#op_class_add').prop('disabled', false);
+        	$('#platform_scan').prop('disabled', false);
         }else{
         	$('#op_class_add').prop('disabled', true);
+        	$('#platform_scan').prop('disabled', true);
         }
 		return select;
     }
@@ -237,6 +241,63 @@
 			            $.toaster({priority : 'success', title : '提示信息', message : '云台已经转动，请稍等！'});
 					}else{ //添加失败
 		                $.toaster({ priority : 'warning', title : '告警信息', message : '没有数据报告！'});
+		                return false;
+		            }
+					
+			    },
+			    error:function(){
+			    	$.toaster({ priority : 'danger', title : '错误信息', message : '请求错误，请确认路径正确或网络正常！'});
+			    	//$('#addModal').modal("hide");
+			    }
+	        });
+	        
+	    //window.location.reload("/station");
+	    return false;
+	}
+	
+	function cmdScan(which){
+		var parentdiv = $(which).parents('.box-content');
+		
+		var type = parentdiv.find("#add_type");
+		var sensor_code = parentdiv.find("#add_sensor_code");
+		var station_op = parentdiv.find("#station_op_class");
+		var station = parentdiv.find("#add_station");
+		var building = parentdiv.find("#add_building");
+		var layer = parentdiv.find("#add_layer");
+		var room = parentdiv.find("#add_room");
+		var colour = parentdiv.find("#add_angle_code");
+		// var timeArray = $('#reportrange span').html().split(" - ");
+		var platform = checkChanged();
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    async: false,
+			    url: "<%=request.getContextPath()%>"+"/platform/scanPlatform",
+			    data: {"type":type.val(),
+			    		"sensor_code":sensor_code.find("option:selected").val(),
+			    		"station_op":station_op.val(),
+			    		"station":station.val(),
+			    		"building":building.val(),
+			    		"layer":layer.val(),
+			    		"room":room.val(),
+			    		"status":status,
+			    		"platform":platform},
+			    timeout:10000,
+			    success: function(data) {
+			    	// var source = station.val()+'--'+building.val()+'--'+layer.val()+'--'+room.val();
+					var result = data.result;
+					// var record = data.record;
+					if(result){
+						/* var port = record.port;
+					    // 加入调用命令
+					    var commond = "ffplay -f h264 udp://192.168.1.118:"+port;
+					    // var commond = "calc"
+			            console.log(commond);
+			            // exeCMD(command); */
+			            $.toaster.reset();
+			            $.toaster({priority : 'success', title : '提示信息', message : '扫描预设点命令已经下发，请稍等！'});
+					}else{ //添加失败
+		                $.toaster({ priority : 'warning', title : '告警信息', message : '命令没有成功！'});
 		                return false;
 		            }
 					
@@ -454,7 +515,7 @@
 	function getOperationClass(){
 		var which = $('#station_op_class');
 		$(which).empty();
-		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
 		var name="${sessionScope.sysUser.name}";
 		$.ajax({
 			    type: 'POST',
@@ -462,11 +523,18 @@
 			    url: "<%=request.getContextPath()%>"+"/getoperation",
 			    data:{"username":name},
 			    success: function(data) {
-					var result = data.oplist;
-					var notEmpty = data.notempty;
+					var result = data.content;
+					var notEmpty = data.result;
 					if(notEmpty){
-						var index =1;
-					    $.each(result, function(i,value){					     						    
+						var index =1; // 设置默认选择的班组
+					    $.each(result, function(i,value){	
+					    	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}				     						    
 					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
 					    });
 					    
@@ -475,19 +543,19 @@
 					   	var opClass = document.getElementById("station_op_class");//$('#station_op_class');
         				getOpClassSelect(opClass);
 					}
-					
 			    }
 	        });
-		
 	}
+	
 	function getOpClassSelect(which){
-	    var sindex = which.selectedIndex;	  
+	    var sindex = which.selectedIndex;
 		if(sindex == 0){
 			isSelect('typealert',which);
 		}else{
 			getStation(which.value);
 		}
-	}	
+	}
+	
 	function getStation(op){
 		var which = $('#add_station');
 		var opclass = op;
@@ -499,11 +567,18 @@
 			    url: "<%=request.getContextPath()%>"+"/building/getStation",
 			    data:{"opclass":opclass},
 			    success: function(data) {
-					var result = data.stationRecords;
-					var notEmpty = data.notempty;
+					var result = data.content;
+					var notEmpty = data.result;
 					if(result){						
-						var index =9;
-					     $.each(result, function(i,value){					     	
+						var index =1; // 设置默认选择的变电站
+					     $.each(result, function(i,value){	
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}				     	
 					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
 					    });
 					    
@@ -518,10 +593,12 @@
 			    }
 	        });	        	        
 	}
+	
 	function managerSelect(which){
 		getBuilding(which.value);
 		//command();			
-	}	
+	}
+	
 	function getBuilding(op){
 		
 		var which = $('#add_building');
@@ -534,10 +611,17 @@
 			    url: "<%=request.getContextPath()%>"+"/building/getBuilding",
 			    data:{"station":para},
 			    success: function(data) {
-					var result = data.buildingRecords;
+					var result = data.content;
 					if(result){
 						var index = 1;			
-					     $.each(result, function(i,value){					  
+					     $.each(result, function(i,value){
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}					  
 					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
 					    });
 					    which.get(0).selectedIndex=index;//index为索引值
@@ -556,7 +640,7 @@
 		//command();
 		getCode(which.value);
 	}
-	function getCode(op){		
+	function getCode(op){
 		var which = $("#add_building");
 		var building_id = op;
 		$('#add_sensor_code').empty();
@@ -569,11 +653,18 @@
 			    	"building_id":building_id},
 			    success: function(data) {
 			    	var notEmpty = data.result;
-					var result = data.records;
+					var result = data.content;
 					
 					if(notEmpty){
-						var index = 3;
+						var index = 1;
 					     $.each(result, function(i,value){
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}
 					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"'>"+value.name+"</option>"); 
 					    	
 					    });
@@ -586,7 +677,6 @@
 	        });
 	}	
 	function timeSelect(which){
-
 		clearData();
 		var code = $(which);
 		var sindex = which.selectedIndex;
@@ -607,7 +697,7 @@
 			$('#add_times').prop('disabled', false);
 		}
 		
-		$('#op_class_add').prop('disabled', true);
+		// $('#op_class_add').prop('disabled', true);
 	}
 	
 	// 当选择监控器编号后，加载数据库中的已有的时刻点
@@ -746,14 +836,39 @@
 					// console.log("notEmpty = "+notEmpty);
 					if(notEmpty){
 						hiddleComp('nocolouralert');
+						var tag = 0;
+						var index = 1;
 					     $.each(result, function(i,value){
-					    	 if(value.status > 0){
-					    		 $('#platform_checkbox').append("<input OnClick='checkChanged()' type='checkbox' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode' checked='checked'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
-						     	}else {
-						    		$('#platform_checkbox').append("<input OnClick='checkChanged()' type='checkbox' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
-						    	}	
+					     	//设置查询条件初始值
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}					     
+					     
+					    	if(value.status > 0){
+					    		tag = 1;
+					    		$('#platform_checkbox').append("<input OnClick='checkChanged()' type='checkbox' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode' checked='checked'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
+						    }else {
+						    	$('#platform_checkbox').append("<input OnClick='checkChanged()' type='checkbox' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
+						    }
+						    // 未选择预设点，转动云台按钮为不可选，只有选择了预设点
+						    if(tag > 0){
+						    	$('#op_class_add').prop('disabled', false);
+						    	$('#platform_scan').prop('disabled', false);
+						    }else if(tag == 0){
+						    	$('#op_class_add').prop('disabled', true);
+						    	$('#platform_scan').prop('disabled', true);
+						    }
 					    	var paths="<%=baseImagePath%>";
-					    	paths += value.images;
+					    	if(value.images!=0){
+					    	    paths += value.images;
+					    	}
+					    	else{
+					    	    paths = "${res_url}img/noimage.jpg";
+					    	}
 					    	var backgroud = "background:url('"+paths+"')";
 					    	var temp = document.createElement("li"); 
 					     	temp.id = value.id;
@@ -761,7 +876,12 @@
 					     	ul.appendChild(temp);					     	
 					     	var tempa = document.createElement("a"); 
 					     	tempa.href= paths;
-					     	tempa.title = value.images;
+					     	if(value.images==0){
+					     	    tempa.title = "图片未上传";
+					     	}
+					     	else{
+					     	    tempa.title = value.images;
+					     	}   
 					     	tempa.style=backgroud;
 					     	tempa.className="gallery";
 					     	//tempa.innerHTML=value.images;
@@ -789,7 +909,6 @@
 
 	//全选、取消全选的事件  
 	function selectAll(){ 
-
 	    //console.log($("input[type='checkbox'][name='mypcode']").prop("checked"));
 	    if ($("input[type='checkbox'][name='mypcode']").prop("checked")) {
 
@@ -815,10 +934,12 @@
 		//console.log("code-index="+code.val());
 		if(code.val() == 0){
 			$('#op_class_add').prop('disabled', true);
+			$('#platform_scan').prop('disabled', true);
 			$('#image_show_div').hide();
 			//$('#op_class_add').text("开关监控器");
 		}else{
 			$('#op_class_add').prop('disabled', false);
+			$('#platform_scan').prop('disabled', false);
 			// $('#platform_code_div').show();
 			// daterangetimeplugin();
 			//console.log("code="+code.find("option:selected").text());

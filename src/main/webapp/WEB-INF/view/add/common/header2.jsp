@@ -35,5 +35,8 @@
 	
     <!-- The fav icon -->
     <link rel="shortcut icon" href="${res_url}img/favicon.ico">
+    <!-- 去除底部滚动条 -->
+    <link rel="stylesheet" type="text/css" href="${res_url}css/scollset.css">
+    
 <!-- 	<link href='css/bootstrap-combined.min.css' rel='stylesheet' type='text/css'> -->
 	<link href='${res_url}cssto/bootstrap-datetimepicker.min.css' rel='stylesheet' type='text/css'>

@@ -10,7 +10,7 @@
                 <a href="#">主页</a>
             </li>
             <li>
-                <a href="#">变电站站操作</a>
+                <a href="#">zhan操作</a>
             </li>
         </ul>
     </div>
@@ -19,7 +19,7 @@
     <div class="box col-md-12">
     <div class="box-inner">
     <div class="box-header well" data-original-title="">
-        <h2><i class="glyphicon glyphicon-tower"></i> 变电站信息</h2>
+        <h2><i class="glyphicon glyphicon-tower"></i> zhan信息</h2>
 
         <!-- <div class="box-icon">
             <a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
@@ -32,7 +32,7 @@
     <div class="alert alert-info">
     	<a class="btn btn-info" data-toggle="modal" data-target="#addStationModal">
     		<i class="glyphicon glyphicon-edit icon-white"></i>
-              	  添加变电站
+              	  添加zhan
        </a>
     </div>
     <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
@@ -40,9 +40,9 @@
     
     <tr>
     	<th >序号</th>
-        <th class="center">变电站名称</th>
+        <th class="center">zhan名称</th>
         <th class="center text-nowrap">负责人</th>
-        <th class="center text-nowrap">所属运维班</th>
+        <th class="center text-nowrap">所属班组</th>
         <th class="center">地址</th>
         <th class="center">简介</th>
         <th class="center">添加时间</th>
@@ -103,7 +103,7 @@
 		        <div class="modal-content">
 		            <div class="modal-header">
 		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                <h4 class="modal-title" id="myModalLabel">查看变电站信息</h4>
+		                <h4 class="modal-title" id="myModalLabel">查看zhan信息</h4>
 		            </div>
 		            <div class="modal-body .container">
 						<div class="form-inline row">
@@ -119,7 +119,7 @@
       					</div>
       					<div class="form-inline row">
       						<div class="col-md-2">
-        						<label class="form-label control-label">变电站名称</label>   
+        						<label class="form-label control-label">zhan名称</label>   
         					</div> 
         					<div class="col-md-10">				
         						<input readonly type="text" class="form-control" value="${sRecords.station_name}">
@@ -141,7 +141,7 @@
       					</div>
       					<div class="form-inline row">
       						<div class="col-md-2">
-        						<label class="form-label control-label">所属运维班</label>   
+        						<label class="form-label control-label">所属班组</label>   
         					</div> 
         					<div class="col-md-10">				
         						<input readonly type="text" class="form-control" value="${sRecords.op_name}">
@@ -198,7 +198,7 @@
 		        <div class="modal-content">
 		            <div class="modal-header">
 		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                <h4 class="modal-title" id="myModalLabel">删除变电站信息</h4>
+		                <h4 class="modal-title" id="myModalLabel">删除Zhan信息</h4>
 		            </div>
 		            <div class="modal-body .container">
 						<div class="form-inline row">
@@ -214,7 +214,7 @@
       					</div>
       					<div class="form-inline row">
       						<div class="col-md-3">
-        						<label class="form-label control-label">变电站名称</label>   
+        						<label class="form-label control-label">zhan名称</label>   
         					</div> 
         					<div class="col-md-9">				
         						<input readonly type="text" class="form-control" value="${sRecords.station_name}">
@@ -236,7 +236,7 @@
       					</div>
       					<div class="form-inline row">
       						<div class="col-md-3">
-        						<label class="form-label control-label">所属运维班</label>   
+        						<label class="form-label control-label">所属班组</label>   
         					</div> 
         					<div class="col-md-9">				
         						<input readonly type="text" class="form-control" value="${sRecords.op_name}">
@@ -337,11 +337,11 @@
       					
       					<div class="form-inline row">
       						<div class="col-md-3">
-      							<label class="form-label control-label">所属运维班</label>
+      							<label class="form-label control-label">所属班组</label>
       						</div>
       						<div class="col-md-6">	
 	      						<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker" disabled>
-	                        		<option  value='0'>---请选择运维班---</option>
+	                        		<option  value='0'>---请选择班组---</option>
 	                       		</select>
                        		</div>
       					</div>
@@ -546,7 +546,7 @@
 	
 		var which = $('#station_op_class');
 		$(which).empty();
-		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
 		$.ajax({
 			    type: 'POST',
 			    dataType: 'json',

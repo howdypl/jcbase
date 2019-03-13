@@ -21,7 +21,7 @@
              <div class="box-content">
                 	<div class="row" style="padding-top: 10px">
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
-						<label class="form-label control-label">运维班：</label>
+						<label class="form-label control-label">班组：</label>
 					</div>
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
 						<label class="form-label control-label">变电站：</label>
@@ -38,7 +38,7 @@
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
 						<select id="station_op_class" onchange="getOpClassSelect(this)"
 							class="form-control selectpicker">
-							<option value='0'>---请选择运维班---</option>
+							<option value='0'>---请选择班组---</option>
 						</select>
 					</div>
 					<div class="col-md-3" style="width: 18%; margin: 0 20px;">
@@ -211,7 +211,7 @@
 		
 		$(which).empty();
 		
-		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
 		var name="${sessionScope.sysUser.name}";
 		$.ajax({
 			    type: 'POST',
@@ -555,7 +555,7 @@
 	function getOperationClass(){
 		var which = $('#station_op_class');
 		$(which).empty();
-		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
 		var name="${sessionScope.sysUser.name}";
 		$.ajax({
 			    type: 'POST',
@@ -563,11 +563,18 @@
 			    url: "<%=request.getContextPath()%>"+"/getoperation",
 			    data:{"username":name},
 			    success: function(data) {
-					var result = data.oplist;
-					var notEmpty = data.notempty;
+					var result = data.content;
+					var notEmpty = data.result;
 					if(notEmpty){
-						var index =1;
-					    $.each(result, function(i,value){					     						    
+						var index =1; // 设置默认选择的班组
+					    $.each(result, function(i,value){	
+					    	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}				     						    
 					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
 					    });
 					    
@@ -600,11 +607,18 @@
 			    url: "<%=request.getContextPath()%>"+"/building/getStation",
 			    data:{"opclass":opclass},
 			    success: function(data) {
-					var result = data.stationRecords;
-					var notEmpty = data.notempty;
+					var result = data.content;
+					var notEmpty = data.result;
 					if(result){						
-						var index =9;
-					     $.each(result, function(i,value){					     	
+						var index =1; // 设置默认选择的变电站
+					     $.each(result, function(i,value){	
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}				     	
 					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
 					    });
 					    
@@ -635,10 +649,17 @@
 			    url: "<%=request.getContextPath()%>"+"/building/getBuilding",
 			    data:{"station":para},
 			    success: function(data) {
-					var result = data.buildingRecords;
+					var result = data.content;
 					if(result){
 						var index = 1;			
-					     $.each(result, function(i,value){					  
+					     $.each(result, function(i,value){	
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}				  
 					    	$(which).append("<option value='"+value.id+"'>"+value.building_name+"</option>"); 
 					    });
 					    which.get(0).selectedIndex=index;//index为索引值
@@ -670,11 +691,18 @@
 			    	"building_id":building_id},
 			    success: function(data) {
 			    	var notEmpty = data.result;
-					var result = data.records;
+					var result = data.content;
 					
 					if(notEmpty){
-						var index = 3;
+						var index = 1;
 					     $.each(result, function(i,value){
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}
 					    	$('#add_sensor_code').append("<option value='"+value.sensor_code+"'>"+value.name+"</option>"); 
 					    	
 					    });
@@ -726,7 +754,17 @@
 					var result = data.records;
 					if(notEmpty){
 						hiddleComp('nocolouralert');
+						var index = 1;
 					     $.each(result, function(i,value){
+					     	//设置查询条件初始值
+					     	if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	}
+					     
 					     	if(value.status > 0){
 					     		$('#platform_checkbox').append("<input OnClick='checkChanged()' type='radio' id='"+value.id+" class='styled' value='"+value.id+"' name='mypcode' checked='checked'/>"+value.platform_code+"&nbsp;&nbsp;&nbsp;");
 					     	}else {
@@ -739,7 +777,12 @@
 					    	console.log("path="+paths); --%>
 					    	
 					    	var paths="<%=baseImagePath%>";
-					    	paths += value.images;
+					    	if(value.images!=0){
+					    	    paths += value.images;
+					    	}
+					    	else{
+					    	    paths = "${res_url}img/noimage.jpg";
+					    	}
 					    	var backgroud = "background:url('"+paths+"')";
 					    	
 					    	var temp = document.createElement("li"); 
@@ -748,7 +791,12 @@
 					     	ul.appendChild(temp);    	
 					     	var tempa = document.createElement("a"); 
 					     	tempa.href= paths;
-					     	tempa.title = value.images;
+					     	if(value.images==0){
+					     	    tempa.title = "图片未上传";
+					     	}
+					     	else{
+					     	    tempa.title = value.images;
+					     	}   
 					     	tempa.style=backgroud;
 					     	tempa.className="gallery";
 					     	//tempa.innerHTML=value.images;

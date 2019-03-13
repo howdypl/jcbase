@@ -92,7 +92,7 @@ public class AppVersion extends BaseAppVersion<AppVersion> {
 	}
 
 	public AppVersion getLastAppVersion(String os, String appname) {
-		// TODO Auto-generated method stub 
+		
 		Set<Condition> conditions=Sets.newHashSet();
 		conditions.add(new Condition("os",Operators.EQ,os));
 		conditions.add(new Condition("title",Operators.EQ,appname));

@@ -49,5 +49,68 @@ public abstract class BaseWarn<M extends BaseWarn<M>> extends BaseModel<M> imple
 	public java.util.Date getCreateTime() {
 		return get("create_time");
 	}
+	
+	public void setStatus(int status) {
+		set("status", status);
+	}
 
+	public int getStatus() {
+		return get("status");
+	}
+	public void setReason(java.lang.String reason) {
+		set("reason", reason);
+	}
+
+	public java.lang.String getReason() {
+		return get("reason");
+	}
+	
+	public void setSuggestion(java.lang.String suggestion) {
+		set("suggestion", suggestion);
+	}
+
+	public java.lang.String getSuggestion() {
+		return get("suggestion");
+	}
+	
+	public void setRemark(java.lang.String remark) {
+		set("remark", remark);
+	}
+
+	public java.lang.String getRemark() {
+		return get("remark");
+	}
+	
+	public void setWeather(java.lang.String weather) {
+		set("weather", weather);
+	}
+
+	public java.lang.String getWeather() {
+		return get("weather");
+	}
+	
+	public void setWeatherTemp(java.lang.String weatherTemp) {
+		set("weather_temp", weatherTemp);
+	}
+
+	public java.lang.String getWeatherTemp() {
+		return get("weather_temp");
+	}
+	
+	public void setHumidity(java.lang.String humidity) {
+		set("humidity", humidity);
+	}
+
+	public java.lang.String getHumidity() {
+		return get("humidity");
+	}
+
+	public void setWind(java.lang.String wind) {
+		set("wind", wind);
+	}
+
+	public java.lang.String getWind() {
+		return get("wind");
+	}
+	      
 }

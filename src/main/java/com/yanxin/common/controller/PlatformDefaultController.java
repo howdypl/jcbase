@@ -83,16 +83,17 @@ public class PlatformDefaultController extends Controller {
 		
 		int select = getParaToInt("platform");
 		String setName = "预设点";
+		int point = 0;
 		for (int i = 0; i < 9; i++) {
 			if((select >> i+1) == 0){
-				int j = i+1;
-				setName += j;
+				point = i+1;
+				// setName += j;
 				break;
 			}
 		}
 		System.out.println("setName="+setName);
-		Db.update("UPDATE platform_point set status = 0 WHERE pp_sensor_code='"+sensorCodeString+"'");
-		Db.update("UPDATE platform_point set status = 1 WHERE pp_sensor_code='"+sensorCodeString+"' and platform_code = '"+setName+"'");
+		Db.update("UPDATE platform_point set status = 1,defaul=1 WHERE pp_sensor_code='"+sensorCodeString+"' and point_type='"+point+"'");
+		// Db.update("UPDATE platform_point set status = 1 WHERE pp_sensor_code='"+sensorCodeString+"' and platform_code = '"+setName+"'");
 
 		List<String> sensorList = new ArrayList<String>();
 		if(sensorCodeString != null){

@@ -25,7 +25,7 @@
 								<div class="row-fluid" style="margin-bottom: 5px;">
 									<div class="span12 control-group">
 										<jc:button className="btn btn-primary" id="btn-add" textName="添加应用"/>
-										<jc:button className="btn btn-info" id="btn-edit" textName="修改应用"/>
+										<%-- <jc:button className="btn btn-info" id="btn-edit" textName="修改应用"/> --%>
 										<jc:button className="btn btn-success" id="btn-visible" textName="启用"/>
 										<jc:button className="btn btn-danger" id="btn-unvisible" textName="禁用"/>
 									</div>
@@ -65,7 +65,7 @@
 			$(window).on('resize.jqGrid', function () {
 				$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() );
 		    });
-//resize on sidebar collapse/expand
+			//resize on sidebar collapse/expand
 				var parent_column = $(grid_selector).closest('[class*="col-"]');
 				$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
 					if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
@@ -77,7 +77,7 @@
 			    });
 
             $("#grid-table").jqGrid({
-                url:'/app/getListData',
+                url:'${context_path}/app/getListData',
                 mtype: "GET",
                 datatype: "json",
                 colModel: [
@@ -85,7 +85,7 @@
                     { label: '版本号', name: 'version_no', width: 40 ,sortable:false},
                     { label: '自然数版本号', name: 'nature_no', width: 30 ,sortable:false},
                     { label: '强制升级', name: 'is_force',formatter:isForce, width: 30 ,sortable:false},
-                    { label: '下载地址', name: 'url',formatter:download, width:50,sortable:false},
+                    { label: '下载地址', name: 'link_url',formatter:download, width:50,sortable:false},
                     { label: '系统', name: 'os', width:40,sortable:false },
                     { label: '状态', name: 'status',formatter:fmatterStatus, width:40,sortable:false }
                 ],
@@ -122,7 +122,7 @@
 				    area: ['770px', '530px'],
 				    fix: false, //不固定
 				    maxmin: true,
-				    content: '/app/addApp'
+				    content: '${context_path}/app/addApp'
 				});
 			});
 			$("#btn-edit").click(function(){//添加页面
@@ -144,7 +144,7 @@
 					    area: ['770px', '530px'],
 					    fix: false, //不固定
 					    maxmin: true,
-					    content: '/app/addApp?id='+rid
+					    content: '${context_path}/app/addApp?id='+rid
 					});
 				}
 			});
@@ -217,7 +217,7 @@
 					"ids" : getSelectedRows(),
 					"visible":status
 			};
-			$.post("/app/setVisible", submitData,function(data) {
+			$.post("${context_path}/app/setVisible", submitData,function(data) {
 
 				if (data.code == 0) {
 					layer.msg("操作成功", {
@@ -243,7 +243,23 @@
 		}
 		//下载地址
 		function download(cellvalue, options, rowObject){
-			return '<a href=\"${static_url }'+cellvalue+'\" target="_blank">点击下载</a>';
+			console.log("url="+rowObject.url);
+			// return '<a href=\"'+cellvalue+'\" target="_blank">点击下载</a>';
+			//return '<a href=\"'+cellvalue+'\" download=\"'+rowObject.url+'\">点击下载</a>';
+			// return '<a href="javascript:void(0);" onclick=\"idown('+rowObject.id+');return false;\">点击下载</a>';
+			return '<a href=\"${context_path}/app/download/'+rowObject.id+'\">点击下载</a>';
+			
+		}
+		function idown(id){
+			$.post("${context_path}/app/download", {'id':id}, function(data) {
+								
+								if (data.code == 0) {
+									window.top.location.href = "${context_path}/";
+								} else {
+									alert(data.msg);
+								}
+							}, "json");
+		
 		}
 		//是否强制升级
 		function isForce(cellvalue, options, rowObject){

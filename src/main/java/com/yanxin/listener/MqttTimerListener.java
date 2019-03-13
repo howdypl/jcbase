@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.yanxin.listener;
 
 
@@ -47,15 +44,12 @@ public class MqttTimerListener implements ServletContextListener {
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		// timer = new java.util.Timer();
-		logger.info("sadhtdjryf");
-		event.getServletContext().log("时间矫正定时器开启！");
-		// timer.schedule(new MyTask(), 0, 30); // 3600*1000);
-		// timer.schedule(new MyTask(), 0, 1000*3600);
+		
+		/*event.getServletContext().log("时间矫正定时器开启！");
 		try {
 			if(!ConstantsUtil.bstart){
 				parser = new CmdLineParser(args);
-				// parser.startController();
+				
 			    System.out.println("[MqttTimerListener]时间校准定时器开始....");
 			    parser.startTimePublishController();
 			    ConstantsUtil.bstart = true;
@@ -63,29 +57,8 @@ public class MqttTimerListener implements ServletContextListener {
 				event.getServletContext().log("[MqttTimerListener]时间校准已启动！无需再次启动！");
 			}
 		} catch (Exception e) {
-			event.getServletContext().log("hahaha");
-		}
-	}
-	
-	private void command() {
-		String[] args = null;
-		final CmdLineParser parser = new CmdLineParser(args);
-
-        parser.startController();
-        System.out.println("[MqttTimerListener] MqttTimerListener---time");
-        parser.startTimePublishControllerOnlyOne();
-
-	}
-	
-	class MyTask extends TimerTask{
-
-		@Override
-		public void run() {
-			
-			command();
-			//timer.cancel();
-		}
-		
+			event.getServletContext().log("出错了");
+		}*/
 	}
 
 }

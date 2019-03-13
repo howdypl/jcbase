@@ -81,6 +81,7 @@ public class SysRole extends BaseSysRole<SysRole>
 		List<ZtreeView> ztreeViews=new ArrayList<ZtreeView>();
 		ztreeViews.add(new ZtreeView(10000,null,"资源列表",true));
 		for(SysRes SysRes : curMenulist){
+			//System.out.println(SysRes.getStr("name")+"******");
 			ZtreeView ztreeView=new ZtreeView();
 			ztreeView.setId(SysRes.getInt("id"));
 			ztreeView.setName(SysRes.getStr("name"));
@@ -93,6 +94,7 @@ public class SysRole extends BaseSysRole<SysRole>
 			ztreeView.setChecked(SysRes.getLong("selected")==1?true:false);
 			ztreeViews.add(ztreeView);
 		}
+		//System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVV");
 		return InvokeResult.success(JsonKit.toJson(ztreeViews));
 	}
 	

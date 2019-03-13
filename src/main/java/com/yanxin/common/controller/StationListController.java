@@ -45,23 +45,37 @@ public class StationListController extends JCBaseController{
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
 	
-	
+	public void getListDataNew() {
+		String username = this.getPara("username");
+		int area = this.getParaToInt("workarea");
+		int ipID = this.getParaToInt("op_id");
+		
+		Page<Station> pageInfo=Station.me.getStationPageNew(getPage(), this.getRows(),username,area,ipID,this.getOrderbyStr());
+		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
+	}
+		
 	public void add() {
 		Integer id=this.getParaToInt("id");
 		if(id!=null){
-			this.setAttr("item", Station.me.findById(id));
+			Record r = Db.findFirst("select station.*,operation_class.work_area_id from station,operation_class where station.id=? AND station.op_id=operation_class.id", id);
+			//this.setAttr("item", Station.me.findById(id));
+			this.setAttr("item", r);
 		}
 		this.setAttr("id", id);
 		render("stationlist_add.jsp");
 	}
 	public void save(){
+		String username = this.getPara("username");
 		String station_name=this.getPara("name");
 		String station_desc=this.getPara("station_desc");
 		String station_addr=this.getPara("station_addr");
+		
 		Integer id=this.getParaToInt("id");
-		Integer station_manager=this.getParaToInt("station_manager");
+		//Integer station_manager=this.getParaToInt("station_manager");
 		Integer op_id=this.getParaToInt("op_id");
-		InvokeResult result=Station.me.save(id, station_name,station_desc,station_addr,station_manager,op_id);
+		Integer wa_id = this.getParaToInt("work_area_id");
+		//InvokeResult result=Station.me.save(id, station_name,station_desc,station_addr,station_manager,op_id);
+		InvokeResult result=Station.me.save(id, station_name,station_desc,station_addr,op_id);
 		this.renderJson(result); 
 	}
 	

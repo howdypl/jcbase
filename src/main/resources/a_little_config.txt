@@ -1,8 +1,12 @@
 jdbcUrl = jdbc:mysql://localhost:3306/video?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 user = root
 password = 123456
-static_url=http://localhost:8080/upload/
-uploadPath=/Users/yulong/remote/jcbase/src/main/webapp/upload/
+static_url=http://116.255.207.148:33334/inf/backenduploadinf/app/apk
+uploadPath=e:/work/backend/upload/app/apk
+image_url_prefix=http://116.255.207.148:33334/backendimageinf/
 res_url=http://localhost:8080/res/
-devMode=true
+export_word_temp_dir = E:/demoword/
+export_img_temp_dir = E:/RCXImage/
+image_upload_temp_dir=E:/work/backend/upload
+devMode=false
 app_key=80b8a85d78bf4f87baa0994a38b48825

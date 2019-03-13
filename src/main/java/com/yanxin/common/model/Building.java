@@ -10,6 +10,7 @@ import com.jcbase.core.model.Condition;
 import com.jcbase.core.model.Operators;
 import com.jcbase.core.util.CommonUtils;
 import com.jcbase.core.view.InvokeResult;
+import com.jcbase.model.SysUser;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.yanxin.common.model.base.BaseBuilding;
@@ -22,8 +23,6 @@ public class Building extends BaseBuilding<Building> {
 	public static final Building me = new Building();
 	private static final long serialVersionUID=-7944471090111271965L;
 	
-	
-	
 	public Page<Building> getBuildingPage(int page, int rows, String keyword,
 			String orderbyStr) {
 		Set<Condition> conditions=new HashSet<Condition>();
@@ -35,6 +34,46 @@ public class Building extends BaseBuilding<Building> {
 		StringBuffer sqlExceptSelect=new StringBuffer();
 		sqlExceptSelect.append("from building su"+super.getWhereSql(conditions, outConditionValues));
 		return this.paginate(page, rows, select, sqlExceptSelect.toString());
+	}
+	
+	public Page<Building> getBuildingPageNew(int page, int rows, String username,int area,int opID,int station,
+			String orderbyStr) {
+		SysUser user = SysUser.me.getByName(username);
+		String select = "select building.*,work_area.area as area,su.op_name as op_name,station.station_name ";
+		String sqlExceptSelect = "from building,station,operation_class su,work_area where building.station_id=station.id AND station.op_id = su.id AND su.work_area_id=work_area.id";
+		if(user.getUserType().intValue() == new Integer(0).intValue()){
+			
+			if(area>0){
+				if(opID > 0){
+					sqlExceptSelect += " AND work_area.id="+area+" AND su.id="+opID;
+					if(station > 0){
+						sqlExceptSelect += " AND station.id="+station;
+					}
+				}else{
+					sqlExceptSelect += " AND work_area.id="+area;
+				}
+				return this.paginate(page, rows, select, sqlExceptSelect);
+			}
+			return this.paginate(page, rows, select, sqlExceptSelect);
+		}else {
+			int tempid = 0;
+			if(area>0){
+				tempid = area;
+			}else{
+				tempid = user.getWork_area_id();
+			}
+			
+			sqlExceptSelect += " AND work_area.id="+tempid;
+			if(opID > 0){
+				sqlExceptSelect += " AND su.id="+opID;
+				if(station > 0){
+					sqlExceptSelect += " AND station.id="+station;
+				}
+			}
+			
+			return this.paginate(page, rows, select, sqlExceptSelect.toString());
+		}
+
 	}
 	
 	

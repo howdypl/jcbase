@@ -126,7 +126,7 @@
 								des: $("#des").val()
 						};
 						$btn.addClass("disabled");
-						$.post('/sys/role/save', postData,function(data) {
+						$.post('${context_path}/sys/role/save', postData,function(data) {
 							$btn.removeClass("disabled");
 							if(data.code==0){
 	        					layer.msg('操作成功', {

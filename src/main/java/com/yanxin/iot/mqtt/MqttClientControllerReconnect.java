@@ -173,28 +173,27 @@ public class MqttClientControllerReconnect implements MqttCallbackExtended {
     	this(brokerUrl, clientId, cleanSession, quietMode, userName, password);
     	this.subTopic = subTopic;
     }
+  
 
-    
-
-		/**
-         * Publish / send a message to an MQTT server
-         * @param topicName the name of the topic to publish to
-         * @param qos the quality of service to delivery the message at (0,1,2)
-         * @param payload the set of bytes to send to the MQTT server
-         * @throws MqttException
-         */
+	/**
+     * Publish / send a message to an MQTT server
+     * @param topicName the name of the topic to publish to
+     * @param qos the quality of service to delivery the message at (0,1,2)
+     * @param payload the set of bytes to send to the MQTT server
+     * @throws MqttException
+     */
     public void publish(String topicName, int qos, byte[] payload) throws MqttException {
 
     	// Connect to the MQTT server
     	
-    	log.info("[publish client] Connecting to "+brokerUrl + " with client ID "+client.getClientId());
+    	log.info("[发布命令客户端] 连接到： "+brokerUrl + "，客户端ID是:"+client.getClientId());
     	this.connect2();
-		log.info("[publish client] Successfully Connected!!");
+    	log.info("[发布命令客户端] 连接成功!!");
 		
 		// this.connect();
 
     	String time = new Timestamp(System.currentTimeMillis()).toString();
-    	log.info("[publish client] Publishing at: "+time+ " to topic \""+topicName+"\" qos "+qos);
+    	log.info("[发布命令客户端] 发布时间为: "+time+ "，主题为: \""+topicName+"\", qos为： "+qos);
 
     	// Create and configure a message
    		MqttMessage message = new MqttMessage(payload);

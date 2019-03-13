@@ -39,6 +39,18 @@ public class OperationClassController extends JCBaseController {
 		System.out.println("第几页：："+getPage()+"*************************");
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
+	public void getListDataNew() {
+		
+		String userName=this.getPara("username");
+		int workArea = this.getParaToInt("workarea");
+		
+		Page<OperationClass> pageInfo=OperationClass.me.getOperationClassPageNew(getPage(), this.getRows(),
+				userName,workArea,this.getOrderbyStr());
+		System.out.println("第几页：："+getPage()+"*************************");
+		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
+	}
+	
+	
 //	public void getListData() {
 //		String name=this.getPara("name");
 //		Set<Condition> conditions=new HashSet<Condition>();
@@ -48,7 +60,7 @@ public class OperationClassController extends JCBaseController {
 //		Page<OperationClass> pageInfo=OperationClass.me.getPage(this.getPage(), this.getRows(),conditions,this.getOrderby());
 //		this.renderJson(OperationClass.me.toJqGridView(pageInfo)); 
 //	}
-	
+
 	public void add() {
 		Integer id=this.getParaToInt("id");
 		if(id!=null){
@@ -62,8 +74,18 @@ public class OperationClassController extends JCBaseController {
 		String op_desc=this.getPara("op_desc");
 		String op_addr=this.getPara("op_addr");
 		Integer id=this.getParaToInt("id");
-		Integer op_manager=this.getParaToInt("op_manager");
-		InvokeResult result=OperationClass.me.save(id, op_name,op_desc,op_addr,op_manager);
+		//Integer op_manager=this.getParaToInt("op_manager");
+		InvokeResult result=OperationClass.me.save(id, op_name,op_desc,op_addr);
+		this.renderJson(result); 
+	}
+	public void saveNew(){
+		String op_name=this.getPara("name");
+		String op_desc=this.getPara("op_desc");
+		String op_addr=this.getPara("op_addr");
+		Integer id=this.getParaToInt("id");
+		Integer workAreaId = this.getParaToInt("work_area_id");
+		//Integer op_manager=this.getParaToInt("op_manager");
+		InvokeResult result=OperationClass.me.saveNew(id, op_name,workAreaId,op_desc,op_addr);
 		this.renderJson(result); 
 	}
 	

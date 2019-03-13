@@ -15,17 +15,12 @@
  */
 package com.jcbase.controller;
 
-import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.codec.binary.Base64;
 
 import com.jcbase.core.auth.anno.RequiresPermissions;
 import com.jcbase.core.auth.interceptor.AuthorityInterceptor;
 import com.jcbase.core.auth.interceptor.SysLogInterceptor;
-import com.jcbase.core.util.DateUtils;
 import com.jcbase.core.util.IWebUtils;
-import com.jcbase.core.util.MD5Utils;
 import com.jcbase.core.util.MyDigestUtils;
 import com.jcbase.core.view.InvokeResult;
 import com.jcbase.model.SysLoginRecord;
@@ -33,11 +28,11 @@ import com.jcbase.model.SysUser;
 import com.jcbase.model.SysUserRole;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
-import com.jfinal.kit.PropKit;
-import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
-import com.oreilly.servlet.Base64Encoder;
+import com.yanxin.common.model.OperationClass;
+import com.yanxin.common.model.WorkArea;
+
 /**
  * 首页、登陆、登出
  * @author eason
@@ -53,24 +48,134 @@ public class IndexController extends Controller {
 	public void home() {
 		render("home.jsp");
 	}
-	//检测温度进行预警
-	public void getTemp() {
-		String sqlString = "select max_temp, create_time from temp where max_temp>58 and status = 0";	
-//		System.out.println(sqlString+"****************************");
+	
+	//检测温度进行预警,从告警表里获取
+	public void getTemp2() {
+		String sqlString=null;
+		String userName=this.getPara("username");
+		
+		// SysUser user = SysUser.me.getUserOP(userName);
+		if(SysUserRole.dao.isOp(userName)){
+			sqlString = "select platform_point.*,warn.id warnID,warn.create_time,warn.max_temp,operation_class.op_name,station.station_name,building.building_name,sensor.`name` from platform_point,warn,station,operation_class,building,sensor where operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND warn.status = 0 order by warn.create_time desc";
+		}else{
+			sqlString = "select platform_point.*,warn.id warnID,warn.create_time,warn.max_temp,operation_class.op_name,station.station_name,building.building_name,sensor.`name` from platform_point,warn,station,operation_class,building,sensor where operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND warn.status = 0 AND operation_class.id=(SELECT operation_class_id FROM sys_user WHERE sys_user.`name`='"+userName+"') order by warn.create_time desc";
+		}
+		//System.out.println(sqlString+"****************************");
 		List<Record> resultList = Db.find(sqlString);
 		if(!resultList.isEmpty()){
 			setAttr("notempty", true);
-			setAttr("oplist", resultList);
+			setAttr("resultList", resultList);
+		}else{
+			setAttr("notempty", false);
+		}
+		renderJson();
+	}
+	
+	//检测温度进行预警
+	public void getTemp() {
+		String sqlString=null;
+		String userName=this.getPara("username");
+		if(SysUserRole.dao.isOp(userName)){
+			sqlString = "select platform_point.*,temp.max_temp,operation_class.op_name,station.station_name,building.building_name,sensor.`name` from platform_point,temp,station,operation_class,building,sensor where operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND temp.point_type=platform_point.point_type AND temp.temp_sensor_code=platform_point.pp_sensor_code AND temp.max_temp>platform_point.warn_temp AND temp.status = 0 order by temp.create_time desc";
+		}else{
+			sqlString = "select platform_point.*,temp.max_temp,operation_class.op_name,station.station_name,building.building_name,sensor.`name` from platform_point,temp,station,operation_class,building,sensor where operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND temp.point_type=platform_point.point_type AND temp.temp_sensor_code=platform_point.pp_sensor_code AND temp.max_temp>platform_point.warn_temp AND temp.status = 0 AND operation_class.id=(SELECT operation_class_id FROM sys_user WHERE sys_user.`name`='"+userName+"') order by temp.create_time desc";
+		}
+		//System.out.println(sqlString+"****************************");
+		List<Record> resultList = Db.find(sqlString);
+		if(!resultList.isEmpty()){
+			setAttr("notempty", true);
+			setAttr("resultList", resultList);
 		}else{
 			setAttr("notempty", false);
 		}
 		renderJson();
 	}
 	//超温警告提示100秒后不再提示
+	public void setTempStatus2() {
+		String userName=this.getPara("username");
+		int warnID = this.getParaToInt("warnID");
+		String create_time = this.getPara("create_time");
+		String sensor_code = this.getPara("sensor_code");
+		String sqlString = "UPDATE warn SET warn.`status`=1 where warn.id=?";
+		String tempSql =  "UPDATE temp SET temp.`status`=1 where temp_sensor_code=? AND create_time=?";
+		/*if(SysUserRole.dao.isOp(userName)){
+			sqlString = "UPDATE warn,platform_point SET warn.`status`=1 where warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND temp.max_temp>platform_point.warn_temp AND temp.status = 0";
+		}else{
+			sqlString = "UPDATE platform_point,warn,station,operation_class,building,sensor SET warn.`status`=1 WHERE operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND warn.status = 0 AND operation_class.id=(SELECT operation_class_id FROM sys_user WHERE sys_user.`name`='"+userName+"')";
+		}*/
+		int b=Db.update(sqlString,warnID);
+		if(create_time!=null && sensor_code!=null){
+			Db.update(tempSql,sensor_code,create_time);
+		}
+		
+		if(b!=0){
+			setAttr("notempty", true);
+		}else{
+			setAttr("notempty", false);
+		}
+		renderJson();
+	}
+	
+	//超温警告提示100秒后不再提示
+	public void setTempCancel() {
+		String userName=this.getPara("username");
+		int warnID = this.getParaToInt("warnID");
+		String create_time = this.getPara("create_time");
+		String sensor_code = this.getPara("sensor_code");
+		String sqlString = "UPDATE warn SET warn.cancel=1 where warn.id=?";
+		String tempSql =  "UPDATE temp SET temp.cancel=1 where temp_sensor_code=? AND create_time=?";
+		/*if(SysUserRole.dao.isOp(userName)){
+			sqlString = "UPDATE warn,platform_point SET warn.`status`=1 where warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND temp.max_temp>platform_point.warn_temp AND temp.status = 0";
+		}else{
+			sqlString = "UPDATE platform_point,warn,station,operation_class,building,sensor SET warn.`status`=1 WHERE operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND warn.status = 0 AND operation_class.id=(SELECT operation_class_id FROM sys_user WHERE sys_user.`name`='"+userName+"')";
+		}*/
+		int b=Db.update(sqlString,warnID);
+		if(create_time!=null && sensor_code!=null){
+			Db.update(tempSql,sensor_code,create_time);
+		}
+		
+		if(b!=0){
+			setAttr("notempty", true);
+		}else{
+			setAttr("notempty", false);
+		}
+		renderJson();
+	}
+	
+	public void setTempCancelv2() {
+		String userName=this.getPara("username");
+		int warnID = this.getParaToInt("warnID");
+		String create_time = this.getPara("create_time");
+		String sensor_code = this.getPara("sensor_code");
+		String sqlString = "UPDATE warn SET warn.cancel=1 where warn.id=?";
+		String tempSql =  "UPDATE temp SET temp.cancel=1 where temp_sensor_code=? AND create_time=?";
+		/*if(SysUserRole.dao.isOp(userName)){
+			sqlString = "UPDATE warn,platform_point SET warn.`status`=1 where warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND temp.max_temp>platform_point.warn_temp AND temp.status = 0";
+		}else{
+			sqlString = "UPDATE platform_point,warn,station,operation_class,building,sensor SET warn.`status`=1 WHERE operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND warn.point_type=platform_point.point_type AND warn.sensor_code=platform_point.pp_sensor_code AND warn.status = 0 AND operation_class.id=(SELECT operation_class_id FROM sys_user WHERE sys_user.`name`='"+userName+"')";
+		}*/
+		int b=Db.update(sqlString,warnID);
+		if((create_time!=null&&create_time!="") && (sensor_code!=null&&sensor_code!="")){
+			Db.update(tempSql,sensor_code,create_time);
+		}
+		
+		if(b!=0){
+			this.renderJson(InvokeResult.success());
+		}else{
+			this.renderJson(InvokeResult.failure("失败"));
+		}
+	}
+	
+	//超温警告提示100秒后不再提示
 	public void setTempStatus() {
-//		String sqlString = "update temp set status=1 where max_temp >60";	
-//		System.out.println(sqlString+"****************************");
-		int b=Db.update("update temp set status=? where max_temp >?",1,58);
+		String sqlString=null;
+		String userName=this.getPara("username");
+		if(SysUserRole.dao.isOp(userName)){
+			sqlString = "UPDATE temp,platform_point SET temp.`status`=1 where temp.point_type=platform_point.point_type AND temp.temp_sensor_code=platform_point.pp_sensor_code AND temp.max_temp>platform_point.warn_temp AND temp.status = 0";
+		}else{
+			sqlString = "UPDATE platform_point,temp,station,operation_class,building,sensor SET temp.`status`=1 WHERE operation_class.id=station.op_id AND station.id=building.station_id AND building.id=sensor.building_id AND sensor.sensor_code=platform_point.pp_sensor_code AND temp.point_type=platform_point.point_type AND temp.temp_sensor_code=platform_point.pp_sensor_code AND temp.max_temp>platform_point.warn_temp AND temp.status = 0 AND operation_class.id=(SELECT operation_class_id FROM sys_user WHERE sys_user.`name`='"+userName+"')";
+		}
+		int b=Db.update(sqlString);
 		if(b!=0){
 			setAttr("notempty", true);
 		}else{
@@ -79,9 +184,6 @@ public class IndexController extends Controller {
 		renderJson();
 	}
 
-	
-	
-	
 	@Clear(AuthorityInterceptor.class)
 	public void login() {
 		this.setAttr("url", this.getPara("url"));
@@ -89,7 +191,10 @@ public class IndexController extends Controller {
 	}
 	@Clear(AuthorityInterceptor.class)
 	public void dologin() {
-		String imageCode=this.getPara("imageCode");
+		
+		SysUser sysUser=null;
+		
+		/*String imageCode=this.getPara("imageCode");
 		if(StrKit.notBlank(imageCode)){
 			String imageCodeSession=(String)this.getSessionAttr("imageCode");
 			if(!imageCodeSession.toLowerCase().equals(imageCode.trim().toLowerCase())){
@@ -99,18 +204,25 @@ public class IndexController extends Controller {
 		}else{
 			this.renderJson(InvokeResult.failure("请输入验证码"));
 			return;
-		}
-		SysUser sysUser=SysUser.me.getByName(this.getPara("username"));
+		}*/
+		String ss = this.getPara("username");
+		//String ss = this.getPara("username");
+		System.out.println(ss+"*********************");
+		sysUser=SysUser.me.getByName(this.getPara("username"));
+		
 		if(sysUser==null){
-			this.renderJson(InvokeResult.failure("用户不存在"));
-			return;
+			//sysUser=SysUser.me.getByPhone(this.getPara("username"));
+			   // if(sysUser==null){
+			    	this.renderJson(InvokeResult.failure("用户不存在"));
+					return;
+			  //  }
 		}
 		//判断用户是否属于该运维班
-		SysUser sysUser_op=SysUser.me.getByOp(this.getPara("username"),this.getParaToInt("op_class"));
+		/*SysUser sysUser_op=SysUser.me.getByOp(this.getPara("username"),this.getParaToInt("op_class"));
 		if(sysUser_op==null){
 			this.renderJson(InvokeResult.failure("用户与运维班不匹配"));
 			return;
-		}
+		}*/
 		
 		if(SysLoginRecord.dao.hasOverLoginErrTimes(sysUser.getId())){
 			this.renderJson(InvokeResult.failure("今天连续输入密码错误次数超过5次"));
@@ -125,10 +237,24 @@ public class IndexController extends Controller {
 			this.renderJson(InvokeResult.failure("用户被冻结，请联系管理员"));
 			return;
 		}
+		Record rr = sysUser.toRecord();
+		if(sysUser.getUserType() > 0){
+			WorkArea wa = WorkArea.me.findById(sysUser.getWork_area_id());
+			
+			rr.set("area_name", wa.getArea());
+			
+			if(sysUser.getUserType() == 2){
+				OperationClass op = OperationClass.me.findById(sysUser.getOperation_class_id());
+				rr.set("op_name", op.getOpName());
+			}else {
+				rr.set("op_name","");
+			}
+		}
+		
 		Integer autoLogin=this.getParaToInt("autoLogin",0);
 		IWebUtils.setCurrentLoginSysUser(this.getResponse(),this.getSession(),sysUser,autoLogin);
 		SysLoginRecord.dao.saveSysLoginRecord(sysUser.getId(),1);
-		this.renderJson(InvokeResult.success());
+		this.renderJson(InvokeResult.success(rr));
 	}
 	
 	public void loginOut() {

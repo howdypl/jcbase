@@ -38,7 +38,7 @@
 																		<i class="ace-icon fa fa-check"></i>
 																	</span>
 
-																	<input type="text" id="name" name="name" class="form-control search-query" placeholder="请输入关键字" />
+																	<input type="text" id="name" name="name" class="form-control search-query" placeholder="请输入用户名关键字" />
 																	<span class="input-group-btn">
 																		<button type="button" id="btn_search" class="btn btn-purple btn-sm">
 																			<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
@@ -59,6 +59,7 @@
 										<jc:button className="btn btn-danger" id="btn-unvisible" textName="禁用"/>
 										<jc:button className="btn btn-primary" id="btn-add" textName="添加"/>
 										<jc:button className="btn btn-info" id="btn-edit" textName="编辑"/>
+										<jc:button className="btn btn-info" id="btn-del" textName="删除"/>
 										<jc:button className="btn" id="bnt-grant" textName="分配角色" permission="/sys/user"/>
 									</div>
 								</div>
@@ -85,28 +86,30 @@
 		  getWord();
 			
 	    });
-	function getWord() {
-		$.ajax({
-			    type: 'POST',
-			    dataType: 'json',
-			    url: '<%=request.getContextPath()%>/sys/user/getWord?name="${sessionScope.sysUser.name}"',
-			    success: function(data) {
-					var result = data.word;
-					if(!result){
-						 $('#btn-edit').remove();
-						 $('#bnt-grant').remove();
-					}
-			    }
-	        });
-  	} 
+		function getWord() {
+			$.ajax({
+				    type: 'POST',
+				    dataType: 'json',
+				    url: '<%=request.getContextPath()%>/sys/user/getWord?name="${sessionScope.sysUser.name}"',
+				    success: function(data) {
+						var result = data.word;
+						if(!result){
+							 $('#btn-edit').remove();
+							 $('#bnt-grant').remove();
+							 $('#btn-del').remove();
+						}
+				    }
+		        });
+	  	} 
         $(document).ready(function () {
+            var username="${sessionScope.sysUser.name}";
         	var grid_selector = "#grid-table";
 			var pager_selector = "#grid-pager";
         	//resize to fit page size
 			$(window).on('resize.jqGrid', function () {
 				$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() );
 		    });
-//resize on sidebar collapse/expand
+			//resize on sidebar collapse/expand
 				var parent_column = $(grid_selector).closest('[class*="col-"]');
 				$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
 					if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
@@ -119,21 +122,25 @@
 
             $("#grid-table").jqGrid({
                 //url: 'http://trirand.com/blog/phpjqgrid/examples/jsonp/getjsonp.php?callback=?&qwery=longorders',
-                url:'${context_path}/sys/user/getListData?name="${sessionScope.sysUser.name}"',
+                url:'${context_path}/sys/user/getListData',
                 mtype: "GET",
                 datatype: "json",
+                postData:{'username':username},
                 colModel: [
                     { label: '用户名', name: 'name', width: 60 },
+                    { label: '用户类型', name: 'user_type', formatter:fmatterUserType, width: 50 },
+                    { label: '所属工区', name: 'area', width: 50 },
+                    { label: '所属班组', name: 'op_name', width: 50 },
                     { label: '联系电话', name: 'phone', width: 75 ,sortable:false},
-                    { label: '拥有角色', name: 'roleNames', width: 100 },
-                    { label: '描述', name: 'des', width: 150 ,sortable:false},
-                    { label: '注册时间', name: 'createdate', width: 100 },
-                    { label: '所属运维班', name: 'op_name', width: 80 },
-                    { label: '所属变电站', name: 'station_name', width: 80 },
+                    { label: '拥有角色', name: 'roleNames', width: 80 },
+                    { label: '用户地区', name: 'des', width: 100 ,sortable:false},
+                    { label: '注册时间', name: 'createdate', width: 80 },
+                    
+                   // { label: '所属变电站', name: 'station_name', width: 80 },
                     { label: '状态', name: 'status',formatter:fmatterStatus, width:50}
                 ],
 				viewrecords: true,
-                height: 280,
+                height: 400,
                 rowNum: 10,
                 multiselect: true,//checkbox多选
                 altRows: true,//隔行变色
@@ -155,6 +162,15 @@
 			});
 			$("#btn_search").click(function(){  
 			    //此处可以添加对查询数据的合法验证  
+			    var name = $("#name").val();  
+			    $("#grid-table").jqGrid('setGridParam',{  
+			        datatype:'json',  
+			        postData:{'name':name}, //发送数据  
+			        page:1  
+			    }).trigger("reloadGrid"); //重新载入  
+			}); 
+			/* $("#btn_search").click(function(){  
+			    //此处可以添加对查询数据的合法验证  
 			    var name = $("#name").val(); 
 			    //alert(name);
 			    $("#grid-table").jqGrid('setGridParam',{  
@@ -164,7 +180,7 @@
 			        url: '${context_path}/sys/user/seachByName',
 			        page:1  
 			    }).trigger("reloadGrid"); //重新载入  
-			}); 
+			});  */
 			$("#btn-add").click(function(){//添加页面
 				parent.layer.open({
 					title:'添加新用户',
@@ -227,6 +243,18 @@
 					    maxmin: true,
 					    content: '${context_path}/sys/user/add?id='+rid
 					});
+				}
+			});
+			
+			$("#btn-del").click(function(){//添加页面
+				var rid = getOneSelectedRows();
+				if(rid == -1){
+					layer.msg("请至少选择一个用户", {
+					    icon: 2,
+					    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}else {
+					delUser();
 				}
 			});
         });
@@ -292,12 +320,39 @@
 				} 
 			},"json");
 		}
+		
+		function delUser(){
+			var submitData = {
+				"ids" : getSelectedRows(),
+			};
+			$.post("${context_path}/sys/user/delUser", submitData,function(data) {
+				if (data.code == 0) {
+					layer.msg("操作成功", {
+					    icon: 1,
+					    time: 1000 //1秒关闭（如果不配置，默认是3秒）
+					},function(){
+						reloadGrid();
+					});
+				}else{
+					layer.alert("操作失败");
+				} 
+			},"json");
+		}
 		//格式化状态显示
 		function fmatterStatus(cellvalue, options, rowObject){
 			if(cellvalue==0){ 
 				return '<span class="label label-sm label-warning">禁用</span>';
 			}else{
 				return '<span class="label label-sm label-success">启用</span>';
+			}
+		}
+		function fmatterUserType(cellvalue, options, rowObject){
+			if(cellvalue==0){ 
+				return '<span class="label label-sm label-success">管理员</span>';
+			}else if(cellvalue==1){
+				return '<span class="label label-sm label-info">工区用户</span>';
+			}else if(cellvalue==2){
+				return '<span class="label label-sm label-warning">班组用户</span>';
 			}
 		}
 		function reloadGrid(){

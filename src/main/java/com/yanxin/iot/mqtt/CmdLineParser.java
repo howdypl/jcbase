@@ -4,12 +4,14 @@ package com.yanxin.iot.mqtt;
 import com.jfinal.plugin.activerecord.Record;
 import com.yanxin.iot.Utils.ConstantsUtil;
 import com.yanxin.iot.json.DevicePayload;
+import com.yanxin.iot.json.FlushPayload;
 import com.yanxin.iot.json.JsonParser;
 import com.yanxin.iot.json.PlatformPayload;
 import com.yanxin.iot.json.TimePayload;
 import com.yanxin.iot.property.PropertiesUtil;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static com.yanxin.iot.mqtt.MqttClientController.printHelp;
@@ -39,7 +41,7 @@ public class CmdLineParser {
     private String clientIdSub;
     private String clientIdTimePub;
     
-    private String subTopic;
+    private String subTopic = "heart/v2/status";
     private String pubTopic;
     
     private String pubTimeTopic;
@@ -55,8 +57,15 @@ public class CmdLineParser {
     //private String url = "tcp://192.168.1.100:61613";
     private String url = "tcp://localhost:61613";
     private MqttClientController Client;
-    private MqttClientController switchPubClient;
-    private MqttClientController timePubClient;
+    private MqttClientController flushClient;
+    
+
+	private MqttClientController heartBitSubClient;
+	// 
+	private MqttAsyncController heartBitSubClientAsync;
+    
+
+	private MqttClientController timePubClient;
 
 
     public CmdLineParser(String[] args) {
@@ -68,7 +77,7 @@ public class CmdLineParser {
 
     public void ArgsParser(String[] args){
         // Default settings:
-    	log.info("Reading configuration from config file iclient.properties");
+    	log.info("读取iclient.properties配置文件! ");
         quietMode 	= !PropertiesUtil.getStringByKey("mqtt_quietMode").equals("false");
         action 		= PropertiesUtil.getStringByKey("mqtt_action");
         topic 		= PropertiesUtil.getStringByKey("mqtt_topic");
@@ -179,11 +188,11 @@ public class CmdLineParser {
     public void startController(){
         try {
             // Create an instance of this class
-        	log.info("starting connections to MQTT broker:"+url);
+        	log.info("启动到MQTT broker的连接:"+url);
             Client = new MqttClientController(url, clientId+ConstantsUtil.getAuth(), cleanSession, quietMode,userName,password);
 
             // log.info("starting subscribe the topic "+subTopic+ " from MQTT Server or broker!");
-            // 订阅视频
+            // 订阅心跳
             Client.subscribe(subTopic,qos);
             // Perform the requested action
         } catch(MqttException me) {
@@ -198,6 +207,64 @@ public class CmdLineParser {
         }
     }
     
+    public void startSubController(){
+        try {
+            // Create an instance of this class
+        	log.info("启动到MQTT broker的连接检测心跳消息:"+url);
+        	heartBitSubClient = new MqttClientController(url, clientIdSub+ConstantsUtil.getAuth(), cleanSession, quietMode,userName,password);
+
+            // log.info("starting subscribe the topic "+subTopic+ " from MQTT Server or broker!");
+            // 订阅心跳
+        	heartBitSubClient.subscribe(subTopic,qos);
+        	// MqttTopic mqttTopic = heartBitSubClient.getClient().getTopic(subTopic);
+        	
+        	
+            // Perform the requested action
+        } catch(MqttException me) {
+            // Display full details of any exception that occurs
+        	heartBitSubClient.close();
+            log.info("reason "+me.getReasonCode());
+            log.info("msg "+me.getMessage());
+            log.info("loc "+me.getLocalizedMessage());
+            log.info("cause "+me.getCause());
+            log.info("excep "+me);
+            me.printStackTrace();
+        } catch (Throwable th) {
+			System.out.println("Throwable caught "+th);
+			th.printStackTrace();
+		}
+    }
+    
+    public void startSubControllerAsync(){
+        try {
+            // Create an instance of this class
+        	log.info("启动到MQTT broker的连接检测心跳消息:"+url);
+        	heartBitSubClientAsync = new MqttAsyncController(url,clientId+ConstantsUtil.getAuth(),cleanSession, quietMode,userName,password);
+        	
+            // 订阅心跳
+        	heartBitSubClientAsync.subscribe(subTopic,qos);
+        	
+        	// MqttTopic mqttTopic = heartBitSubClient.getClient().getTopic(subTopic);
+        	
+        	
+            // Perform the requested action
+        } catch(MqttException me) {
+            // Display full details of any exception that occurs
+            log.error("reason "+me.getReasonCode());
+            log.error("msg "+me.getMessage());
+            log.error("loc "+me.getLocalizedMessage());
+            log.error("cause "+me.getCause());
+            log.error("excep "+me);
+            me.printStackTrace();
+        } catch (Throwable th) {
+        	log.error("Throwable caught "+th);
+			th.printStackTrace();
+		}
+    }
+    
+    /**
+     * 
+     */
     public void startController2(){
 
         // With a valid set of arguments, the real work of
@@ -208,15 +275,30 @@ public class CmdLineParser {
         	log.info("starting connections to MQTT broker:"+url);
             Client = new MqttClientController(url, clientId+ConstantsUtil.getAuth(), cleanSession, quietMode,userName,password);
 
-            // log.info("starting subscribe the topic "+subTopic+ " from MQTT Server or broker!");
-            // 订阅视频
-            // Client.subscribe(subTopic,qos);
-            // Perform the requested action
-           /* if (action.equals("publish")) {
-                Client.publish(topic,qos,message.getBytes());
-            } else if (action.equals("subscribe")) {
-                Client.subscribe(topic,qos);
-            }*/
+        } catch(MqttException me) {
+            // Display full details of any exception that occurs
+            log.info("reason "+me.getReasonCode());
+            log.info("msg "+me.getMessage());
+            log.info("loc "+me.getLocalizedMessage());
+            log.info("cause "+me.getCause());
+            log.info("excep "+me);
+            me.printStackTrace();
+        }
+    }
+    
+    /**
+     * 
+     */
+    public void startFlushController(){
+
+        // With a valid set of arguments, the real work of
+        // driving the client API can begin
+    	
+        try {
+            // Create an instance of this class
+        	log.info("starting connections to MQTT broker:"+url);
+        	flushClient = new MqttClientController(url, clientIdPub+ConstantsUtil.getAuth(), cleanSession, quietMode,userName,password);
+
         } catch(MqttException me) {
             // Display full details of any exception that occurs
             log.info("reason "+me.getReasonCode());
@@ -248,8 +330,10 @@ public class CmdLineParser {
 			public void run() {
 				DevicePayload payload = Client.getJsonParser().getCommand(deviceId, (int)type, value, (int)status);
 				try {
+					
+					
 					Client.publish(topic, qos, Client.getJsonParser().getJsonData(payload));
-					log.info("Publish a new command to switch: "+payload.toString());
+					log.info("发送拍图命令: "+payload.toString());
 					
 					Client.close();
 				} catch (MqttException e) {
@@ -324,9 +408,9 @@ public class CmdLineParser {
 				PlatformPayload payload = jp.getPlatform(deviceId, (int)type, selections);
 				try {
 					Client.publish(topic, qos, Client.getJsonParser().getJsonPlatformData(payload));
-					log.info("Publish a new platform location to switch: "+payload.toString());
+					
 					log.info("发送消息到设备"+payload.getDeviceId());
-					System.out.println("发送消息到设备"+payload.getDeviceId());
+					
 					Client.close();
 				} catch (MqttException e) {
 					log.error("Errors happens when publishing platform location to sensors!");
@@ -368,7 +452,7 @@ public class CmdLineParser {
 					log.info("批量发送指令到设备："+payloads.toString());
 					Client.close();
 				} catch (MqttException e) {
-					log.error("发送云台命令是发生异常，未发送成功!");
+					log.error("发送云台命令时发生异常，未发送成功!");
 					e.printStackTrace();
 				}
 				timer.cancel();
@@ -381,12 +465,51 @@ public class CmdLineParser {
 	}
 	
 	/**
+	 * 批量下发雨刷指令
+	 * @param deviceIds
+	 * @param type
+	 * @param selections
+	 */
+	public void startBatchFlushController(final List<String> deviceIds, final long type, final int value) {
+
+		final java.util.Timer timer = new java.util.Timer();
+		final String  topic = this.getPubPlatformTopic();  // + "/"+ deviceId;
+		final int qos = this.getQos();
+		
+		class FlushCntlPublish extends java.util.TimerTask{
+
+			@Override
+			public void run() {
+				JsonParser jp = flushClient.getJsonParser();
+				// PlatformPayload payload = jp.getPlatform(deviceId, (int)type, selections);
+				
+				ArrayList<PlatformPayload> payloads = jp.getFlushList(deviceIds,(int)type, value);
+				
+				try {
+					flushClient.publish(topic, qos, jp.getJsonPlatformDataList(payloads));
+					
+					log.info("批量发送雨刷指令到设备："+payloads.toString());
+					flushClient.close();
+				} catch (MqttException e) {
+					log.error("发送雨刷命令时发生异常，未发送成功!");
+					e.printStackTrace();
+				}
+				timer.cancel();
+			}
+		}
+		
+		timer.schedule(new FlushCntlPublish(), 2000);
+		
+		// Client.getScheduler().scheduleAtFixedRate(runnable, 0, 10, TimeUnit.SECONDS);
+	}
+	
+	/**
 	 * 转换云台指令API
 	 * @param deviceId
 	 * @param type:02向右转，设置预设点03，
 	 * @param value
 	 */
-	public void startTimePublishController(final String deviceId, final int type, final List<Record> records) {
+	public void startTimePublishController(final List<String> deviceIds, final int type, final List<Record> records) {
 
 		final java.util.Timer timer = new java.util.Timer();
 		final String  topic = this.getPubPlatformTopic();  // + "/"+ deviceId;
@@ -397,9 +520,9 @@ public class CmdLineParser {
 			@Override
 			public void run() {
 				JsonParser jp = Client.getJsonParser();
-				PlatformPayload payload = jp.getPlatform(deviceId, type,records);
+				ArrayList<PlatformPayload> payload = jp.getPlatform(deviceIds, type,records);
 				try {
-					Client.publish(topic, qos, Client.getJsonParser().getJsonPlatformData(payload));
+					Client.publish(topic, qos, Client.getJsonParser().getJsonPlatformDataList(payload));
 					log.info("Publish a new platform location to switch: "+payload.toString());
 					
 					Client.close();
@@ -672,7 +795,31 @@ public class CmdLineParser {
 	public void setPubPlatformTopic(String pubPlatformTopic) {
 		this.pubPlatformTopic = pubPlatformTopic;
 	}
-    
-    
+	/**
+	 * @return the heartBitSubClient
+	 */
+	public MqttClientController getHeartBitSubClient() {
+		return heartBitSubClient;
+	}
+
+	/**
+	 * @param heartBitSubClient the heartBitSubClient to set
+	 */
+	public void setHeartBitSubClient(MqttClientController heartBitSubClient) {
+		this.heartBitSubClient = heartBitSubClient;
+	}
+	/**
+	 * @return the flushClient
+	 */
+	public MqttClientController getFlushClient() {
+		return flushClient;
+	}
+
+	/**
+	 * @param flushClient the flushClient to set
+	 */
+	public void setFlushClient(MqttClientController flushClient) {
+		this.flushClient = flushClient;
+	}
 }
 

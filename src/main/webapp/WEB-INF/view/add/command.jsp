@@ -42,11 +42,11 @@
 
       					<div class="form-inline row">
       						<div class="col-md-2">
-      							<label class="form-label control-label">所属运维班</label>
+      							<label class="form-label control-label">所属班组</label>
       						</div>
       						<div class="col-md-6">	
 	      						<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
-	                        		<option  value='0'>---请选择运维班---</option>
+	                        		<option  value='0'>---请选择班组---</option>
 	                       		</select>
                        		</div>
       					</div>
@@ -239,7 +239,7 @@
 		var which = $('#station_op_class');
 		
 		$(which).empty();
-		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
 		
 		$.ajax({
 			    type: 'POST',

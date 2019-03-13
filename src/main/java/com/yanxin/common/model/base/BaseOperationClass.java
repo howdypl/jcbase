@@ -57,5 +57,11 @@ public abstract class BaseOperationClass<M extends BaseOperationClass<M>> extend
 	public java.util.Date getCreateTime() {
 		return get("create_time");
 	}
+	public void setWorkAreaId(java.lang.Integer workAreaId) {
+		set("work_area_id", workAreaId);
+	}
 
+	public java.lang.Integer getWorkAreaId() {
+		return get("work_area_id");
+	}
 }

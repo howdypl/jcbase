@@ -44,6 +44,17 @@ public class SysUserRole extends BaseSysUserRole<SysUserRole> {
 			return "no";
 		}
 	}
+	
+	//用于判断用户管理中“编辑”和“角色分配”这两个功能
+	public String isWAGight(String name) {
+		List<SysUserRole> sRecords = this.find("select * from sys_user_role where user_id=(select id from sys_user where name="+name+") AND (role_id="+1+")");
+		if(!sRecords.isEmpty()){
+			return "yes";
+		}else{
+			return "no";
+		}
+	}
+	
 	//用于判断运维班
 	public boolean isOp(String name) {
 		List<SysUserRole> sRecords = this.find("select * from sys_user_role where user_id=(select id from sys_user where name='"+name+"') AND (role_id="+1+" OR role_id="+2+")");
@@ -53,6 +64,34 @@ public class SysUserRole extends BaseSysUserRole<SysUserRole> {
 			return false;
 		}
 	}
+	
+	//用于判断运维班
+		public int userOP(String name) {
+			List<SysUserRole> sRecords = this.find("select * from sys_user_role where user_id=(select id from sys_user where name='"+name+"')");
+			int op = 0;
+			if(!sRecords.isEmpty()){
+				
+				for(SysUserRole role:sRecords){
+					if(role.getRoleId()==1){ //管理员
+						op = 1;
+						return op;
+					}else if(role.getRoleId()==2){ // 工区
+						if(op!=1){
+							op = 2;
+						}
+						
+					}else{ // 运维班
+						if(op !=1 && op != 2){
+							op = 3;
+						}
+					}
+				}
+			}
+			
+			return op;
+			
+		}
+	
 	//用于设置变电站和运维班普通用户权限
 	public void setRole(String name) {
 		int user_id=SysUser.me.getId(name);

@@ -10,6 +10,7 @@ import com.jcbase.core.model.Condition;
 import com.jcbase.core.model.Operators;
 import com.jcbase.core.util.CommonUtils;
 import com.jcbase.core.view.InvokeResult;
+import com.jcbase.model.SysUser;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.yanxin.common.model.base.BaseStation;
@@ -25,14 +26,59 @@ public class Station extends BaseStation<Station> {
 	public Page<Station> getStationPage(int page, int rows, String keyword,
 			String orderbyStr) {
 		Set<Condition> conditions=new HashSet<Condition>();
-		List<Object> outConditionValues=new ArrayList<Object>();
+		List<Object> outConditionValues=new ArrayList<Object>();		
+		
 		if(CommonUtils.isNotEmpty(keyword)){
 			conditions.add(new Condition("station_name",Operators.LIKE,keyword));
 		}
-		String select="select su.*, (select group_concat(name) as userNames from sys_user where sys_user.id=su.station_manager) as userNames, (SELECT op_name FROM operation_class WHERE operation_class.id=su.op_id ) AS opName";
+		//String select="select su.*, (select group_concat(name) as userNames from sys_user where sys_user.id=su.station_manager) as userNames, (SELECT op_name FROM operation_class WHERE operation_class.id=su.op_id ) AS opName";
+		String select="select su.*, (SELECT op_name FROM operation_class WHERE operation_class.id=su.op_id ) AS opName";
 		StringBuffer sqlExceptSelect=new StringBuffer();
 		sqlExceptSelect.append("from station su"+super.getWhereSql(conditions, outConditionValues));
 		return this.paginate(page, rows, select, sqlExceptSelect.toString());
+	}
+	/**
+	 * 
+	 * @param page
+	 * @param rows
+	 * @param username
+	 * @param area
+	 * @param opID
+	 * @param orderbyStr
+	 * @return
+	 */
+	public Page<Station> getStationPageNew(int page, int rows, String username,int area,int opID,
+			String orderbyStr) {
+		
+		SysUser user = SysUser.me.getByName(username);
+		String select = "select station.*, work_area.area as area,su.op_name as op_name";
+		String sqlExceptSelect = "from station,operation_class su,work_area where station.op_id = su.id AND su.work_area_id=work_area.id";
+		if(user.getUserType().intValue() == new Integer(0).intValue()){
+			
+			if(area>0){
+				if(opID > 0){
+					sqlExceptSelect += " AND work_area.id="+area+" AND su.id="+opID;
+				}else{
+					sqlExceptSelect += " AND work_area.id="+area;
+				}
+				return this.paginate(page, rows, select, sqlExceptSelect);
+			}
+			return this.paginate(page, rows, select, sqlExceptSelect);
+		}else {
+			int tempid = 0;
+			if(area>0){
+				tempid = area;
+			}else{
+				tempid = user.getWork_area_id();
+			}
+			
+			sqlExceptSelect += " AND work_area.id="+tempid;
+			if(opID > 0){
+				sqlExceptSelect += " AND su.id="+opID;;
+			}
+			
+			return this.paginate(page, rows, select, sqlExceptSelect.toString());
+		}
 	}
 	
 	//变电站是否存在
@@ -44,22 +90,22 @@ public class Station extends BaseStation<Station> {
 		}
 		
 		
-		public InvokeResult save(Integer id, String station_name, String station_desc, String station_addr, Integer station_manager,Integer op_id) {
+		public InvokeResult save(Integer id, String station_name, String station_desc, String station_addr,Integer op_id) {
 			// TODO Auto-generated method stub
 			if(id!=null){
 				Station station=this.findById(id);
-				if(station_manager==0 || op_id==0) {
+				if(op_id==0) {
 					station.set("station_name", station_name).set("station_desc",station_desc).set("station_addr",station_addr).update();
 				}else {
-					station.set("station_name", station_name).set("station_desc",station_desc).set("station_addr",station_addr).set("station_manager",station_manager).set("op_id",op_id).update();
+					station.set("station_name", station_name).set("station_desc",station_desc).set("station_addr",station_addr).set("op_id",op_id).update();
 				}
-				int b=Db.update("update sys_user set station_id=(select id from station where station_manager=?) where id=?",station_manager,station_manager);
+				//int b=Db.update("update sys_user set station_id=(select id from station where station_manager=?) where id=?",station_manager,station_manager);
 			}else {
 				if(this.hasExist(station_name)){
 					return InvokeResult.failure("变电站已存在");
 				}else{
-					new Station().set("station_name", station_name).set("station_desc",station_desc).set("station_addr",station_addr).set("station_manager",station_manager).set("op_id",op_id).set("create_time", new Date()).save();
-					int b=Db.update("update sys_user set station_id=(select id from station where station_manager=?) where id=?",station_manager,station_manager);
+					new Station().set("station_name", station_name).set("station_desc",station_desc).set("station_addr",station_addr).set("op_id",op_id).set("create_time", new Date()).save();
+					//int b=Db.update("update sys_user set station_id=(select id from station where station_manager=?) where id=?",station_manager,station_manager);
 				}
 			}
 			

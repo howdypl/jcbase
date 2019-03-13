@@ -16,6 +16,7 @@
 package com.jcbase.core.util;
 
 import com.jcbase.core.model.JqGridModel;
+import com.jcbase.core.model.JqGridModelExtended;
 import com.jfinal.plugin.activerecord.Page;
 /**
  * jdGrid分页Model转换工具
@@ -28,6 +29,18 @@ public final class JqGridModelUtils {
 		jqGridView.setRecords(pageInfo.getTotalRow());
 		jqGridView.setRows(pageInfo.getList());
 		jqGridView.setTotal(pageInfo.getTotalPage());
+		return jqGridView;
+	}
+	
+	public static JqGridModel toJqGridView(Page pageInfo,long nonconfirm){
+		JqGridModelExtended jqGridView=new JqGridModelExtended();
+		jqGridView.setPage(pageInfo.getPageNumber());
+		jqGridView.setRecords(pageInfo.getTotalRow());
+		jqGridView.setNonconfirm(nonconfirm);
+		jqGridView.setRows(pageInfo.getList());
+		jqGridView.setTotal(pageInfo.getTotalPage());
+		
+		
 		return jqGridView;
 	}
 }

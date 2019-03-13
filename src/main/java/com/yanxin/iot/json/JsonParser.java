@@ -2,6 +2,7 @@ package com.yanxin.iot.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.yanxin.iot.Utils.ConstantsUtil;
 
@@ -79,6 +80,15 @@ public class JsonParser {
     	}
     	return result;
     } 
+    public byte[] getJsonFlushDataList(ArrayList<PlatformPayload> payloads){
+    	String command = null;
+    	byte[] result = null;
+    	if(payloads != null){
+    		command = gson.toJson(payloads);
+    		result = command.getBytes();
+    	}
+    	return result;
+    } 
     
     public DevicePayload getJsonObj(String jsonString){
     	
@@ -139,28 +149,64 @@ public class JsonParser {
     }
     
     public ArrayList<PlatformPayload> getPlatformList(List<String> deviceIds, int type, int selections){
-    	
-    	ArrayList<PlatformLocData> data = new ArrayList<PlatformLocData>();
-    	
-    	PlatformLocData dd = new PlatformLocData(type, selections);
-		data.add(dd);
 		ArrayList<PlatformPayload> payloadLists = new ArrayList<PlatformPayload>();
 		
 		if(deviceIds != null){
 			for (String dString :deviceIds) {
+				PlatformLocData dd = new PlatformLocData(type, selections);
+				ArrayList<PlatformLocData> data = new ArrayList<PlatformLocData>();
+				if(selections==0){
+					List<Record> records = Db.find("select point_type from platform_point where pp_sensor_code = '"+dString+"'");
+					if(records!=null){
+						int select = 0;
+						int mask = 1;
+						for(Record r:records){
+							int point = 0;
+							if(r.getStr("point_type")!=null){
+								point = Integer.parseInt(r.getStr("point_type"));
+								select |= (mask<<(point-1));
+							}
+						}
+						dd = new PlatformLocData(type, select);
+						data.add(dd);
+					}else {
+						dd = new PlatformLocData(type, selections);
+						data.add(dd);
+					}
+				}else {
+					data.add(dd);
+				}
 				PlatformPayload payload = new PlatformPayload(dString,data);
-				
+					
 				payloadLists.add(payload);
 			}
-			
 		}
     	return payloadLists;
     }
     
-    public PlatformPayload getPlatform(String deviceId, int type, List<Record> records){
+    
+    public ArrayList<PlatformPayload> getFlushList(List<String> deviceIds, int type, int selections){
+		ArrayList<PlatformPayload> flushLists = new ArrayList<PlatformPayload>();
+		
+		if(deviceIds != null){
+			for (String dString :deviceIds) {
+				PlatformLocData dd = new PlatformLocData(type, selections);
+				ArrayList<PlatformLocData> data = new ArrayList<PlatformLocData>();
+				data.add(dd);
+				
+				PlatformPayload payload = new PlatformPayload(dString,data);
+					
+				flushLists.add(payload);
+			}
+		}
+    	return flushLists;
+    }
+    
+    
+    public ArrayList<PlatformPayload> getPlatform(List<String> deviceIds, int type, List<Record> records){
     	
     	ArrayList<PlatformLocData> data = new ArrayList<PlatformLocData>();
-    	
+    	ArrayList<PlatformPayload> payloadLists = new ArrayList<PlatformPayload>();
     	for (Record record:records) {
 			String time = record.get("time");
 			String[] numStrings = time.split(":");
@@ -174,9 +220,15 @@ public class JsonParser {
 			
 		}
     	
-    	PlatformPayload payload = new PlatformPayload(deviceId, data);
-    	
-    	return payload;
+    	if(deviceIds != null){
+			for (String dString :deviceIds) {
+				PlatformPayload payload = new PlatformPayload(dString,data);
+				
+				payloadLists.add(payload);
+			}
+			
+		}
+    	return payloadLists;
     }
     
     

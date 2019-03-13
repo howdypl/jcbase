@@ -104,6 +104,42 @@ public class PlatformController extends Controller {
 		
 	}
 	
+	public void scanPlatform(){
+		
+		String sensorCodeString = getPara("sensor_code");
+		int select = getParaToInt("platform");
+		
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
+		int point = 0;
+		int temp = 0;
+		for (int i = 0; i < 9; i++) {
+			temp = select&(0x00000001<<i);
+			point = i+1;
+			if(temp>0){
+				Db.update("UPDATE platform_point set status = 1 WHERE pp_sensor_code='"+sensorCodeString+"' and point_type='"+point+"'");
+			}else{
+				Db.update("UPDATE platform_point set status = 0 WHERE pp_sensor_code='"+sensorCodeString+"' and point_type='"+point+"'");
+			}
+			temp = 0;
+		}
+		
+		// 设置预设点
+        try {
+        	ConstantsUtil.MQTTPlatformCMDBatch(sensorList, ConstantsUtil.PLATFORM_CMD_SCAN, select);
+        	setAttr("result", true);
+    		renderJson();
+        }catch(Exception e){
+        	setAttr("result", false);
+    		renderJson();
+        }
+		
+		// System.out.println(ConstantsUtil.SERVER_IP+":"+record.getInt("port"));
+		
+	}
+	
 	public void setTimePlatform(){
 		
 		String sensorCodeString = getPara("sensor_code");
@@ -200,11 +236,15 @@ public class PlatformController extends Controller {
 	// 需要添加向摄像头发送时刻点命令
 	public void submitTimePlatform() {
 		String sensorCodeString = getPara("sensor_code");
-
+		List<String> sensorList = new ArrayList<String>();
+		if(sensorCodeString != null){
+			sensorList.add(sensorCodeString);
+		}
 		List<Record> records1 = Db.find("select * from time_point where sensor_code='"+sensorCodeString+"' and status =1");
 		
 		// 设置预设点
-		ConstantsUtil.MQTTPlatformTimeCMD(sensorCodeString, ConstantsUtil.PLATFORM_CMD_TIMES, records1);
+		
+		ConstantsUtil.MQTTPlatformTimeCMD(sensorList, ConstantsUtil.PLATFORM_CMD_TIMES, records1);
 		
 		List<Record> records = Db.find("select * from time_point where sensor_code='"+sensorCodeString+"'");
 		setAttr("result", true);

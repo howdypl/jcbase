@@ -6,25 +6,28 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>红外监控测温系统</title>
+		<title>热成像测温监测应用</title>
 
 		<meta name="description" content="User login page" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
+		
+		<link rel="icon" href="${context_path}/res/img/favicon.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="${context_path}/res/img/favicon.ico" type="image/x-icon">
+		
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="/res/ace-1.3.3/assets/css/bootstrap.css" />
-		<link rel="stylesheet" href="/res/ace-1.3.3/assets/css/font-awesome.css" />
+		<link rel="stylesheet" href="${context_path}/res/ace-1.3.3/assets/css/bootstrap.css" />
+		<link rel="stylesheet" href="${context_path}/res/ace-1.3.3/assets/css/font-awesome.css" />
 
 		<!-- text fonts -->
-		<link rel="stylesheet" href="/res/ace-1.3.3/assets/css/ace-fonts.css" />
+		<link rel="stylesheet" href="${context_path}/res/ace-1.3.3/assets/css/ace-fonts.css" />
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="/res/ace-1.3.3/assets/css/ace.css" />
+		<link rel="stylesheet" href="${context_path}/res/ace-1.3.3/assets/css/ace.css" />
 
 		<!--[if lte IE 9]>
-			<link rel="stylesheet" href="/res/ace-1.3.3/assets/css/ace-part2.css" />
+			<link rel="stylesheet" href="${inf}/res/ace-1.3.3/assets/css/ace-part2.css" />
 		<![endif]-->
-		<link rel="stylesheet" href="/res/ace-1.3.3/assets/css/ace-rtl.css" />
+		<link rel="stylesheet" href="${context_path}/res/ace-1.3.3/assets/css/ace-rtl.css" />
 
 		<!--[if lte IE 9]>
 		  <link rel="stylesheet" href="/res/ace-1.3.3/assets/css/ace-ie.css" />
@@ -63,22 +66,22 @@
 								<div id="login-box" class="login-box visible widget-box no-border" style="margin-top: 100px;">
 									<div class="widget-body">
 										<div class="widget-main">
-											<h4 class="header blue lighter bigger">
-												<i class="ace-icon fa fa-coffee green"></i>
-												欢迎使用红外监控测温系统
+											<h4 class="header blue lighter bigger" align="center">
+												<!-- <i class="ace-icon fa fa-coffee green"></i> -->
+												热成像测温监测应用
 											</h4>
 
 											<div class="space-6"></div>
 
 											<form>
 												<fieldset>
-												    <label class="block clearfix">
+												    <!--<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<select name="op_class" id="station_op_class" class="form-control selectpicker">
-								                        		<option  value='0'>---请选择运维班---</option>
+								                        		<option  value='0'>---请选择班组---</option>
 								                       		</select>
 														</span>
-													</label>
+													</label>  -->
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="text" class="form-control" placeholder="Username" name="username" id="username"/>
@@ -92,12 +95,12 @@
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
 													</label>
-													<div class="block clearfix">
+													<%-- <div class="block clearfix">
 															
 															<input type="text"  style="width: 150px;" placeholder="验证码" name="imgCode" id="imgCode" />
 															<img class="yzm-pic" id="img" src="${context_path}/image/getCode"></img>
 														
-													</div>
+													</div> --%>
 													<div class="space"></div>
 
 													<div class="clearfix">
@@ -142,7 +145,7 @@
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">
-			window.jQuery || document.write("<script src='/res/ace-1.3.3/assets/js/jquery.js'>"+"<"+"/script>");
+			window.jQuery || document.write("<script src='${context_path}/res/ace-1.3.3/assets/js/jquery.js'>"+"<"+"/script>");
 		</script>
 
 		<!-- <![endif]-->
@@ -153,12 +156,12 @@
 </script>
 <![endif]-->
 		<script type="text/javascript">
-			if('ontouchstart' in document.documentElement) document.write("<script src='/res/ace-1.3.3/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+			if('ontouchstart' in document.documentElement) document.write("<script src='${context_path}/res/ace-1.3.3/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
-		 $(window).load(function(){
+		/*  $(window).load(function(){
 	          getOperationClass();
 	    });
 		
@@ -167,11 +170,11 @@
 			var which = $('#station_op_class');
 			
 			$(which).empty();
-			$(which).append("<option value='0'>---请选择运维班---</option>"); 
+			$(which).append("<option value='0'>---请选择班组---</option>"); 
 			$.ajax({
 				    type: 'POST',
 				    dataType: 'json',
-				    url: "<%=request.getContextPath()%>"+"/getoperation/getOpAll",
+				    url: "${context_path}/getoperation/getOpAll",
 				    success: function(data) {
 						var result = data.oplist;
 						var notEmpty = data.notempty;
@@ -187,7 +190,7 @@
 				    }
 		        });
 
-		}
+		} */
 		
 		
 			jQuery(function($) {
@@ -198,9 +201,9 @@
 					$('#login-btn').click();
 					} 
 				}
-				$('#img').click(function(){
+				/* $('#img').click(function(){
 					$('#img').attr("src","${context_path}/image/getCode?tm="+Math.random());
-				});
+				}); */
 				 $('#login-btn').click(function(event) {
 				      event.stopPropagation();
 				      var $btn = $(this);
@@ -209,13 +212,13 @@
 				      }
 				      var $loginname = $('#username');
 				      var $password = $('#password');
-				      var $imgCode = $('#imgCode');
-				      var $op_class = $('#station_op_class')
+				      //var $imgCode = $('#imgCode');
+				     /*  var $op_class = $('#station_op_class')
 				      if ($op_class.val()==0) {
-					        alert('请选择运维班！');
+					        alert('请选择班组！');
 					        $op_class.focus();
 					        return false;
-					      }
+					      } */
 				      if (!$loginname.val()) {
 				        alert('请输入用户名！');
 				        $loginname.focus();
@@ -226,20 +229,21 @@
 				        $password.focus();
 				        return false;
 				      }
-				      if (!$imgCode.val()) {
+				     /*  if (!$imgCode.val()) {
 					        alert('请输入验证码！');
 					        $imgCode.focus();
 					        return false;
-					      }
+					      } */
 				      
 				      var submitData = {
 				   		username : $loginname.val(),
 				      	password : $password.val(),
-				      	imageCode : $imgCode.val(),
-				      	op_class : $op_class.val(),
+				      	//imageCode : $imgCode.val(),
+				      	//op_class : $op_class.val(),
 				      	autoLogin:$("#autoLogin").is(':checked') ==true?1:0,
 				      	url:"${url}"
 				      };
+				     // console.log("username:"+submitData.username);
 				      $btn.addClass("disabled");
 				      $.post("${context_path}/dologin", submitData, function(data) {
 								$btn.removeClass("disabled");

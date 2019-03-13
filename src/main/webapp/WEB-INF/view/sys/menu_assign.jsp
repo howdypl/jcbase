@@ -130,7 +130,7 @@ li{
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">
-			window.jQuery || document.write("<script src='/res/ace-1.3.3/assets/js/jquery.js'>"+"<"+"/script>");
+			window.jQuery || document.write("<script src='${res_url}ace-1.3.3/assets/js/jquery.js'>"+"<"+"/script>");
 		</script>
 
 		<!-- <![endif]-->
@@ -202,12 +202,16 @@ $(function(){
 		}
 		$.post("${context_path}/sys/role/saveMenuAssign" , submitData , 
 			function(data){
-			$("#btn_saveOrder").removeAttr("disabled");
-			layer.msg("保存成功", {
-			    icon: 1,
-			    time: 1000 //1秒关闭（如果不配置，默认是3秒）
-			});
-		},"json");
+				$("#btn_saveOrder").removeAttr("disabled");
+				parent.reloadGrid(); //重新载入
+				layer.msg("保存成功", {
+				    icon: 1,
+				    time: 1000 //1秒关闭（如果不配置，默认是3秒）
+				},function(){
+	    			var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+	    			parent.layer.close(index); //再执行关闭 
+	    		});
+			},"json");
 	});
 	resize();
 	$.fn.zTree.init($("#treeDemo"), setting, zNodes);

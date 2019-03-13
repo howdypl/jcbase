@@ -44,6 +44,32 @@
 														</div>
 													</div>
 													</c:if>
+												   <input name="mytype" type="hidden" value="${item.type}"/>
+												    <div class="form-group" id="myradio" >
+														<label class="radio-inline">
+													        <input type="radio" name="user_type" id="optionsRadios1" value="1" checked >工区用户
+													    </label>
+													    <label class="radio-inline">
+													        <input type="radio" name="user_type" id="optionsRadios2"  value="2"> 班组用户
+													    </label>
+													</div>
+												    
+												    <div hidden id="typealert" class="form-group alert alert-danger">
+												    	<strong>警告:</strong>请选择一个工区！
+													</div>
+							      					<div hidden id="nooperationalert2" class="form-group alert alert-danger">
+												   		 <strong>警告:</strong>没有可用的工区组，请先创建工区！
+													</div>
+													<div id="work_area_group" class="form-group">
+													    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">所属工区</label>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<select name="work_area_id"  id="work_area_class" onchange="getWorkAreaSelect(this)" class="col-xs-12 col-sm-6">
+																	<option value='0'>---请选择工区---</option>
+																</select>
+										                    </div>
+														</div>
+													</div>
 												    
 												    
 												    <div hidden id="typealert" class="form-group alert alert-danger">
@@ -52,17 +78,17 @@
 							      					<div hidden id="nooperationalert" class="form-group alert alert-danger">
 												   		 <strong>警告:</strong>没有可用的运维组，请先创建运维组！
 													</div>
-													<div class="form-group">
-													    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">所属运维班</label>
+													<div id='op_class_div' class="form-group" hidden>
+													    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">所属班组</label>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
 																<select name="operation_class_id"  id="station_op_class" onchange="getOpClassSelect(this)" class="col-xs-12 col-sm-6">
-																	<option value='0'>---请选择运维班---</option>
+																	<option value='0'>---请选择班组---</option>
 																</select>
 										                    </div>
 														</div>
 													</div>
-												    <div hidden id="nostationalert" class="form-group alert alert-danger">
+												    <!--<div hidden id="nostationalert" class="form-group alert alert-danger">
 												   		 <strong>警告:</strong>该运维组无biandian站！
 													</div>
 												    <div class="form-group" hidden id="add_station_manager_div">
@@ -74,13 +100,13 @@
 									                       		</select>
 										                    </div>
 														</div>
-													</div>
+													</div>-->
 												    
 													<div class="form-group">
-														<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="des">描述</label>
+														<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="des1">所属市</label>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-													            <input type="text"  name="des" value="${item.des}" class="col-xs-12 col-sm-6">
+													            <input type="text"  name="des1" value="${item.des}" class="col-xs-12 col-sm-6">
 															</div>
 														</div>
 													</div>
@@ -122,19 +148,204 @@
 			</div><!-- /.main-container-inner -->
 		</div><!-- /.main-container -->
 		<jsp:include page="/WEB-INF/view/common/basejs.jsp" flush="true" />
-	<script type="text/javascript">
+<script type="text/javascript">
+	 var username;
+	 var mytype;
+	 var jsonobj;
+	 var myarea;
+	 var opc;
+	 var utype;
 	 $(window).load(function(){
-		 
-			getOperationClass();
+	 		username="${sessionScope.sysUser.name}";
+	 		mytype = "${item}";
+	 		myarea = "${item.work_area_id}";
+	 		opc = "${item.operation_class_id}";
+			utype= "${item.user_type}";
+			// getOperationClass();
+		if(mytype!=""){
 			
+			if(utype=="1"){
+				$('#optionsRadios1').attr('checked','true');
+				$('#work_area_group').show();
+				
+			}else if(utype=="2"){
+				$('#optionsRadios2').attr('checked','true');
+				$('#work_area_group').show();
+		 		$('#op_class_div').show();
+			}
+			//$('#optionsRadios1').attr('disabled','true');
+			//$('#optionsRadios2').attr('disabled','true');
+			//getWorkArea();
+			
+		}
+		
+		// 根据用户权限
+		isPermission();
+		
+		$('input[type=radio][name=user_type]').change(function() {
+	    	if(username=="admin"){
+		        if (this.value == '1') {
+		            $('#work_area_group').show();
+		 			$('#op_class_div').hide();
+		 			opc =0;
+		        }else if (this.value == '2') {
+		            $('#work_area_group').show();
+		 			$('#op_class_div').show();
+		 			opc = "${item.operation_class_id}";
+		        }
+		        getWorkArea();
+		    }else {
+		    	if (this.value == '1') {
+		            $('#work_area_group').show();
+		 			$('#op_class_div').hide();
+		 			opc =0;
+		        }else if (this.value == '2') {
+		            $('#work_area_group').show();
+		 			$('#op_class_div').show();
+		 			opc = "${item.operation_class_id}";
+		        }
+		        getOperationClass(0);
+		    }
 	    });
+	    
+	 });
+	    
+    function isPermission(){
+    	getWorkArea();
+    	/* if(username=="admin"){
+    		$('#work_area_group').show();
+	 		$('#op_class_div').hide();
+	 		getWorkArea();
+    	}else {
+    		$('#work_area_group').hide();
+	 		$('#op_class_div').hide();
+    	} */
+    
+    }
+	
+	 /** */
+	 function getWorkArea(){
+			
+		var which = $('#work_area_class');
+		
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择工区---</option>"); 
+		var name="${sessionScope.sysUser.name}";
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/workarea/getAllListData",
+			    data:{"username":name},
+			    success: function(data) {
+					var result = data.result;
+					var content = data.content;
+					if(result){
+						 var selec = 0;
+						 var index = 0;
+					     $.each(content, function(i,value){
+					     	
+					    	$(which).append("<option value='"+value.id+"'>"+value.area+"</option>"); 
+					    	if(name!='admin'){ //非工区用户添加用户时自动选择其所在的工区
+					     		which.get(0).selectedIndex = i+1;
+					     	}
+					    	if(mytype!=""){
+								selec = myarea;
+								if(value.id == selec){
+									index = i+1;
+								}
+							}
+					    });
+					    
+					    if(index>0){
+					    	which.get(0).selectedIndex=index;//index为索引值
+					    	//$('#work_area_class').attr("disabled","disabled");
+					    	getOperationClass(selec);
+					    }
+					}else{
+						showAlert('nooperationalert2');
+						
+					}
+			    }
+	        });
+
+	}
+	 function getWorkAreaSelect(which){
+	    var sindex = which.selectedIndex;
+	    $('div.alert-danger').hide(); 
+		if(sindex == 0){
+			isSelect('typealert',which);
+			$('#op_class_div').hide();
+
+		}else{
+			var val = $('input:radio[name="user_type"]:checked').val();
+			if(val=='1'){
+				$('#op_class_div').hide();
+			}else{
+				$('#op_class_div').show();
+				
+				var workarea = which.value;
+				getOperationClass(workarea);
+				console.log("which.value="+which.value);
+			}
+			// getStation(which.value);
+		}
+	}
+	
+	 function getOperationClass(wa){
+		
+		var which = $('#station_op_class');
+		
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
+		var name="${sessionScope.sysUser.name}";
+		
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/getoperation/getOP",
+			    data:{"workarea":wa,
+			    	"username":name},
+			    success: function(data) {
+					var result = data.result;
+					var content = data.content;
+					if(result){
+						 var selec = 0;
+						 var index = 0;
+					     $.each(content, function(i,value){
+					
+					    	$(which).append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+					    	
+					    	if(mytype!=""){
+								selec = opc;
+								if(value.id == selec){
+									index = i+1;
+								}
+							}
+					    	
+					    });
+					    
+					    if(index>0){
+					    	which.get(0).selectedIndex=index;//index为索引值
+					    	
+					    	//$('#station_op_class').attr("disabled","disabled");
+					    }
+					}else{
+						showAlert('nooperationalert');
+						
+					}
+			    }
+	        });
+
+	}
+
 		    
-	 function getOperationClass(){
+
+<%-- 	 function getOperationClass(){
 			
 			var which = $('#station_op_class');
 			
 			$(which).empty();
-			$(which).append("<option value='0'>---请选择运维班---</option>"); 
+			$(which).append("<option value='0'>---请选择班组---</option>"); 
 			var name="${sessionScope.sysUser.name}";
 			$.ajax({
 				    type: 'POST',
@@ -142,11 +353,11 @@
 				    url: "<%=request.getContextPath()%>"+"/getoperation",
 				    data:{"username":name},
 				    success: function(data) {
-						var result = data.oplist;
-						var notEmpty = data.notempty;
-						if(notEmpty){
+						var result = data.result;
+						var content = data.content;
+						if(result){
 							 
-						     $.each(result, function(i,value){
+						     $.each(content, function(i,value){
 						
 						    	$(which).append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
 						    });
@@ -158,18 +369,14 @@
 		        });
 
 		}
+		 --%>
+		
 	 function getOpClassSelect(which){
 		    var sindex = which.selectedIndex;
 		    $('div.alert-danger').hide(); 
 			if(sindex == 0){
 				isSelect('typealert',which);
-				$('#add_station_manager_div').hide();
 
-			}else{
-				
-				$('#add_station_manager_div').show();						
-				
-				getStation(which.value);
 			}
 		}
 		
@@ -186,11 +393,11 @@
 				    url: "<%=request.getContextPath()%>"+"/building/getStation",
 				    data:{"opclass":opclass},
 				    success: function(data) {
-						var result = data.stationRecords;
-						var notEmpty = data.notempty;
+						var result = data.result;
+						var content = data.content;
 						if(result){
 							
-						     $.each(result, function(i,value){
+						     $.each(content, function(i,value){
 						     
 						    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
 						    });
@@ -200,8 +407,6 @@
 						}
 				    }
 		        });
-		        
-		        
 		}
 	 function showAlert(comp){
 			var selected = "#"+comp;
@@ -233,11 +438,17 @@
 						name:{
 							required: true
 						}
+						/* des1:{
+							required: true
+						} */
 					},
 					messages: {
 						name:{
 							required: "请输入用户名"
 						}
+						/* des1:{
+							required: "请输入用户地区，如郑州"
+						} */
 					},
 					highlight: function (e) {
 						$(e).closest('.form-group').removeClass('has-info').addClass('has-error');

@@ -25,7 +25,7 @@ import com.yanxin.common.model.base.BaseOperationClass;
  */
 public class OperationClass extends BaseOperationClass<OperationClass> {
 
-/**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4833191302759104592L; 
@@ -38,11 +38,57 @@ public class OperationClass extends BaseOperationClass<OperationClass> {
 		if(CommonUtils.isNotEmpty(keyword)){
 			conditions.add(new Condition("op_name",Operators.LIKE,keyword));
 		}
-		String select="select su.*, (select group_concat(name) as opNames from sys_user where sys_user.id=su.op_manager) as opNames";
+		//String select="select su.*, (select group_concat(name) as opNames from sys_user where sys_user.id=su.op_manager) as opNames";
+		String select="select su.*";
 		StringBuffer sqlExceptSelect=new StringBuffer();
 		sqlExceptSelect.append("from operation_class su"+super.getWhereSql(conditions, outConditionValues));
 		return this.paginate(page, rows, select, sqlExceptSelect.toString());
 	}
+	/**
+	 * 
+	 * @param page
+	 * @param rows
+	 * @param username
+	 * @param orderbyStr
+	 * @return
+	 */
+	public Page<OperationClass> getOperationClassPageNew(int page, int rows, String username,int workArea,
+			String orderbyStr) {
+			
+		Set<Condition> conditions=new HashSet<Condition>();
+		List<Object> outConditionValues=new ArrayList<Object>();
+		
+		SysUser user = SysUser.me.getByName(username);
+		
+		if(user.getUserType().intValue() == new Integer(0).intValue()){
+			if(workArea>0){
+				String select = "select su.*, work_area.area ";
+				String sqlExceptSelect = "from operation_class su,work_area where su.work_area_id=work_area.id ";
+				return this.paginate(page, rows, select, sqlExceptSelect);
+			}else {
+				String select = "select su.*, work_area.area ";
+				String sqlExceptSelect = "from operation_class su,work_area where su.work_area_id=work_area.id ";
+				return this.paginate(page, rows, select, sqlExceptSelect);
+			}
+			
+		}else {
+			int tempid = 0;
+			if(workArea>0){
+				tempid = workArea;
+			}else{
+				tempid = user.getWork_area_id();
+			}
+			if(user != null ){
+				conditions.add(new Condition("work_area_id",Operators.LIKE,tempid));
+			}
+			String select="select su.*, (select area from work_area where id="+tempid+") as area";
+			StringBuffer sqlExceptSelect=new StringBuffer();
+			sqlExceptSelect.append("from operation_class su"+super.getWhereSql(conditions, outConditionValues));
+			return this.paginate(page, rows, select, sqlExceptSelect.toString());
+		}
+	}
+
+	
 	//用户名是否存在
 	public boolean hasExist(String name){
 		Set<Condition> conditions=new HashSet<Condition>();
@@ -52,28 +98,53 @@ public class OperationClass extends BaseOperationClass<OperationClass> {
 	}
 	
 	
-	public InvokeResult save(Integer id, String op_name, String op_desc, String op_addr, Integer op_manager) {
+	public InvokeResult save(Integer id, String op_name, String op_desc, String op_addr) {
 		// TODO Auto-generated method stub
 		if(id!=null){
 			OperationClass opclass=this.findById(id);
-			if(op_manager==0) {
+			/*if(op_manager==0) {
 				opclass.set("op_name", op_name).set("op_desc",op_desc).set("op_addr",op_addr).update();
 			}
-			else {
-				opclass.set("op_name", op_name).set("op_desc",op_desc).set("op_addr",op_addr).set("op_manager",op_manager).update();
-			}
-			int b=Db.update("update sys_user set operation_class_id=(select id from operation_class where op_manager=?) where id=?",op_manager,op_manager);
+			else {*/
+			opclass.set("op_name", op_name).set("op_desc",op_desc).set("op_addr",op_addr).update();
+			//}
+			//int b=Db.update("update sys_user set operation_class_id=(select id from operation_class where op_manager=?) where id=?",op_manager,op_manager);
 		}else {
 			if(this.hasExist(op_name)){
 				return InvokeResult.failure("运维班已存在");
 			}else{
-				new OperationClass().set("op_name", op_name).set("op_desc",op_desc).set("op_addr",op_addr).set("op_manager",op_manager).set("create_time", new Date()).save();
-				int b=Db.update("update sys_user set operation_class_id=(select id from operation_class where op_manager=?) where id=?",op_manager,op_manager);
+				new OperationClass().set("op_name", op_name).set("op_desc",op_desc).set("op_addr",op_addr).set("create_time", new Date()).save();
+				//int b=Db.update("update sys_user set operation_class_id=(select id from operation_class where op_manager=?) where id=?",op_manager,op_manager);
 			}
 		}
 		
 		return InvokeResult.success();
 	} 
+	
+	public InvokeResult saveNew(Integer id, String op_name, Integer workAreaId,String op_desc, String op_addr) {
+		// TODO Auto-generated method stub
+		if(id!=null){
+			OperationClass opclass=this.findById(id);
+			/*if(op_manager==0) {
+				opclass.set("op_name", op_name).set("op_desc",op_desc).set("op_addr",op_addr).update();
+			}
+			else {*/
+			opclass.set("op_name", op_name).set("work_area_id",workAreaId).set("op_desc",op_desc).set("op_addr",op_addr).update();
+			//}
+			//int b=Db.update("update sys_user set operation_class_id=(select id from operation_class where op_manager=?) where id=?",op_manager,op_manager);
+		}else {
+			if(this.hasExist(op_name)){
+				return InvokeResult.failure("运维班已存在");
+			}else{
+				new OperationClass().set("op_name", op_name).set("work_area_id",workAreaId).set("op_desc",op_desc).set("op_addr",op_addr).set("create_time", new Date()).save();
+				//int b=Db.update("update sys_user set operation_class_id=(select id from operation_class where op_manager=?) where id=?",op_manager,op_manager);
+			}
+		}
+		
+		return InvokeResult.success();
+	} 
+	
+	
 	
 	public InvokeResult deleteData(Integer id) {
 		this.deleteById(id);

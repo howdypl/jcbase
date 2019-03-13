@@ -26,7 +26,7 @@ nav.page-tabs .page-tabs-content {
 }
 
 .page-tabs a.active {
-	background: #39aef5;
+	background: rgba(0, 149, 149, 1);
 	color: #fff;
 }
 .page-tabs a {
@@ -56,6 +56,7 @@ nav.page-tabs .page-tabs-content {
 
 .content-tabs .roll-left {
 	left: 0;
+	width:30px;
 	border-right: solid 1px #eee
 }
 
@@ -110,7 +111,7 @@ nav.page-tabs .page-tabs-content {
     text-decoration: none;
 }
 .page-tabs a.active {
-    background: #39aef5;
+    background: rgba(0, 149, 149, 1);
     color: #fff;
 }
 #content-main {

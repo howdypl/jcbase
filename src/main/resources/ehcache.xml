@@ -25,8 +25,8 @@
 	diskSpoolBufferSizeMB="50" timeToIdleSeconds="300" timeToLiveSeconds="3600"
 	memoryStoreEvictionPolicy="LFU" />
 
-	<cache name="sensordata" maxEntriesLocalHeap="100000"
+	<!-- <cache name="sensordata" maxEntriesLocalHeap="100000"
 		maxEntriesLocalDisk="10000" eternal="false" overflowToDisk="true"
 		diskSpoolBufferSizeMB="20" timeToIdleSeconds="300" timeToLiveSeconds="100"
-		memoryStoreEvictionPolicy="LFU" transactionalMode="off" />  
+		memoryStoreEvictionPolicy="LFU" transactionalMode="off" />   -->
 </ehcache>  

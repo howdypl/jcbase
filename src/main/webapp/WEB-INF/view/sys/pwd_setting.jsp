@@ -192,7 +192,7 @@
 								pwdRepeat:$("#pwdRepeat").val()
 						};
 						$btn.addClass("disabled");
-						$.post('/savePwdUpdate', submitData,function(data) {
+						$.post('${context_path}/savePwdUpdate', submitData,function(data) {
 							$btn.removeClass("disabled");
 							if(data.code==0){
 	        					layer.msg('修改成功', {

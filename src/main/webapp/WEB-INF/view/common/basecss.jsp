@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!-- bootstrap & fontawesome -->
+		<link rel="icon" href="${context_path}/res/img/favicon.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="${context_path}/res/img/favicon.ico" type="image/x-icon">
+		
 		<link rel="stylesheet" href="${res_url}ace-1.3.3/assets/css/bootstrap.css" />
 		<link rel="stylesheet" href="${res_url}ace-1.3.3/assets/css/font-awesome.css" />
 

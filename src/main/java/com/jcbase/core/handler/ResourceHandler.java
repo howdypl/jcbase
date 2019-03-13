@@ -22,6 +22,7 @@ public class ResourceHandler extends Handler {
 			String context_path=context.getContextPath().equals("/")?"":context.getContextPath();
 			context.setAttribute("res_url", context_path+"/res/");
 			context.setAttribute("context_path", context_path);
+			context.setAttribute("image_url_prefix", PropKit.get("image_url_prefix"));
 		}
 		next.handle(target, request, response, isHandled);
 	}

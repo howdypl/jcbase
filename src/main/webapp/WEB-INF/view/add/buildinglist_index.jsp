@@ -20,13 +20,49 @@
 				<div class="page-content" id="page-content">
 					<div class="row">
 							<div class="col-xs-12">
-							<!-- PAGE CONTENT BEGINS -->
-							<div class="widget-box">
-											<div class="widget-header widget-header-small">
-												<h5 class="widget-title lighter">筛选</h5>
-											</div>
-
-											<div class="widget-body">
+								<!-- PAGE CONTENT BEGINS -->
+								<div class="widget-box">
+										<div class="widget-header widget-header-small">
+											<h5 class="widget-title lighter">筛选</h5>
+										</div>
+										<div class="row" style="margin-top:5px;">
+												<div id="work_area_div" class="col-md-2" style="width: 16%; margin-left:5px;margin-top:5px;">
+													<select name="work_area_id"  id="work_area_class" 
+														onchange="getWorkAreaSelect(this)" 
+														class="form-control selectpicker">
+														<option value='0'>---请选择工区---</option>
+														</select>
+												</div>
+												
+												 <div id="operation_class_div" class="col-md-2" style="width: 16%;margin-left:5px;margin-top:5px;margin-bottom:5px;">
+													<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
+						                        		 <option  value='0'>---请选择班组---</option>
+						                       		</select>
+												</div>
+												<div class="col-md-2" style="width: 16%;margin-left:5px;margin-top:5px;margin-bottom:5px;">
+												   <select id="add_station" onchange="managerSelect(this)" class="form-control selectpicker">
+						                        		<option  value='0'>---请选择变电站---</option>
+						                       		</select>
+												</div>
+												<div class="col-xs-12">
+													<div class="row-fluid" style="margin-bottom: 5px;">
+														<div class="span12 control-group">
+															<%-- <jc:button className="btn btn-success" id="btn-visible" textName="启用"/> --%>
+															<jc:button className="btn btn-danger" id="btn-unvisible" textName="删除"/>
+															<jc:button className="btn btn-primary" id="btn-add" textName="添加"/>
+															<jc:button className="btn btn-info" id="btn-edit" textName="编辑"/>	
+															<%--<jc:button className="btn" id="bnt-grant" textName="资源授权" permission="/sys/role"/> --%>
+														</div>
+													</div>
+													<!-- PAGE CONTENT BEGINS -->
+													<table id="grid-table"></table>
+					
+													<div id="grid-pager"></div>
+													<!-- PAGE CONTENT ENDS -->
+												</div><!-- /.col -->
+										</div>
+												
+											<!-- <div class="widget-body">
 												<div class="widget-main">
 														<div class="row">
 															<div class="col-xs-12 col-sm-8">
@@ -35,7 +71,7 @@
 																		<i class="ace-icon fa fa-check"></i>
 																	</span>
 
-																	<input type="text" id="name" name="name" class="form-control search-query" placeholder="请输入关键字" />
+																	<input type="text" id="name" name="name" class="form-control search-query" placeholder="请输入设备间名称的关键字" />
 																	<span class="input-group-btn">
 																		<button type="button" id="btn_search" class="btn btn-purple btn-sm">
 																			<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
@@ -46,25 +82,10 @@
 															</div>
 														</div>
 												</div>
-											</div>
-										</div>
-							</div>
-							<div class="col-xs-12">
-								<div class="row-fluid" style="margin-bottom: 5px;">
-									<div class="span12 control-group">
-<%-- 										<jc:button className="btn btn-success" id="btn-visible" textName="启用"/> --%>
-										<jc:button className="btn btn-danger" id="btn-unvisible" textName="删除"/>
-										<jc:button className="btn btn-primary" id="btn-add" textName="添加"/>
-										<jc:button className="btn btn-info" id="btn-edit" textName="编辑"/>
-<%-- 										<jc:button className="btn" id="bnt-grant" textName="资源授权" permission="/sys/role"/> --%>
+											</div> -->
 									</div>
-								</div>
-								<!-- PAGE CONTENT BEGINS -->
-								<table id="grid-table"></table>
-
-								<div id="grid-pager"></div>
-								<!-- PAGE CONTENT ENDS -->
-							</div><!-- /.col -->
+							</div>
+							
 						</div><!-- /.row -->
 				</div>
 			</div>
@@ -73,52 +94,21 @@
 		<jsp:include page="/WEB-INF/view/common/basejs.jsp" flush="true" />
 		
 		<script type="text/javascript"> 
+		var user_type="0";
         $(document).ready(function () {
-        	var grid_selector = "#grid-table";
-			var pager_selector = "#grid-pager";
-        	//resize to fit page size
-			$(window).on('resize.jqGrid', function () {
-				$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() );
-		    });
-//resize on sidebar collapse/expand
-				var parent_column = $(grid_selector).closest('[class*="col-"]');
-				$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
-					if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
-						//setTimeout is for webkit only to give time for DOM changes and then redraw!!!
-						setTimeout(function() {
-							$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
-						}, 0);
-					}
-			    });
+			var name="${sessionScope.sysUser.name}";
+        	var workArea = 0;
+        	
+        	getWorkArea();
+           
+           user_type = "${sessionScope.sysUser.user_type}";
 
-            $("#grid-table").jqGrid({
-                url:'${context_path}/building/getListData',
-                mtype: "GET",
-                datatype: "json",
-                colModel: [
-                	{ label: '设备间名称', name: 'building_name', width: 60 },
-             //       { label: '负责人', name: 'station_manager', width: 75 ,sortable:false},
-                    { label: '所属运维班', name: 'opName', width: 100 },
-             //       { label: '地址', name: 'station_addr', width: 80 ,sortable:false},
-                    { label: '所属变电站', name: 'stationName', width: 150 ,sortable:false},
-                    { label: '注册时间', name: 'create_time', width: 100 },
-                ],
-				viewrecords: true,
-                height: 280,
-                rowNum: 10,
-                multiselect: true,//checkbox多选
-                altRows: true,//隔行变色
-                recordtext:"{0} - {1} 共 {2} 条",
-                pgtext:"第 {0} 页 共 {1} 页",
-                pager: pager_selector,
-                loadComplete : function() {
-					var table = this;
-					setTimeout(function(){
-						updatePagerIcons(table);
-					}, 0);
-				}
-            });
-			$(window).triggerHandler('resize.jqGrid');
+		 	if(user_type==1){
+		 		getWAWord();
+		 	}else if(user_type==2){
+		 		getWord();
+		 	}
+           
 			$("#btn_search").click(function(){  
 			    //此处可以添加对查询数据的合法验证  
 			    var name = $("#name").val();  
@@ -138,40 +128,7 @@
 				    content: '${context_path}/building/add'
 				});
 			});
-// 			$("#bnt-grant").click(function(){
-// 				var rid = getOneSelectedRows();
-// 				if(rid == -1){
-// 					layer.msg("请选择一个角色", {
-// 					    icon: 2,
-// 					    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-// 					});
-// 				}else if(rid == -2 ){
-// 					layer.msg("只能选择一个角色", {
-// 					    icon: 2,
-// 					    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-// 					});
-// 				}else {
-// 					if(rid==1){
-// 						layer.msg("超级管理员资源不能被修改", {
-// 						    icon: 2,
-// 						    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-// 						});
-// 						return;
-// 					}
-// 					var rowData = $("#grid-table").jqGrid('getRowData',rid);
-// 					parent.layer.open({
-// 						title:'给角色【'+rowData.name+'】分配资源',
-// 					    type: 2,
-// 					    area: ['380px', '430px'],
-// 					    fix: false, //不固定
-// 					    maxmin: true,
-// 					    content: '${context_path}/sys/role/getZtree?roleId='+rid+'&type=1'
-// 					});
-// 				}
-// 			});
-// 			$("#btn-visible").click(function(){
-// 				setVisible(1);
-// 			});
+
 			$("#btn-unvisible").click(function(){
 				var rid = getOneSelectedRows();
 				var submitData={id:rid};
@@ -213,6 +170,266 @@
 				}
 			});
         });
+	function getWord() {
+		$.ajax({
+			type : 'POST',
+			dataType : 'json',
+			url : '<%=request.getContextPath()%>/sys/user/getWord?name="${sessionScope.sysUser.name}"',
+			success : function(data) {
+				var result = data.word;
+				if (!result) {
+
+					$('#work_area_div').hide();
+					$('#operation_class_div').hide();
+				}
+			}
+		});
+	}
+
+	function getWAWord() {
+		$.ajax({
+			type : 'POST',
+			dataType : 'json',
+			url : '<%=request.getContextPath()%>/sys/user/getWAWord?name="${sessionScope.sysUser.name}"',
+			success : function(data) {
+				var result = data.word;
+				if (!result) {
+					//$('#btn-delect').remove();
+					//$('#bnt-grant').remove();
+					$('#work_area_div').hide();
+				}
+			}
+		});
+	}
+	function getWorkArea() {
+		var which = $('#work_area_class');
+		var name = "${sessionScope.sysUser.name}";
+		$('#station_op_class').get(0).selectedIndex = 0;
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择工区---</option>");
+		var name = "${sessionScope.sysUser.name}";
+		$.ajax({
+			type : 'POST',
+			dataType : 'json',
+			url : "<%=request.getContextPath()%>" + "/workarea/getAllListData",
+			data : {
+				"username" : name
+			},
+			success : function(data) {
+				var result = data.result;
+				var content = data.content;
+				if (result) {
+					var index = 1;
+					$.each(content, function(i, value) {
+
+						$(which).append("<option value='" + value.id + "'>" + value.area + "</option>");
+
+					});
+
+					if (index > 0) {
+						which.get(0).selectedIndex = index; //index为索引值
+					}
+				} else {
+					showAlert('nooperationalert2');
+
+				}
+				var workarea = document.getElementById("work_area_class");
+
+
+				getWorkAreaSelect(workarea);
+			}
+		});
+
+	}
+	function getWorkAreaSelect(which){
+	    var sindex = which.selectedIndex;
+	    if(sindex>0){
+	    	// isSelect('typealert',which);
+	    	getOperationClass2();
+	    }
+	    $('#station_op_class').empty();
+		$('#station_op_class').append("<option value='0'>---请选择班组---</option>"); 
+		if(user_type!="2"){
+			commond();
+			updata();
+		}
+	}
+	
+    function getOperationClass2(){
+		var which = $('#station_op_class');
+		var wa = $('#work_area_class').val();
+		$('#add_station').get(0).selectedIndex=0;
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
+		var name="${sessionScope.sysUser.name}";
+		$.ajax({
+			    type: 'GET',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/getoperation/getOpc",
+			    data:{"username":name,
+			    	"workarea":wa},
+			    success: function(data) {
+					var result = data.content;
+					var notEmpty = data.result;
+					if(notEmpty){
+						var index =0;
+					    $.each(result, function(i,value){
+					    	/* if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	} */
+					     	if(user_type=="2"){
+					    		index = i+1;
+					    	}
+					    	which.append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+					    });
+					    
+					    which.get(0).selectedIndex=index;//index为索引值
+					   	
+					   	var opClass = document.getElementById("station_op_class");//$('#station_op_class');
+        				getOpClassSelect(opClass);
+					}
+					
+			    }
+	        });
+		
+	}
+	function getOpClassSelect(which){
+	    var sindex = which.selectedIndex;
+	    if(sindex > 0){
+	    	getStation(which.value);
+	    }
+		/* if(sindex == 0){
+			isSelect('typealert',which);
+		}else{
+			getStation(which.value);
+		} */
+		$('#add_station').empty();
+		$('#add_station').append("<option  value='0'>---请选择变电站---</option>");
+		commond();
+		updata();
+	}
+	
+	function getStation(op){
+		var which = $('#add_station');
+		var opclass = op;
+		$(which).empty();
+		$(which).append("<option  value='0'>---请选择变电站---</option>");		
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/building/getStation",
+			    data:{"opclass":opclass},
+			    success: function(data) {
+					var result = data.content;
+					var notEmpty = data.result;
+					if(result){						
+						var index =1; // 设置默认选择的变电站
+					     $.each(result, function(i,value){
+					     	/* if(index==0 || index=='undefined'){
+					     		index = 1;
+					     	}else{
+					     		if(index==value.id){
+					     			index = i+1;
+					     		}
+					     	} */				     	
+					    	$(which).append("<option value='"+value.id+"'>"+value.station_name+"</option>"); 
+					    });
+					    
+					    //$(which).get(0).selectedIndex=index;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+ 					}else{
+ 						$(which).get(0).selectedIndex=0;//index为索引值
+						var station = document.getElementById("add_station");// $('#add_station');
+				        managerSelect(station);
+ 					}
+			    }
+	        });	        	        
+	}
+	
+	function managerSelect(which){
+		commond();
+		updata();
+		//command();			
+	}	
+	
+	function updata(){  
+	    //此处可以添加对查询数据的合法验证  
+	    var workArea = $('#work_area_class').val();
+		var op_class= $("#station_op_class").val();
+		var station = $("#add_station").val();
+		
+	    var name="${sessionScope.sysUser.name}";
+	    $("#grid-table").jqGrid('setGridParam',{  
+	        datatype:'json',  
+	        postData:{'workarea':workArea,'username':name,"op_id":op_class,"station":station},//发送数据  
+	        page:1  
+	    }).trigger("reloadGrid"); //重新载入  
+	}
+	function commond(){
+		var name="${sessionScope.sysUser.name}";
+	
+		var workArea = $('#work_area_class').val();
+		var op_class= $("#station_op_class").val();
+		var station = $("#add_station").val();
+		
+		var grid_selector = "#grid-table";
+		var pager_selector = "#grid-pager";
+       	//resize to fit page size
+		$(window).on('resize.jqGrid', function () {
+			$(grid_selector).jqGrid( 'setGridWidth', $(".page-content").width() );
+	    });
+		//resize on sidebar collapse/expand
+			var parent_column = $(grid_selector).closest('[class*="col-"]');
+			$(document).on('settings.ace.jqGrid' , function(ev, event_name, collapsed) {
+				if( event_name === 'sidebar_collapsed' || event_name === 'main_container_fixed' ) {
+					//setTimeout is for webkit only to give time for DOM changes and then redraw!!!
+					setTimeout(function() {
+						$(grid_selector).jqGrid( 'setGridWidth', parent_column.width() );
+					}, 0);
+				}
+		    });
+
+           $("#grid-table").jqGrid({
+                url:'${context_path}/building/getListDataNew',
+                mtype: "GET",
+                datatype: "json",
+                postData:{'workarea':workArea,'username':name,"op_id":op_class,"station":station},
+                colModel: [
+                	{ label: '设备间', name: 'building_name', width: 60 },
+             		//{ label: '负责人', name: 'station_manager', width: 75 ,sortable:false},
+            		{ label: '所属工区', name: 'area', width: 60 },
+                    { label: '所属班组', name: 'op_name', width: 100 },
+             		//{ label: '地址', name: 'station_addr', width: 80 ,sortable:false},
+                    { label: '所属变电站', name: 'station_name', width: 100 ,sortable:false},
+                    { label: '注册时间', name: 'create_time', width: 100 },
+                ],
+				viewrecords: true,
+                height: 'auto',
+                rowNum: 10,
+                multiselect: true,//checkbox多选
+                altRows: true,//隔行变色
+                recordtext:"{0} - {1} 共 {2} 条",
+                pgtext:"第 {0} 页 共 {1} 页",
+                pager: pager_selector,
+                loadComplete : function() {
+					var table = this;
+					setTimeout(function(){
+						updatePagerIcons(table);
+					}, 0);
+				}
+            });
+			$(window).triggerHandler('resize.jqGrid');
+	
+	}
+        
+        
+        
+        
       //replace icons with FontAwesome icons like above
 		function updatePagerIcons(table) {
 			var replacement = 

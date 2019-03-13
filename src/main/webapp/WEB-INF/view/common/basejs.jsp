@@ -36,7 +36,15 @@
 			})(jQuery);
 
 		</script>
+		
+		<!-- <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 		<script src="${res_url}ace-1.3.3/assets/js/bootstrap.js"></script>
+		<!-- <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script> -->
+		
+		<!-- <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script> -->
+  		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		
+		
 		<script src="${res_url}ace-1.3.3/assets/js/jquery-ui.custom.js"></script>
 		<script src="${res_url}ace-1.3.3/assets/js/jquery.ui.touch-punch.js"></script>
 		<script src="${res_url}ace-1.3.3/assets/js/chosen.jquery.js"></script>
@@ -86,10 +94,7 @@
 		<script src="${res_url}ace-1.3.3/assets/js/jquery.validate.js"></script>
 		<script src="${res_url}js/layer/layer.js"></script>
 <%-- 		<script src="${res_url}js/jquery.mytime.js"></script> --%>
-		
-		
-		
-		
+
 		<script type="text/javascript">
 		String.prototype.trim = function() {
 				return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');

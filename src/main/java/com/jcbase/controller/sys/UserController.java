@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.jcbase.core.auth.anno.RequiresPermissions;
 import com.jcbase.core.controller.JCBaseController;
+import com.jcbase.core.util.IWebUtils;
 import com.jcbase.core.util.JqGridModelUtils;
 import com.jcbase.core.view.InvokeResult;
 import com.jcbase.model.SysRole;
@@ -29,6 +30,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import com.yanxin.common.model.OperationClass;
 
 /**
  * 系统用户管理.
@@ -44,11 +46,12 @@ public class UserController extends JCBaseController {
 	@RequiresPermissions(value={"/sys/user"})
 	public void getListData() {
 		String keyword=this.getPara("name");
-		Page<SysUser> pageInfo=SysUser.me.getSysUserPage(getPage(), this.getRows(),keyword,this.getOrderbyStr());
+		String username=this.getPara("username");
+		Page<SysUser> pageInfo=SysUser.me.getSysUserPage(getPage(), this.getRows(),keyword,username,this.getOrderbyStr());
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
 	
-	@RequiresPermissions(value={"/sys/user"})
+	/*@RequiresPermissions(value={"/sys/user"})
 	public void seachByName() {
 		String keyword=this.getPara("username");
 		String name=this.getPara("name");
@@ -56,7 +59,7 @@ public class UserController extends JCBaseController {
 		Page<SysUser> pageInfo=SysUser.me.seachSysUserPage(getPage(), this.getRows(),keyword,this.getOrderbyStr(),name);
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
-
+*/
 	@RequiresPermissions(value={"/sys/user"})
 	public void getUser(){
 		String sqlString = "select id,name FROM sys_user WHERE id NOT IN(select DISTINCT op_manager FROM operation_class)";
@@ -77,12 +80,31 @@ public class UserController extends JCBaseController {
 		InvokeResult result=SysUser.me.setVisible(ids, visible);
 		this.renderJson(result);
 	}
+	
+	@RequiresPermissions(value={"/sys/user"})
+	public void delUser(){
+		String ids=this.getPara("ids");
+		InvokeResult result=SysUser.me.delUserByIDs(ids);
+		this.renderJson(result);
+	}
 
 	@RequiresPermissions(value={"/sys/user"})
 	public void add() {
+		/*SysUser sysUser=IWebUtils.getCurrentSysUser(this.getRequest());
+		if(sysUser!=null){
+			this.setAttr("item", sysUser);
+		}
+		List<SysRole> list=SysRole.me.getSysRoleNamelist();
+		this.setAttr("roleList", list);
+		this.setAttr("id", sysUser.getId());
+		
+		render("user_add.jsp");*/
+		
+		
 		Integer id=this.getParaToInt("id");
 		if(id!=null){
-			this.setAttr("item", SysUser.me.findById(id));
+			SysUser user = SysUser.me.findById(id);
+			this.setAttr("item", user);
 		}
 		List<SysRole> list=SysRole.me.getSysRoleNamelist();
 		this.setAttr("roleList", list);
@@ -98,20 +120,45 @@ public class UserController extends JCBaseController {
 		String phone=this.getPara("phone");
 		String email=this.getPara("email");
 		Integer id=this.getParaToInt("id");
-		Integer operation_class_id=this.getParaToInt("operation_class_id");
-		if(operation_class_id==0) {
-			operation_class_id=null;
+		String wa = this.getPara("work_area_id");
+		String op = this.getPara("operation_class_id");
+		Integer work_area = new Integer(0);
+		Integer operation_class_id= new Integer(0);
+		Integer userType = this.getParaToInt("user_type");
+		
+		if(wa!=null){
+			work_area = this.getParaToInt("work_area_id");
+			if(!username.equals("admin")){
+				SysUser user = SysUser.me.getByName(username);
+				if(userType==1){
+					work_area = user.getWork_area_id();
+				}
+			}
 		}
-		Integer station_id=this.getParaToInt("station_id");
+		
+		if(op!=null){
+			operation_class_id=this.getParaToInt("operation_class_id");
+		}
+		if(operation_class_id>0 && work_area==0){
+			
+			OperationClass opp = OperationClass.me.findById(operation_class_id);
+			work_area = opp.getWorkAreaId();
+		}
+		
+		
+		/*if(operation_class_id==0) {
+			operation_class_id=null;
+		}*/
+		/*Integer station_id=this.getParaToInt("station_id");
 		if(station_id==0) {
 			station_id=null;
-		}
+		}*/
 //		System.out.println(id+"this is id!");
 		String des=this.getPara("des");
-		InvokeResult result=SysUser.me.save(id, name, password, des,phone, email,operation_class_id,station_id);
-		if(!SysUserRole.dao.isOp(username)) {
+		InvokeResult result=SysUser.me.save(id, name, password, des,phone, email,work_area,userType,operation_class_id);
+		/*if(!SysUserRole.dao.isOp(username)) {
 			SysUserRole.dao.setRole(name);
-		}
+		}*/
 		this.renderJson(result); 
 	}
 	
@@ -146,7 +193,19 @@ public class UserController extends JCBaseController {
 		else {
 			setAttr("word", false);
 		}
-	renderJson();
+		renderJson();
+	}
+	
+	public void getWAWord(){
+		String username=this.getPara("name");
+		String word=SysUserRole.dao.isWAGight(username);
+		if(word.equals("yes")) {
+			setAttr("word", true);
+		}
+		else {
+			setAttr("word", false);
+		}
+		renderJson();
 	}
 }
 

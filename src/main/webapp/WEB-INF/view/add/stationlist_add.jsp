@@ -30,7 +30,8 @@
 														<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">变电站名称</label>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-													            <input type="text"  name="name" ${id ne null?'readonly':'' } value="${item.station_name}" class="col-xs-12 col-sm-6">
+													            <%-- <input type="text"  name="name" ${id ne null?'readonly':'' } value="${item.station_name}" class="col-xs-12 col-sm-6"> --%>
+													            <input type="text"  name="name" value="${item.station_name}" class="col-xs-12 col-sm-6">
 															</div>
 														</div>
 													</div>
@@ -45,6 +46,22 @@
 <!-- 													</div> -->
 <%-- 													</c:if> --%>
 												    
+												    <div hidden id="typealert2" class="form-group alert alert-danger">
+												    	<strong>警告:</strong>请选择一个工区！
+													</div>
+							      					<div hidden id="nooperationalert2" class="form-group alert alert-danger">
+												   		 <strong>警告:</strong>没有可用的工区组，请先创建工区！
+													</div>
+													<div id="work_area_group" class="form-group">
+													    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">所属工区</label>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<select name="work_area_id"  id="work_area_class" onchange="getWorkAreaSelect(this)" class="col-xs-12 col-sm-6">
+																	<option value='0'>---请选择工区---</option>
+																</select>
+										                    </div>
+														</div>
+													</div>
 												    
 												    <div hidden id="typealert" class="form-group alert alert-danger">
 												    	<strong>警告:</strong>请选择一个运维组！
@@ -53,16 +70,16 @@
 												   		 <strong>警告:</strong>没有可用的运维组，请先创建运维组！
 													</div>
 													<div class="form-group">
-													    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">所属运维班</label>
+													    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">所属班组</label>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-																<select name="op_id"  id="station_op_class" onchange="getOpClassSelect(this)" class="col-xs-12 col-sm-6">
-																	<option value='0'>---请选择运维班---</option>
+																<select name="op_id"  id="station_op_class" onchange="managerSelect(this)" class="col-xs-12 col-sm-6">
+																	<option value='0'>---请选择班组---</option>
 																</select>
 										                    </div>
 														</div>
 													</div>
-												     <div hidden id="typeal" class="form-group alert alert-danger">
+												     <!-- <div hidden id="typeal" class="form-group alert alert-danger">
 												    	<strong>警告:</strong>请选择一个负责人！
 													</div>
 							      					<div hidden id="nooperational" class="form-group alert alert-danger">
@@ -77,7 +94,7 @@
 																</select>
 										                    </div>
 														</div>
-													</div>
+													</div> -->
 												    
 													<div class="form-group">
 														<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="des">变电站介绍</label>
@@ -119,17 +136,121 @@
 		</div><!-- /.main-container -->
 		<jsp:include page="/WEB-INF/view/common/basejs.jsp" flush="true" />
 	<script type="text/javascript">
+	 
+		var parameter;
+		var workareaid;
+		var operationID;
 	 $(window).load(function(){
-		 
-			getOperationClass();
+		parameter = "${item}";
+		workareaid="${item.work_area_id}";
+		operationID="${item.op_id}";
+		getWorkArea();
+	  });
+	 
+	 function getWorkArea(){
 			
-	    });
+		var which = $('#work_area_class');
+		
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择工区---</option>"); 
+		var name="${sessionScope.sysUser.name}";
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/workarea/getAllListData",
+			    data:{"username":name},
+			    success: function(data) {
+					var result = data.result;
+					var content = data.content;
+					if(result){
+						 var selec = 0;
+						 var index = 1;
+					     $.each(content, function(i,value){
+					     	
+					    	$(which).append("<option value='"+value.id+"'>"+value.area+"</option>"); 
+					    	if(name!='admin'){ //非工区用户添加用户时自动选择其所在的工区
+					     		which.get(0).selectedIndex = i+1;
+					     	}
+					    	if(parameter!=""){
+								selec = workareaid;
+								if(value.id == selec){
+									index = i+1;
+								}
+							}
+					    });
+					    
+					    if(index>0){
+					    	which.get(0).selectedIndex=index;//index为索引值
+					    	//$('#work_area_class').attr("disabled","disabled");
+					    	// getOperationClass(selec);
+					    }
+					    var wa = document.getElementById("work_area_class");//$('#station_op_class');
+					    getWorkAreaSelect(wa);
+					}else{
+						
+						showAlert('nooperationalert2');
+						
+					}
+			    }
+	        });
+
+	}
+	 function getWorkAreaSelect(which){
+	    var sindex = which.selectedIndex;
+	    $('div.alert-danger').hide(); 
+		if(sindex == 0){
+			isSelect('typealert2',which);
+		}else {
+			hiddleComp('typealert2',which);
+			getOperationClassNew(which.value);
+		}
+	}
+	 function getOperationClassNew(wa){
+		var name="${sessionScope.sysUser.name}";
+		var which = $('#station_op_class');
+		$(which).empty();
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
+		$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: "<%=request.getContextPath()%>"+"/getoperation/getOP",
+			    data:{
+				    'username':name,
+				    'workarea':wa
+			    },
+			    success: function(data) {
+			    	var result = data.result;
+					var content = data.content;
+					if(result){
+						var selec = 0;
+						 var index = 0;
+					     $.each(content, function(i,value){
+					    	$(which).append("<option value='"+value.id+"'>"+value.op_name+"</option>"); 
+					    	
+					    	if(parameter!=""){
+								selec = operationID;
+								if(value.id == selec){
+									index = i+1;
+								}
+							}
+					    	
+					    });
+					    if(index>0){
+					    	which.get(0).selectedIndex=index;//index为索引值
+					    }
+					}else{
+						showAlert('nooperationalert');
+					}
+			    }
+	        });
+
+		}
 	 
 	 function getOperationClass(){
 			
 			var which = $('#station_op_class');
 			$(which).empty();
-			$(which).append("<option value='0'>---请选择运维班---</option>"); 
+			$(which).append("<option value='0'>---请选择班组---</option>"); 
 			$.ajax({
 				    type: 'POST',
 				    dataType: 'json',
@@ -150,46 +271,6 @@
 
 		}
 		
-		function getOpClassSelect(which){
-	        
-		    var sindex = which.selectedIndex;
-			if(sindex == 0){
-				isSelect('typealert',which);
-				$('#add_station_manager_div').hide();
-			}else{
-				hiddleComp('typealert',which);
-				$('#add_station_manager_div').show();
-				getStationManager(which.value);
-			}
-		}
-		
-		function getStationManager(op){
-			var which = $('#add_station_manager');
-			$(which).empty();
-	     	$(which).append("<option  value='0'>---请选择负责人---</option>");
-			var opclass = op;
-			$.ajax({
-				    type: 'POST',
-				    dataType: 'json',
-				    url: "<%=request.getContextPath()%>"+"/station/getStationManager",
-				    data:{"opclass":opclass},
-				    success: function(data) {
-						var result = data.userreRecords;
-						var re=data.resu;
-						if(re){
-							hiddleComp('nooperational',which);
-						     $.each(result, function(i,value){
-						        
-						    	$(which).append("<option value='"+value.id+"'>"+value.name+"</option>"); 
-						    });
-						}else{
-							showAlert('nooperational');
-						}
-				    }
-		        });
-		        
-		        
-		}
 		
 		function managerSelect(which){
 			var sindex = which.selectedIndex;

@@ -37,7 +37,7 @@ import com.jfinal.plugin.activerecord.TableMapping;
 public abstract class BaseModel<M extends Model<M>> extends Model<M> {
 	
 	private static final long serialVersionUID = -8686483734298113781L;
-	private Logger logger = Logger.getLogger(getClass());  
+	transient private Logger logger = Logger.getLogger(getClass());  
 	
 	public List<M> getAllList() {
 		Page<M> page= this.getPage(1, Integer.MAX_VALUE);
@@ -247,6 +247,7 @@ public abstract class BaseModel<M extends Model<M>> extends Model<M> {
 						bufWhere.append(" is  null  ");
 					} else {
 						bufWhere.append("=");
+						
 						outConditionValues.add(cd.getValue());
 					}
 

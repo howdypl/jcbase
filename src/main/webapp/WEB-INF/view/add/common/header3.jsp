@@ -56,6 +56,8 @@ response.setHeader("Access-Control-Allow-Origin", "*");
 	
     <!-- The fav icon -->
     <link rel="shortcut icon" href="${res_url}first/img/favicon.ico">
+    <!-- 去除底部滚动条 -->
+    <link rel="stylesheet" type="text/css" href="${res_url}css/scollset.css">
 	<!-- jQuery -->
 	<script src="${res_url}first/bower_components/jquery/jquery.min.js"></script>
 	<link href='${res_url}first/cssto/bootstrap-combined.min.css' rel='stylesheet' type='text/css'>

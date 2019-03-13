@@ -41,11 +41,22 @@ public class BuildingListController extends JCBaseController {
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
 	
+	public void getListDataNew() {
+		String username = this.getPara("username");
+		int area = this.getParaToInt("workarea");
+		int opID = this.getParaToInt("op_id");
+		int station = this.getParaToInt("station");
+		Page<Building> pageInfo=Building.me.getBuildingPageNew(getPage(), this.getRows(),username,area,opID,station,this.getOrderbyStr());
+		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
+	}
 	
 	public void add() {
 		Integer id=this.getParaToInt("id");
 		if(id!=null){
-			this.setAttr("item", Building.me.findById(id));
+			
+			Record r = Db.findFirst("select building.*,station.op_id,operation_class.work_area_id from building,station,operation_class where building.id=? and building.station_id=station.id and station.op_id=operation_class.id", id);
+			//this.setAttr("item", Building.me.findById(id));
+			this.setAttr("item", r);
 		}
 		this.setAttr("id", id);
 		render("buildinglist_add.jsp");
@@ -75,13 +86,14 @@ public class BuildingListController extends JCBaseController {
 //	}
 	public void getStation() {
 		int id = getParaToInt("opclass");
+		
 		String sqlString = "select id, station_name from station where op_id=?";
 		List<Record> stationRecords = Db.find(sqlString,id);
 		if(null!=stationRecords && !stationRecords.isEmpty()){
-			setAttr("notempty", true);
-			setAttr("stationRecords", stationRecords);
+			setAttr("result", true);
+			setAttr("content", stationRecords);
 		}else{
-			setAttr("notempty", false);
+			setAttr("result", false);
 		}
 		
 		renderJson();
@@ -118,10 +130,10 @@ public class BuildingListController extends JCBaseController {
 		
 		List<Record> buildingRecords = Db.find("select id,building_name from building where station_id=?", id);
 		if(buildingRecords != null && !buildingRecords.isEmpty()){
-			setAttr("buildingRecords", buildingRecords);
-			setAttr("notempty", true);
+			setAttr("content", buildingRecords);
+			setAttr("result", true);
 		}else {
-			setAttr("notempty", false);
+			setAttr("result", false);
 		}
 		
 		

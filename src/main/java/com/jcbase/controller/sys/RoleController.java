@@ -72,6 +72,7 @@ public class RoleController extends JCBaseController {
 		Integer type=this.getParaToInt("type");
 		Integer roleId=this.getParaToInt("roleId");
 		InvokeResult result=SysRole.me.getZtreeViewList(type, roleId);
+		//System.out.println("111111111111111111111111111");
 		this.setAttr("jsonTree", result);
 		this.setAttr("roleId", roleId);
 		render("menu_assign.jsp");
@@ -91,6 +92,7 @@ public class RoleController extends JCBaseController {
 	
 	@RequiresPermissions(value={"/sys/role"})
 	public void save(){
+		System.out.println(this.getPara("name")+"111111111111111111");
 		InvokeResult result=SysRole.me.save(this.getParaToInt("id"),this.getPara("name"),this.getPara("des"));
 		this.renderJson(result);
 	}

@@ -25,6 +25,8 @@ import com.jcbase.controller.sys.RoleController;
 import com.jcbase.controller.sys.UserController;
 import com.jfinal.config.Routes;
 import com.yanxin.common.controller.BuildingListController;
+import com.yanxin.common.controller.ExportExcelController;
+import com.yanxin.common.controller.ExportWordController;
 import com.yanxin.common.controller.GalleryController;
 import com.yanxin.common.controller.GalleryQueryController;
 import com.yanxin.common.controller.GetOperationController;
@@ -34,6 +36,7 @@ import com.yanxin.common.controller.ImageSetController;
 import com.yanxin.common.controller.LayerListController;
 import com.yanxin.common.controller.LogoutController;
 import com.yanxin.common.controller.OperationClassController;
+import com.yanxin.common.controller.OtherGalleryController;
 import com.yanxin.common.controller.OpClassController;
 import com.yanxin.common.controller.PlatformController;
 import com.yanxin.common.controller.PlatformDefaultController;
@@ -41,16 +44,27 @@ import com.yanxin.common.controller.PointSetController;
 import com.yanxin.common.controller.RealImageController;
 import com.yanxin.common.controller.RoomListController;
 import com.yanxin.common.controller.SensorListController;
+import com.yanxin.common.controller.SensorLookController;
 import com.yanxin.common.controller.SensorTypeController;
 import com.yanxin.common.controller.StationListController;
 import com.yanxin.common.controller.TempLookController;
 import com.yanxin.common.controller.TemperatureController;
 import com.yanxin.common.controller.TimeSyncController;
+import com.yanxin.common.controller.TokenController;
+import com.yanxin.common.controller.TokenMobileController;
+import com.yanxin.common.controller.UpdateController;
 import com.yanxin.common.controller.UserAddController;
 import com.yanxin.common.controller.UserAdminController;
 import com.yanxin.common.controller.VideoController;
 import com.yanxin.common.controller.WarnController;
 import com.yanxin.common.controller.WarnDetilController;
+import com.yanxin.common.controller.WorkAreaController;
+import com.yanxin.common.mobil.controller.BaseRealTimeController;
+import com.yanxin.common.mobil.controller.ImageListController;
+import com.yanxin.common.mobil.controller.SensorTempDetailsController;
+import com.yanxin.common.mobil.controller.StationFrameController;
+import com.yanxin.common.mobil.controller.TempSensorListController;
+import com.yanxin.common.mobil.controller.WarnListController;
 /**
  * 后台管理Routes配置
  * @author eason
@@ -69,7 +83,9 @@ public class AdminRoutes extends Routes{
 		add("/app", AppVersionController.class,"/WEB-INF/view/app");
 		add("/image", ImageController.class,"/WEB-INF/view/image");
 		add("/gallery", GalleryController.class,"/WEB-INF/view/add");
-		add("/galleryquery", GalleryQueryController.class, "/WEB-INF/view/add");	
+		add("/galleryquery", GalleryQueryController.class, "/WEB-INF/view/add");
+		add("/othergallery", OtherGalleryController.class, "/WEB-INF/view/add");
+		
 		add("/temp", TemperatureController.class,"/WEB-INF/view/add");
 		add("/video", VideoController.class,"/WEB-INF/view/add");		
 		add("/platform", PlatformController.class,"/WEB-INF/view/add");
@@ -95,7 +111,21 @@ public class AdminRoutes extends Routes{
 		add("/warn",WarnController.class,"/WEB-INF/view/add");
 		add("/warndetil",WarnDetilController.class,"/WEB-INF/view/add");
 		add("/looktemp",TempLookController.class,"/WEB-INF/view/add");
-
+		add("/excel", ExportExcelController.class);
+		add("/token", TokenController.class,"/WEB-INF/view/add");
+		add("/updateapp", UpdateController.class,"/WEB-INF/view/add");
+		
+		add("/word",ExportWordController.class,"/WEB-INF/view/add");
+		add("/workarea",WorkAreaController.class,"/WEB-INF/view/add");
+		add("/sensorlook",SensorLookController.class,"/WEB-INF/view/add");
+		
+		add("/mobilebaseinfo",BaseRealTimeController.class,"/WEB-INF/view/add");
+		add("/mobilewarn",WarnListController.class,"/WEB-INF/view/add");
+		add("/mobiletemplook",TempSensorListController.class,"/WEB-INF/view/add");
+		add("/mobilesensordetail",SensorTempDetailsController.class,"/WEB-INF/view/add");
+		add("/mobileframe",StationFrameController.class,"/WEB-INF/view/add");
+		add("/mobileimages",ImageListController.class,"/WEB-INF/view/add");
+		add("/mobiletoken",TokenMobileController.class,"/WEB-INF/view/add");
 	}
 
 }

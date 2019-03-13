@@ -138,7 +138,7 @@
 		},
 
 		'debug'        : false,
-		'timeout'      : 5000,
+		'timeout'      : 1500,
 		'stylesheet'   : null,
 		'donotdismiss' : []
 	};

@@ -70,4 +70,11 @@ public abstract class BasePoint<M extends BasePoint<M>> extends BaseModel<M> imp
 	public void setWarnTemp(java.lang.String warnTemp){
 		set("warn_temp",warnTemp);
 	}
+	public void setisLook(java.lang.Integer islook) {
+		set("islook", islook);
+	}
+
+	public java.lang.Integer getisLook() {
+		return get("islook");
+	}
 }

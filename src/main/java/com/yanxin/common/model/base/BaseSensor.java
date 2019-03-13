@@ -50,6 +50,13 @@ public abstract class BaseSensor<M extends BaseSensor<M>> extends BaseModel<M> i
 		return get("create_time");
 	}
 
+	public java.util.Date getUpdateTime() {
+		return get("update_time");
+	}
+	public void setUpdateTime(java.util.Date updateTime) {
+		set("update_time", updateTime);
+	}
+
 	public void setStatus(java.lang.Integer status) {
 		set("status", status);
 	}
@@ -72,6 +79,21 @@ public abstract class BaseSensor<M extends BaseSensor<M>> extends BaseModel<M> i
 
 	public java.lang.Integer getPort() {
 		return get("port");
+	}
+	
+	public void setPointNum(java.lang.Integer pointNum) {
+		set("point_num", pointNum);
+	}
+
+	public java.lang.Integer getPointNum() {
+		return get("point_num");
+	}
+	public void setSensor_id(java.lang.Integer sensor_id) {
+		set("sensor_id", sensor_id);
+	}
+
+	public java.lang.Integer getSensor_id() {
+		return get("sensor_id");
 	}
 
 }

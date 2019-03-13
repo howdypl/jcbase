@@ -26,7 +26,7 @@
 							<input name="id" type="hidden" value="${id}" />							
 							<div class="form-group">
 								<label class="control-label col-xs-12 col-sm-3 no-padding-right"
-									for="name">所属运维班</label>
+									for="name">所属班组</label>
 								<div class="col-xs-12 col-sm-9">
 									<div class="clearfix">
 										<input type="text" name="name" ${id ne null?'readonly':'' }

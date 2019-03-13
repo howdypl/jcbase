@@ -28,7 +28,7 @@
                 <div class="box-content">
                     <div class="row" style="margin-left: 15px">
 							<div class="col-md-3" style="width: 16%">
-							<label class="form-label control-label">运维班：</label>
+							<label class="form-label control-label">班组：</label>
 							</div>
 							<div class="col-md-3" style="width: 16%">
 							<label class="form-label control-label">变电站：</label>
@@ -46,7 +46,7 @@
 						<div class="row" style="margin-left: 15px">
 						    <div class="col-md-3" style="width: 16%">
 								<select id="station_op_class" onchange="getOpClassSelect(this)" class="form-control selectpicker">
-	                        		 <option  value='0'>---请选择运维班---</option>
+	                        		 <option  value='0'>---请选择班组---</option>
 	                       		</select>
 							</div>
 							<div class="col-md-3" style="width: 16%">
@@ -191,7 +191,7 @@
 	function getOperationClass(){
 		var which = $('#station_op_class');
 		$(which).empty();
-		$(which).append("<option value='0'>---请选择运维班---</option>"); 
+		$(which).append("<option value='0'>---请选择班组---</option>"); 
 		var name="${sessionScope.sysUser.name}";
 		$.ajax({
 			    type: 'POST',

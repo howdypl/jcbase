@@ -1,0 +1,696 @@
+*{
+	list-style: none;
+	text-decoration: none;
+}
+/*		首页  站设概览		*/
+p{
+	margin: 0;
+}
+/*		各站动态光字牌		*/
+body{
+	margin: 0;
+}
+.box{
+	width: 100%;
+}
+.head-top{
+	background-color: #E0EBEA;
+	height: 35px;
+	line-height: 35px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	margin-top: 5px;
+	clear: both;
+}
+.head-top>span{
+	padding-left: 10px;
+	font-size: 16px;
+}
+.head-main>table{
+	width: 100%;
+	height: 100%;
+	border-collapse: collapse;
+	margin-top: 5px;
+}
+.head-main>table>tbody>tr>td{
+	border:solid 1px #bbb;
+	text-align: center;
+	padding: 5px 0;
+	
+}
+.tr-2>td{
+	font-size: 30px;
+	height: 100px;
+}
+/*		动态光字牌   修改		*/
+.main{
+	width: 100%;
+}
+.main>table{
+	width: 99%;
+	margin: 0.5% 0 0.5% 1%;
+}
+.g1{
+	text-align: center;
+	margin: 0 4%;
+	border: 1px solid #B9B9B9;
+	border-radius: 5px;
+}
+.big{
+	font-size: 22px;
+	
+}
+.g1>p{
+	margin: 15px 0;
+}
+.g1>img{
+	width: 50px;
+	height: 50px;
+}
+/*		修改结束		*/
+.tr-1>td{
+	font-size: 30px;
+	height: 70px;
+}
+/*		设备实时动态		*/
+.sb{
+	float: right;
+	padding: 11% 35% 0 0;
+	text-align: left;
+	font-size: 20px;
+}
+.mj{
+	font-size: 20px;
+	padding: 1% 5% 0 0;
+}
+.tp{
+	width: 30%;
+}
+.tab2>table>tbody>tr>td{
+	border:0;
+}
+/*		站门状态实时抓拍		*/
+.tp2{
+	width: 90%;
+}
+/*		10kV高压室实时室温		*/
+.tp3{
+	width: 100%;
+}
+/*		实时水浸记录		*/
+.tp4{
+	width: 100%;
+}
+
+
+/*		站设操控页		*/
+.simple{
+	border: solid 1px #bbb;
+	float: left;
+	width: 98%;
+	margin: 1% 1%;
+}
+.bdz{
+	text-align: center;
+	font-size: 24px;
+	padding: 5px 0;
+	margin: 0 0 10px 0;
+	background-color: #E0EBEA;
+}
+.tab4{
+	margin: 5px 0 10px 15px;
+}
+.sb2{
+	float: right;
+	padding: 0 35% 0 0;
+	text-align: left;
+}
+/*		门禁列表页		*/
+.img-1{
+	width: 20px;
+	margin-right: 10px;
+}
+.head-1{
+	font-size: 24px;
+	margin: 2% 0 2% 2%;
+
+}
+.head-2{
+	float: right;
+	width: 200px;
+	height: 50px;
+	margin: 0 80px 20px 0;
+	color: white;
+	font-size: 20px;
+	line-height: 50px;
+	text-align: center;
+	background-color: #E31D23;
+	border-radius: 10px;
+}
+.head-3{
+	font-size: 22px;
+	
+}
+.head-3>form>div{
+	float: right;
+	margin: 0 3% 1% 4%;
+}
+.head-3>form>div>input{
+	font-size: 16px;
+	width: 180px;
+	height: 30px;
+	margin:10px 5px 0 5px;
+
+}
+.f-1{
+	float: left;
+	margin:0 9% 2% 0;
+	font-size:22px;
+}
+.tab3{
+	width: 96%;
+	text-align: center;
+	margin: 1% 2% 0 2%;
+	border-collapse: collapse;
+}
+.tab3>tbody>tr>td{
+	font-size: 20px;
+	border-bottom: 1px solid #B9B9B9;
+	font-weight: 100;
+	height: 60px;
+	color: #595959;
+}
+.tab3>tbody>tr>td>form>span>input{
+	width: 16px;
+	height: 16px;
+	margin: 0 26px 0 -11px;
+}
+.tab3>tbody>tr>td>p{
+	background-color: #00B3A1;
+	color: white;
+	width: 60px;
+	height: 35px;
+	line-height: 35px;
+	margin-left: 35%;
+	border-radius:5px;
+}
+.tp-1{
+	width: 30px;
+	height: 30px;
+}
+.bt-1>tr>th{
+	background-color: #E1ECEB;
+	font-size: 24px;
+	height: 60px;
+	font-weight: 300;
+}
+.bt-1>tr>th>form>span>input{
+	width: 16px;
+	height: 16px;
+}
+
+/*		大门操控页		*/
+.fd{
+	float: left;
+}
+
+.tp5{
+	width: 45px;
+	height: 45px;
+	margin: 15px 100px 10px 0;
+}
+.sp-1{
+	width: 60%;
+}
+.tab6{
+	width: 100%;
+	text-align: left;
+	margin:-15px 0 0 30px;
+}
+.tab6>tbody>tr>td{
+	padding: 0 0 15px 0;
+}
+.sp-1>div{
+	text-align: center;
+	margin: 6% 0 3% 0;
+}
+.worn{
+	color: #DF0600; 
+}
+.f-2{
+	float: right;
+	width: 30%;
+	margin:-2% 5% 2% 0;
+	border:1px solid #B9B9B9;
+}
+
+.f-2-1>p{
+	float: left;
+	text-align: center;
+	width: 50%;
+	height: 40px;
+	line-height: 40px;
+	background-color: #E1ECEB;
+	font-size: 20px;
+	margin-bottom: 5px;
+}
+.f-2-2{
+	font-size: 16px;
+	border-bottom: 1px solid #B9B9B9;
+	margin: 0 20px;
+	padding: 3px 0 5px 0;
+}
+.f-2-2>p{
+	margin: 5px 0 5px 0;
+}
+.sp-2{
+	float: right;
+}
+.f-2-3{
+	font-size: 18px;
+	float: right;
+	margin:5px 25px;
+}
+.f-2-3>img{
+	width: 15px;
+	height: 15px;
+}
+/*		表格部分		*/
+.tab3-1{
+	background-color: #E1ECEB;
+	text-align: left;
+	margin-bottom: 10px;
+	padding: 5px 20px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 18px;
+}
+.tab3-1>img{
+	float: right;
+	margin: 5px;
+	width: 20px;
+	height: 20px;
+}
+/*		颜色控制    sp-3绿色		sp-4红色		*/
+.sp-3{
+	color: #037F41;
+}
+.sp-4{
+	color: #DF0600;
+}
+/*		入站授权列表页面		*/
+.form-control{
+	width: 186px;
+	height:36px;
+	padding: 1px;
+	margin: 15px 0 0 0;
+}
+.f-1>input{
+	font-size: 16px;
+	width: 180px;
+	height: 30px;
+	margin:15px 5px 0 0;
+}
+.f-1>span{
+	margin:0 10px;
+}
+/*		入站授权详情页		*/
+.body1{
+	width: 540px;
+	height: 565px;
+	border-radius: 5px;
+	border:1px solid #B9B9B9;
+}
+.body1-1{
+	font-size: 20px;
+	border-bottom: 1px solid #B9B9B9;
+	padding: 10px 20px;
+}
+.body1-1>img{
+	float: right;
+	width: 20px;
+	hyphens: 20px;
+}
+.body1-2{
+	margin:15px;
+	border: 1px solid #E1ECEB;
+	border-radius: 5px;
+}
+.body1-21{
+	font-size: 18px;
+	background-color: #E1ECEB;
+	color: #00A292;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	padding: 5px 10px;
+
+}
+.body1-22{
+	font-size: 14px;
+	padding: 5px 15px;
+	margin:15px 0 20px 0;
+}
+.body1-22>table{
+	border-collapse: collapse;
+	width: 100%;
+}
+.body1-22>table>tbody>tr>td{
+	padding: 5px 10px;
+	border-top: 1px solid #B9B9B9;
+}
+.body1-22>div{
+	border-top: 1px solid #B9B9B9;
+	padding: 5px 10px; 
+}
+.body1-23>table{
+	border-collapse: collapse;
+	width: 100%;
+	margin:10px;
+	font-size: 14px;
+}
+.body1-23>table>tbody>tr>td{
+	padding: 5px 15px;
+	text-align: left;
+}
+.tr-3{
+	font-weight: 600;
+}
+.body1-24>table{
+	width: 100%;
+	margin:10px;
+	font-size: 14px;
+}
+.body1-24>table>tbody>tr>td{
+	padding: 5px 15px;
+}
+/*		窗户挡板页		*/
+.kg{
+	border-collapse: collapse;
+	float: right;
+	margin: 0 5% 0 0;
+}
+.kg>tbody>tr>td{
+	border: 1px solid #B9B9B9;
+	width: 50px;
+	font-size: 22px;
+	padding: 5px 0;
+	line-height: 24px;
+}
+.d-1{
+	margin: 3.5% -9.5% 0 0;
+	float: right;
+	font-size: 16px;
+}
+.tp6{
+	width: 60px;
+	height: 60px;
+	margin: 0 -4% 1% 10%;
+}
+.sp-5{
+	width: 60%;
+	
+}
+.sp-5>div{
+	text-align: center;
+	margin: 1% 0 2% 5%;
+}
+.fl-1{
+	/*margin: -815px 0 0 0;*/
+}
+.dd{
+	float: left;
+	width: 60%;
+}
+.tab5>table{
+	text-align: left;
+	width: 100%;
+	margin: 0 0 0 5%;
+}
+.tab5>table>tbody>tr>td{
+	width: 50%;
+	height: 55px;
+}
+.dd2>span{
+	font-size: 18px;
+	color: #101010;
+	
+}
+.dd2{
+	margin: 0 0 0 7%;
+}
+/*		操控记录列表		*/
+.tp-2{
+	width: 45%;
+}
+/*		站设告警		*/
+.f-3{
+	float: left;
+	margin:0 6% 2% 0;
+}
+.t1>table{
+	margin: 3% 4% 0 7%;
+	width: 90%;
+	height: 700px;
+}
+.mj2{
+	margin: 2% 48% 0 0;
+}
+.head-4>form>div{
+	font-size: 22px;
+	margin: 2% 3% 1% 4%;
+}
+.f-4{
+	float: left;
+	margin: 0 7% 2% 0;
+}
+.f-4>input{
+	font-size: 16px;
+	width: 180px;
+	height: 30px;
+	margin:15px 5px 0 0;
+}
+.head-5{
+	float: right;
+	width: 200px;
+	height: 50px;
+	margin: 35px 80px 20px 0;
+	color: white;
+	font-size: 20px;
+	line-height: 50px;
+	text-align: center;
+	background-color: #E31D23;
+	border-radius: 10px;
+}
+/*		站门抓拍页面		*/
+.tou>div{
+	font-size: 20px;
+	float: left;
+	margin: 1.5% 0% 0 2%;
+}
+.form-control-2{
+	width: 186px;
+	height:36px;
+	padding: 1px;
+	margin: 0px 0 0 0;
+	font-size: 18px;
+}
+.tou2{
+	border: 1px solid #B9B9B9;
+	padding: 5px 20px;
+}
+.dt{
+	clear: both;
+	text-align: center;
+}
+.dt>img{
+	width: 55%;
+	margin: 1.5% 0 0 0;
+}
+.tab7{
+	width: 100%;
+	float: left;
+}
+.tab7>div{
+	display: inline-block;
+}
+.tab7>div>img{
+	width: 50px;
+	height: 50px;
+}
+.tab7>div>table{
+	text-align: center;
+	margin: 1.5% 0 0 0;
+}
+/*		告警抓拍页面		*/
+.f-6{
+	font-size: 18px;
+	margin: 1.5% 3%;
+}
+.f-6-1>input{
+	width: 16px;
+	height: 16px;
+	margin: 0 0 0 35px;
+}
+.f-6-1>span{
+	border: 1px solid #B9B9B9;
+	padding: 3px 15px;
+	margin-left: 5px;
+}
+.f-6-2>input{
+	width: 178px;
+	height: 28px;
+	margin: 0 10px;
+}
+.f-6>form>div>span{
+	margin: 0 0 0 85px;
+}
+.f-7>table{
+	text-align: center;
+	margin: 0 1%;
+}
+.f-7>table>tbody>tr>td{
+	padding-bottom: 20px;
+}
+/*		授权列表页		*/
+.head-6{
+	font-size: 22px;
+	
+}
+.head-6>form>div{
+	margin: 0 3% 1% 4%;
+}
+.head-6>form>div>input{
+	font-size: 16px;
+	width: 180px;
+	height: 30px;
+	margin:10px 5px 0 5px;
+}
+/*		设备位置管理		*/
+.f-8{
+	margin: 1% 2% 0 2%;
+}
+.f-9{
+	margin: 1% 0 0 4%;
+}
+.f-9-1{
+	text-align: center;
+	font-size: 18px;
+	line-height: 40px;
+	width: 90px;
+	height: 40px;
+	float: right;
+	background-color: #009595;
+	color: white;
+	border-radius: 5px;
+	margin: 3% 6% 0 0;
+}
+/*		新增设备页		*/
+.head-top-1{
+	background-color: #E1ECEB;
+	font-size: 20px;
+	height: 50px;
+	line-height: 50px;
+	padding: 0 0 0 20px;
+	border-top-right-radius:  5px;
+	border-top-left-radius: 5px;
+}
+
+.jb>img{
+	width: 25px;
+	height: 25px;
+}
+.jb{
+	margin: 0 0 0 5px;
+}
+.t2{
+	margin: 1% 0 0 2%;
+}
+.t3{
+	width: 100%;
+}
+.t3-1{
+	float: left;
+	margin: 2% 0 0 8%;
+}
+.t3-1>table>tbody>tr>td{
+	width: 480px;
+	height: 42px;
+	font-size: 22px;
+	color: #212121;
+}
+.t3-1>table{
+	margin: 0 0 30px 0;
+}
+.t3-2{
+	float: right;
+	height: 435px;
+	width: 380px;
+	border: 1px solid #B9B9B9;
+	padding: 20px 50px;
+	font-size: 22px;
+	line-height: 35px;
+	margin: 3% 14% 0 0;
+	color: #3a3a3a;
+}
+.form-control-1{
+	font-size: 18px;
+	width: 186px;
+	height:36px;
+	padding: 1px;
+	margin: 15px 0 0 10px;
+}
+.t3-1-1{
+	background-color: #00A191;
+	color: white;
+	width: 250px;
+	height: 40px;
+	border-radius: 5px;
+	text-align: center;
+	line-height: 40px;
+	font-size: 20px;
+	margin: 2% 0 0 15%;
+}
+/*		设备类型页		*/
+.cha{
+	width: 15px;
+	height: 15px;
+}
+.sb3{
+	font-size: 18px;
+	width: 570px;
+	height: 450px;
+	border: 1px solid #B9B9B9;
+	border-radius: 5px;
+}
+.sb3-1{
+	margin: 30px 0 0 50px;
+}
+.sb3-1-1{
+	background-color: #009688;
+	border-radius: 2px;
+	color: white;
+	padding: 0 10px;
+}
+.sb3-2{
+	margin: 20px 0 0 50px;
+	text-align: center;
+}
+.sb3-2>table>tbody>tr>td{
+	width: 150px;
+	height: 50px;
+}
+.sb3-2>table>tbody>tr>td>span{
+	border: 1px solid #B9B9B9;
+	padding: 0 15px;
+	margin-right: 15px;
+}
+.sb3-3{
+	background-color: #009688;
+	color: white;
+	width: 150px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	margin: 6% 0 0 32%;
+	border-radius: 5px;
+}

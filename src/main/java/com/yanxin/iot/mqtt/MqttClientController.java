@@ -16,11 +16,21 @@
 
 package com.yanxin.iot.mqtt;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.*;
 
+import com.google.gson.JsonSyntaxException;
+import com.jcbase.model.PlatformPoint;
+import com.jfinal.plugin.activerecord.Db;
+import com.yanxin.common.model.Sensor;
+import com.yanxin.iot.Utils.ConstantsUtil;
+import com.yanxin.iot.json.DeviceData;
+import com.yanxin.iot.json.DevicePayload;
 import com.yanxin.iot.json.JsonParser;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
@@ -49,16 +59,10 @@ import org.slf4j.LoggerFactory;
  */
 public class MqttClientController implements MqttCallback {
 
-	/**
-	 * The main entry point of the sample.
-	 *
-	 * This method handles parsing of the arguments specified on the
-	 * command-line before performing the specified action.
-	 */
-
 	private static Logger log = LoggerFactory.getLogger(MqttClientController.class);
 	// Private instance variables
 	private MqttClient 			client;
+
 	private String 				brokerUrl;
 	private boolean 			quietMode;
 	private MqttConnectOptions 	conOpt;
@@ -71,37 +75,12 @@ public class MqttClientController implements MqttCallback {
 	private String jsonPayload;
 	private JsonParser jsonParser;
 
-	private ExecutorService cachedThreadPool;
+	//private ExecutorService cachedThreadPool;
 	private ScheduledExecutorService scheduler;
 	
-	private ScheduledExecutorService cmdScheduler;
+	//private ScheduledExecutorService cmdScheduler;
 	
 	private ScheduledExecutorService timeScheduler;
-	
-	public ScheduledExecutorService getCmdScheduler() {
-		return cmdScheduler;
-	}
-
-	public void setCmdScheduler(ScheduledExecutorService cmdScheduler) {
-		this.cmdScheduler = cmdScheduler;
-	}
-
-	public ScheduledExecutorService getTimeScheduler() {
-		return timeScheduler;
-	}
-
-	public void setTimeScheduler(ScheduledExecutorService timeScheduler) {
-		this.timeScheduler = timeScheduler;
-	}
-
-	public ExecutorService getCachedThreadPool() {
-		return cachedThreadPool;
-	}
-
-	public void setCachedThreadPool(ExecutorService cachedThreadPool) {
-		this.cachedThreadPool = cachedThreadPool;
-	}
-	
 
 	public ScheduledExecutorService getScheduler() {
 		return scheduler;
@@ -117,8 +96,8 @@ public class MqttClientController implements MqttCallback {
 	 * @param clientId the client id to connect with
 	 * @param cleanSession clear state at end of connection or not (durable or non-durable subscriptions)
 	 * @param quietMode whether debug should be printed to standard out
-   * @param userName the username to connect with
-   * @param password the password for the user
+	 * @param userName the username to connect with
+	 * @param password the password for the user
 	 * @throws MqttException
 	 */
     public MqttClientController(String brokerUrl, String clientId, boolean cleanSession, boolean quietMode, String userName, String password) throws MqttException {
@@ -135,9 +114,9 @@ public class MqttClientController implements MqttCallback {
     	String tmpDir = System.getProperty("java.io.tmpdir");
     	MqttDefaultFilePersistence dataStore = new MqttDefaultFilePersistence(tmpDir);
 
-		cachedThreadPool = Executors.newCachedThreadPool();
+		//cachedThreadPool = Executors.newCachedThreadPool();
 		scheduler = Executors.newScheduledThreadPool(2); // newSingleThreadScheduledExecutor();
-		cmdScheduler = Executors.newSingleThreadScheduledExecutor();
+		//cmdScheduler = Executors.newSingleThreadScheduledExecutor();
 		timeScheduler = Executors.newSingleThreadScheduledExecutor();
 		try {
     		// Construct the connection options object that contains connection parameters
@@ -162,7 +141,7 @@ public class MqttClientController implements MqttCallback {
 
 		} catch (MqttException e) {
 			e.printStackTrace();
-			log.info("Unable to set up client: "+e.toString());
+			log.info("无法设置客户端: "+e.toString());
 			System.exit(1);
 		}
     }
@@ -194,8 +173,11 @@ public class MqttClientController implements MqttCallback {
     	// Send the message to the server, control is not returned until
     	// it has been delivered to the server meeting the specified
     	// quality of service.
+    	MqttTopic mqttTopic = client.getTopic(topicName);
     	
-		client.publish(topicName, message);
+    	mqttTopic.publish(payload,0, false);
+		
+		// client.publish(topicName, message);
 
 		// Disconnect the client
 		// client.disconnect();
@@ -214,21 +196,28 @@ public class MqttClientController implements MqttCallback {
     public void subscribe(String topicName, int qos) throws MqttException {
 
     	// Connect to the MQTT server
-		log.info("[subscribe client] Connecting to "+brokerUrl + " with client ID "+client.getClientId());
+		log.info("[订阅消息客户端] 连接到 "+brokerUrl + " ，客户端ID为 "+client.getClientId());
 		client.connect(conOpt);
-    	log.info("[subscribe client] Connected!!");
+    	log.info("[订阅消息客户端] 连接成功!!");
 
     	// Subscribe to the requested topic
     	// The QoS specified is the maximum level that messages will be sent to the client at.
     	// For instance if QoS 1 is specified, any messages originally published at QoS 2 will
     	// be downgraded to 1 when delivering to the client but messages published at 1 and 0
     	// will be received at the same level they were published at.
-    	log.info("[subscribe client] Subscribing to topic \""+topicName+"\" qos "+qos);
+    	log.info("[订阅消息客户端] 订阅主题 \""+topicName+"\" qos "+qos);
     	client.subscribe(topicName, qos);
+    	
+    	timeScheduler.scheduleAtFixedRate(()->{try {
+    												byte[] l =  {0x01};
+													client.publish(topicName, l, qos, false);
+												} catch (MqttException e) {
+													e.printStackTrace();
+												}
+    										}, 1, 100, TimeUnit.SECONDS);
+    	
     }
     
-
-
     public JsonParser getJsonParser() {
 		return jsonParser;
 	}
@@ -258,8 +247,21 @@ public class MqttClientController implements MqttCallback {
 		// Called when the connection to the server has been lost.
 		// An application may choose to implement reconnection
 		// logic at this point. This sample simply exits.
-		log("Connection to " + brokerUrl + " lost!" + cause);
-		System.exit(1);
+		//log.debug("Connection to " + brokerUrl + " lost!" + cause);
+
+		// 连接丢失后，一般在这里面进行重连
+		log.debug("[MQTT] 连接断开"+brokerUrl+",原因是"+cause+". 30S之后尝试重连...,");
+		while (true) {
+			try {
+				Thread.sleep(30000);
+				this.reConnect();
+				break;
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+
 	}
 
     /**
@@ -290,9 +292,9 @@ public class MqttClientController implements MqttCallback {
 	public void messageArrived(String topic, MqttMessage message) throws MqttException {
 		// Called when a message arrives from the server that matches any
 		// subscription made by the client
-		log.info("Receive a message from topic "+topic+" !");
+		
 		String[] unpackTopic = null;
-
+		
 		if(null != topic){
 			unpackTopic= topic.split("/");
 		}
@@ -302,23 +304,74 @@ public class MqttClientController implements MqttCallback {
 
 		byte[] data = message.getPayload();
 		
-		if(null != data){
+		if(unpackTopic!=null && unpackTopic[0].equals("heart") && null != data && data.length>2){
 			// System.out.println("==============send Time update and data is not null!!!!!1111");
 			// ConstantsUtil.getParser().startTimePublishControllerOnlyOne();
-
-			/*try {
-				jsonPayload = new String(data, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				log.error("Unsupported Encoding Exception!");
-				e.printStackTrace();
-			}*/
 			
-		}
+			// final DevicePayload dp =devicePayload;
+			new Thread(new Runnable(){
 
+				@Override
+				public void run() {
+					DevicePayload devicePayload = null;
+					log.debug("收到心跳消息，主体为："+topic+" !");
+					try {
+						jsonPayload = new String(data, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						log.error("不支持的编码异常!");
+						e.printStackTrace();
+					}
+					try{
+						log.debug("解析心跳载荷...");
+						devicePayload = jsonParser.getGson().fromJson(jsonPayload, DevicePayload.class);
+						
+					} catch (JsonSyntaxException e) {
+						e.printStackTrace();
+					}
+					
+					if(null == devicePayload){
+						log.warn("收到无法识别的 心跳载荷!");
+						return;
+					}
+					
+					for(DeviceData dd:devicePayload.getData()){
+					
+						switch(dd.getType()){
+						case ConstantsUtil.HEART_TYPE_EMITTANCE: //辐射率
+							Db.update("update sensor set emittance=? where sensor_code =?", dd.getValue(),devicePayload.getDeviceId());
+							break;
+						case ConstantsUtil.HEART_TYPE_ALERT_TEMP:  // 守望点告警温度
+							Db.update("update sensor set threshold=? where sensor_code =?", dd.getValue(),devicePayload.getDeviceId());
+							break;
+						case ConstantsUtil.HEART_TYPE_DEFAULT_POINT: // 守望点
+							Db.update("update platform_point set defaul=? where pp_sensor_code =? and point_type=?", 1,devicePayload.getDeviceId(),dd.getValue());
+							break;
+						case ConstantsUtil.HEART_TYPE_TOTAL_POINT: 
+							int totalNum = Integer.parseInt(dd.getValue());
+							//List<PlatformPoint> ppList = PlatformPoint.dao.find("select * from platform_point where pp_sensor_code=?", devicePayload.getDeviceId());
+							Db.update("update sensor set point_num=? where sensor_code=?", totalNum,devicePayload.getDeviceId());
+							break;
+							default:break;
+						}
+					}
+					long now = System.currentTimeMillis();
+					Sensor.me.update(devicePayload.getDeviceId(),0,"0",1,now); //在线更新
+					log.debug("更新设备状态为在线："+devicePayload.getDeviceId());
+				}
+			}).start();
+			
+			/*for(int i = 0; i<devicePayload.getData().size();i++){
+	    		String value = devicePayload.getData().get(i).getValue();
+	    		int status = devicePayload.getData().get(i).getStatus();
+	    		int type = devicePayload.getData().get(i).getType();
+	    		Sensor.me.update(devicePayload.getDeviceId(),type,value,0); // 在线更新
+			}*/
+		}
 	}
 
+	
 	/**
-	 *  用来连接服务器
+	 *  用来连接服务器 有问题
 	 */
 	private void connect() {
 
@@ -362,6 +415,11 @@ public class MqttClientController implements MqttCallback {
 
 	}
 
+	public void reConnect() throws Exception {
+         if(null != client) {
+             client.connect(conOpt);
+         }
+     }
 
 	public void	close(){
 		if (client != null && client.isConnected()) {
@@ -369,7 +427,7 @@ public class MqttClientController implements MqttCallback {
 				client.disconnect();
 				scheduler.shutdown();
 			} catch (MqttException e) {
-				log.info("Client disconnected!");
+				log.info("MQTT 客户端断开连接异常了!");
 				e.printStackTrace();
 			}
 		}
@@ -388,7 +446,7 @@ public class MqttClientController implements MqttCallback {
 					}
 				}
 			}
-		}, 0, 10 * 1000, TimeUnit.MILLISECONDS);
+		}, 0, 30* 1000, TimeUnit.MILLISECONDS);
 	}
 
 	/****************************************************************/
@@ -427,5 +485,19 @@ public class MqttClientController implements MqttCallback {
 	              "messages until <enter> is pressed.\n\n"
 	          );
     }
+
+		/**
+		 * @return the client
+		 */
+		public MqttClient getClient() {
+			return client;
+		}
+
+		/**
+		 * @param client the client to set
+		 */
+		public void setClient(MqttClient client) {
+			this.client = client;
+		}
 
 }

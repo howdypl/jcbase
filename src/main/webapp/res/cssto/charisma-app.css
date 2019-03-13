@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Shojumaru);
+@import url(http://libs.useso.com/css?family=Shojumaru);
 
 select {
     background-color: #fff;
@@ -223,7 +223,7 @@ footer{
 }
 
 .box-content {
-    padding: 10px;
+    padding: 9px;
 }
 
 .btn-round {
@@ -315,7 +315,7 @@ ul.dashboard-list li a span {
 .thumbnails>li .tags>.label-holder {
     opacity: .92;
     display: table;
-    margin: 1px 0 0 0;
+    margin: 4px 4px 0 0;
     direction: ltr;
     text-align: left;
 }
@@ -323,6 +323,7 @@ ul.dashboard-list li a span {
     font-size: 12px;
     line-height: 1.15;
     height: 20px;
+    margin:4px 4px 0 0;
 }
 
 .label-info {
