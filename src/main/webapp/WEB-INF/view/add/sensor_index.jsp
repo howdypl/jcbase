@@ -56,6 +56,7 @@
 															<jc:button className="btn btn-danger" id="btn-unvisible" textName="删除"/>
 															<jc:button className="btn btn-primary" id="btn-add" textName="添加"/>
 															<jc:button className="btn btn-info" id="btn-edit" textName="编辑"/>
+															<jc:button className="btn" id="btn-server" textName="修改所选设备后端IP"/>
 															<%--<jc:button className="btn" id="bnt-grant" textName="资源授权" permission="/sys/role"/> --%>
 														</div>
 													</div>
@@ -197,6 +198,26 @@
 					    fix: false, //不固定
 					    maxmin: true,
 					    content: '${context_path}/sensorlist/add?id='+rid
+					});
+				}
+			});
+			
+			$("#btn-server").click(function(){//添加页面
+						
+				var rid = getSelectedRows();
+				if(rid == -1){
+					layer.msg("请至少选择一个监控器", {
+					    icon: 2,
+					    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+				}else {
+					parent.layer.open({
+						title:'修改后端服务IP信息',
+					    type: 2,
+					    area: ['370px', '250px'],
+					    fix: false, //不固定
+					    maxmin: true,
+					    content: '${context_path}/sensorlist/setBatchIpDlg?ids='+rid
 					});
 				}
 			});
@@ -380,7 +401,7 @@
 			    }
 	        });
 	}
-	function typeSelect(which){							
+	function typeSelect(which){
 		command();
 		//getCode(which.value);
 		updata();
@@ -432,16 +453,18 @@
                	   { label: '所属工区', name: 'area', width: 60  ,sortable:true},
                	   { label: '所属班组', name: 'op_name', width: 35  ,sortable:true},
                    { label: '所属变电站', name: 'station_name', width: 40 ,sortable:true},
-                   { label: '所属设备间', name: 'building_name', width: 70 },
-                   { label: '监控器编号', name: 'sensor_code', width: 60 ,sortable:false},
+                   { label: '所属设备间', name: 'building_name', width: 50 },
+                   { label: '后端服务IP', name: 'server_ip', width: 60 ,sortable:false},
+                   { label: '监控器编号', name: 'sensor_code', width: 50 ,sortable:false},
                    { label: '仪器编号', name: 'sensor_id', width: 40 ,sortable:false},
                    { label: '监控器名称', name: 'name', width: 80 },
                    { label: '设备状态', name: 'status',formatter:fmatterStatus, width: 40,sortable:true }, 
-                   { label: '预设点数量', name: 'point_num', width: 45 ,sortable:false},
+                   { label: '预设点数量', name: 'point_num', width: 35 ,sortable:false},
                    /* { label: '守望点', name: 'platform_code', width: 70 }, */
                    { label: '辐射率', name: 'emittance', formatter:fmatterEmittance, width: 30 ,sortable:false},
                    { label: '联动温度', name: 'threshold', width: 40 ,sortable:false},
-                   { label: '更新时间', name: 'create_time', width: 70,sortable:true },
+                   { label: '更新时间', name: 'create_time', width: 50,sortable:true },
+                   /* { label: '操作', name: 'id',formatter:fmatterOperation, width:45,sortable:false}, */
                ],
 			viewrecords: true,
                height: 'auto',
@@ -462,7 +485,9 @@
            });
 		$(window).triggerHandler('resize.jqGrid');
 	}   
-      
+    	function fmatterOperation(cellvalue, options, rowObject){
+			return '<form action="${context_path}/word/downloadExcel" method="GET"><input type="hidden" name="exportData" value="'+cellvalue+'"><input type="hidden" name="id" value="'+cellvalue+'"><button class="btn btn-success" id="viewDetailBtn" data-warnvalue="'+cellvalue+'" style="padding:0 10px;">查看</button> <button type="submit" class="btn btn-danger" data-toggle="modal" onclick="export_data('+cellvalue+')"style=" padding:0 10px;">导出</button></form>'
+		}
         //格式化状态显示
  		function fmatterStatus(cellvalue, options, rowObject){
  			if(cellvalue==0){

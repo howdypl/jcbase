@@ -3,8 +3,10 @@ package com.yanxin.common.model;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -199,21 +201,21 @@ public class Sensor extends BaseSensor<Sensor> implements java.io.Serializable  
 		
 		return InvokeResult.success();
 	}
-	public InvokeResult save(Integer id, String name, String sensor_code,Integer building_id,Integer sensor_id) {
+	public InvokeResult save(Integer id, String name, String sensor_code,Integer building_id,Integer sensor_id,String server_ip) {
 		// TODO Auto-generated method stub
 		if(id!=null){
 			
 			Sensor sensor=this.findById(id);
 			if(building_id==0) {
-				sensor.set("name",name).set("sensor_id",sensor_id).set("sensor_code",sensor_code).set("create_time", new Date()).set("update_time", new Date()).update();
+				sensor.set("name",name).set("sensor_id",sensor_id).set("sensor_code",sensor_code).set("create_time", new Date()).set("update_time", new Date()).set("server_ip",server_ip).update();
 			}else {
-				sensor.set("name",name).set("sensor_id",sensor_id).set("sensor_code",sensor_code).set("building_id",building_id).set("create_time", new Date()).set("update_time", new Date()).update();
+				sensor.set("name",name).set("sensor_id",sensor_id).set("sensor_code",sensor_code).set("building_id",building_id).set("create_time", new Date()).set("update_time", new Date()).set("server_ip",server_ip).update();
 			}		
 		}else {
 			if(this.hasExist(sensor_code)){
 				return InvokeResult.failure("监控器已存在");
 			}else{
-				new Sensor().set("name",name).set("sensor_id",sensor_id).set("sensor_code",sensor_code).set("status",0).set("building_id",building_id).set("create_time", new Date()).set("update_time", new Date()).save();
+				new Sensor().set("name",name).set("sensor_id",sensor_id).set("sensor_code",sensor_code).set("status",0).set("building_id",building_id).set("create_time", new Date()).set("update_time", new Date()).set("server_ip",server_ip).save();
 			}
 		}
 		
@@ -249,6 +251,17 @@ public class Sensor extends BaseSensor<Sensor> implements java.io.Serializable  
 		this.deleteById(id);
 		return InvokeResult.success();
 	}
+	
+	public InvokeResult setBatchIP(String idStrs, String server_ip) {
+		List<Integer> ids=CommonUtils.getIntegerListByStrs(idStrs);
+		
+		Set<Condition> conditions=new HashSet<Condition>();
+		conditions.add(new Condition("id",Operators.IN,ids));
+		Map<String,Object> newValues=new HashMap<String,Object>();
+		newValues.put("server_ip", server_ip);
+		this.update(conditions, newValues);
+		return InvokeResult.success();
+	} 
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

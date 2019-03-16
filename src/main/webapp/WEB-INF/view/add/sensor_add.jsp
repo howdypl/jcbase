@@ -25,6 +25,14 @@
 							<form class="form-horizontal" id="validation-form" method="post">
 												<input name="id" type="hidden" value="${id}"/>
 													<div class="form-group">
+														<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">后端服务IP</label>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+													            <input type="text"  name="server_ip"  value="${item.server_ip}" class="col-xs-12 col-sm-6">
+															</div>
+														</div>
+													</div>
+													<div class="form-group">
 														<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">监控器编号</label>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
@@ -418,6 +426,9 @@
 						},
 						sensor_code:{
 							required: true
+						},
+						server_ip:{
+							required:"请输入设备后台服务IP地址"
 						}
 					},
 					messages: {
@@ -429,6 +440,9 @@
 						},
 						sensor_code:{
 							required: "请输入监控器编号"
+						},
+						server_ip:{
+							required:"请输入设备后台服务IP地址"
 						}
 					},
 					highlight: function (e) {

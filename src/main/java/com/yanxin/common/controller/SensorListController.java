@@ -13,6 +13,7 @@ import com.jcbase.core.controller.JCBaseController;
 import com.jcbase.core.util.CommonUtils;
 import com.jcbase.core.util.JqGridModelUtils;
 import com.jcbase.core.view.InvokeResult;
+import com.jcbase.model.SysRole;
 import com.jcbase.model.SysUser;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
@@ -57,9 +58,6 @@ public class SensorListController extends JCBaseController {
 		this.renderJson(JqGridModelUtils.toJqGridView(pageInfo)); 
 	}
 	
-
-	
-	
 	public void add() {
 		Integer id=this.getParaToInt("id");
 		if(id!=null){
@@ -70,14 +68,35 @@ public class SensorListController extends JCBaseController {
 		this.setAttr("id", id);
 		render("sensor_add.jsp");
 	}
+	
+	public void setBatchIpDlg() {
+		
+		String bids=this.getPara("ids");
+		
+		this.setAttr("id", bids);
+		render("set_server_ip.jsp");
+	}
+	public void setBatchIP() {
+		String idStrs=this.getPara("id");
+		String server_ip = this.getPara("server_ip");
+		
+		InvokeResult result=Sensor.me.setBatchIP(idStrs, server_ip);
+		//添加批量配置后端IP地址的函数（批量）
+		
+		this.renderJson(result);
+
+	}
+	
 	public void save(){
 		String name=this.getPara("name");
 		String sensor_code=this.getPara("sensor_code");
 		Integer id=this.getParaToInt("id");
 		Integer building_id=this.getParaToInt("building_id");
 		Integer sensor_id=this.getParaToInt("sensor_id");
+		String server_ip = this.getPara("server_ip");
+		InvokeResult result=Sensor.me.save(id, name,sensor_code,building_id,sensor_id,server_ip);
+		// 下发修改服务器IP地址的mqtt命令（单个）
 		
-		InvokeResult result=Sensor.me.save(id, name,sensor_code,building_id,sensor_id);
 		this.renderJson(result); 
 	}
 	
@@ -115,7 +134,6 @@ public void getSensorCodeById() {
 		setAttr("result", false);
 		renderJson();
 	}
-	
 }
 
 
